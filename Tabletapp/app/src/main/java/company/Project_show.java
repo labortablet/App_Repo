@@ -59,8 +59,8 @@ public class Project_show extends Activity {
     @Override
 
         public void onCreate(Bundle savedInstanceState) {
-        Boolean test = Start.mService.Create_DB();
-        Toast.makeText(this,test.toString(),Toast.LENGTH_SHORT).show();
+       // Boolean test = Start.mService.Create_DB();
+       // Toast.makeText(this,test.toString(),Toast.LENGTH_SHORT).show();
         try {
             @SuppressWarnings("unchecked")
             LinkedList<RemoteProject> remoteProject_list = Start.mService.getProjects();

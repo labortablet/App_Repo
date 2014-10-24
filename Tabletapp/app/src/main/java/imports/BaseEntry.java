@@ -1,6 +1,7 @@
 package imports;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 /**
  * Created by Grit on 07.09.2014.
@@ -43,23 +44,23 @@ public class BaseEntry {
      * @value
      * @since 1.0
      */
-    protected Timestamp sync_time;
+    protected Long sync_time;
     /**
      *This is the entry_time it holds the time, the LocalEntry was finished in the app.
      * @value
      * @since 1.0
      */
-    protected Timestamp entry_time;
+    protected Long  entry_time;
 
-    public Timestamp getChange_time() {
+    public Long  getChange_time() {
         return change_time;
     }
 
-    public Timestamp getSync_time() {
+    public Long  getSync_time() {
         return sync_time;
     }
 
-    public Timestamp getEntry_time() {
+    public Long  getEntry_time() {
         return entry_time;
     }
 
@@ -69,7 +70,7 @@ public class BaseEntry {
      * @since 1.0
      */
 
-    protected Timestamp change_time;
+    protected Long change_time;
     /**
      *This Value holds the UserObject.
      * @value

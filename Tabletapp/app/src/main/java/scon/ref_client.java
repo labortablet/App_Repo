@@ -20,7 +20,8 @@ public class ref_client {
 		String user = "fredi@uni-siegen.de";
 		String pw_h = "test";
         System.out.println("Username and PW set");
-		ServerDatabaseSession SDS = new ServerDatabaseSession(url, user, pw_h);
+        /*
+		ServerDatabaseSession SDS = new ServerDatabaseSession(url, );
 		try {
             SDS.start_session();
             LinkedList<RemoteProject> remoteProject_list = SDS.get_projects();
@@ -29,6 +30,6 @@ public class ref_client {
 			System.out.println(remoteExperiment_list);
 		} catch (SBSBaseException e) {
 			System.out.println(e);
-		};
+		};*/
 	};
 };

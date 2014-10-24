@@ -142,7 +142,7 @@ public class Start extends Activity {
                     password = text3.getText().toString();
                     int i = 0;
                    user = new User(email, sha265(password));
-                    i = mService.connect(Server,user);
+                 //   i = mService.connect(Server,user);
 
 
                     switch (i) {

@@ -15,9 +15,11 @@ import com.example.test1.tabletapp.app.R;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import imports.App_Methodes;
 import imports.LocalEntry;
 
 /**
@@ -34,6 +36,7 @@ public class Table_entry extends Activity {
     private EditText[][] textView_array;
     private Integer project_Selected = Project_show.getProject_Selected();
     private Integer experiment_Selected = Project_show.getExperiment_Selected();
+    private Calendar calendar;
     private static List<ProjectExperimentEntry> projectExperimentEntries = Project_show.getProjectExperimentEntries();
     public void buttonEventHandler(View v) {  // butten events
 
@@ -78,7 +81,7 @@ public class Table_entry extends Activity {
                 String title1 = text.getText().toString();
 
 
-                projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(new LocalEntry(title1,new Timestamp(System.currentTimeMillis()),Start.getUser(),string_array,false));
+                projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(new LocalEntry(title1, App_Methodes.generateTimestamp(),Start.getUser(),string_array,false));
                 Project_show.setProjectExperimentEntries(projectExperimentEntries);
                 this.finish();
 

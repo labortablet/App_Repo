@@ -1,11 +1,31 @@
 package database;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.sql.SQLException;
+
 /**
  * Created by Grit on 26.06.2014.
  */
-/*
-public class DBAdapter extends SQLiteOpenHelper {
 
+public class DBAdapter  {
+    private DatabaseHandler db_Handler;
+    private SQLiteDatabase database;
+
+    public DBAdapter(Context context) {
+        db_Handler = new DatabaseHandler(context);
+    }
+
+    public void open() throws SQLException {
+        database = db_Handler.getWritableDatabase();
+    }
+
+    public void close() {
+        db_Handler.close();
+    }
+}
+/*
     private static String DB_PATH = "";
     private static final String DB_NAME = "lablet.db";
     private SQLiteDatabase myDataBase;

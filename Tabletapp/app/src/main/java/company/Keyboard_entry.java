@@ -11,8 +11,10 @@ import android.widget.EditText;
 import com.example.test1.tabletapp.app.R;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 
+import imports.App_Methodes;
 import imports.LocalEntry;
 import imports.Lablet_Functions;
 
@@ -27,7 +29,7 @@ public class Keyboard_entry extends Activity {
     private Lablet_Functions lablet = new Lablet_Functions();
     EditText title; // titel des entries
     private static List<ProjectExperimentEntry> projectExperimentEntries = Project_show.getProjectExperimentEntries();
-
+private Calendar calendar;
 
 
     public void buttonEventHandler(View v) {  // butten events
@@ -57,7 +59,7 @@ public class Keyboard_entry extends Activity {
                             String title1 = title.getText().toString();
                             experiment_Selected = Project_show.getExperiment_Selected();
 
-                            LocalEntry edit = new LocalEntry(title1, attachment,new Timestamp(System.currentTimeMillis()), Start.getUser(),false);
+                            LocalEntry edit = new LocalEntry(title1, attachment, App_Methodes.generateTimestamp(), Start.getUser(),false);
                             projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(edit);
 
                             Project_show.setProjectExperimentEntries(projectExperimentEntries);

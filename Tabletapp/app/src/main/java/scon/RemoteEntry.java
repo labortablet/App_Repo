@@ -3,6 +3,7 @@ package scon;
 
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 import imports.BaseEntry;
 import imports.User;
@@ -24,7 +25,7 @@ public class RemoteEntry extends BaseEntry {
        this.user = a.user;
        this.change_time=a.change_time;
     }
-    public RemoteEntry(Object attachment,int attachment_type,Timestamp entry_time,int Experiment_id,Timestamp sync_time,Timestamp change_time, String title, User user)
+    public RemoteEntry(Object attachment,int attachment_type,Long entry_time,int Experiment_id,Long  sync_time,Long change_time, String title, User user)
     {
 
 

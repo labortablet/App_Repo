@@ -8,6 +8,7 @@ package imports;
 
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 import scon.RemoteEntry;
 
@@ -41,7 +42,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *@param sync The value which says if the LocalEntry already on the Server
      */
 
-    public LocalEntry(Integer rem_id, String title, String attachment, Timestamp sync_time, Timestamp entry_time, User user, boolean sync) {
+    public LocalEntry(Integer rem_id, String title, String attachment, Long sync_time, Long  entry_time, User user, boolean sync) {
         this.remote_id = rem_id;
         this.title = title;
         this.attachment = new AttachmentText(attachment);
@@ -71,7 +72,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *@param sync The value which says if the LocalEntry already on the Server
      */
 
-    public LocalEntry( String title, String attachment,Timestamp entry_time, User user, boolean sync) {
+    public LocalEntry( String title, String attachment,Long  entry_time, User user, boolean sync) {
         this.title = title;
         this.attachment = new AttachmentText(attachment);
         this.attachment_type = 1;
@@ -105,7 +106,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *
      */
 
-    public LocalEntry(Integer rem_id,  String title, Timestamp sync_time, Timestamp entry_time, User user, String[][] array, boolean sync) {
+    public LocalEntry(Integer rem_id,  String title, Long  sync_time,Long  entry_time, User user, String[][] array, boolean sync) {
         this.remote_id = rem_id;
         this.title = title;
         this.attachment_type = 2;
@@ -128,7 +129,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *
      */
 
-    public LocalEntry( String title,Timestamp entry_time, User user, String[][] array, boolean sync) {
+    public LocalEntry( String title,Long  entry_time, User user, String[][] array, boolean sync) {
 
 
         this.title = title;

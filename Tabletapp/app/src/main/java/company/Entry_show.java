@@ -90,7 +90,9 @@ public class Entry_show extends Activity {
                }
                 else {
                    listDataDate.add("empty");
+
                }
+
 
 
                 List<String> list = new ArrayList<String>();

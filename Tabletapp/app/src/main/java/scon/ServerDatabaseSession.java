@@ -12,6 +12,8 @@ package scon;
 import org.json_pc.JSONArray;
 import org.json_pc.JSONException;
 import org.json_pc.JSONObject;
+
+import imports.User;
 import scon.Base64;
 import scon.BCrypt;
 
@@ -38,17 +40,28 @@ public class ServerDatabaseSession {
     private String password_hash;
     private URL database_url;
     private byte[] salt;
+    private User user;
 
 
-    public ServerDatabaseSession(URL database_url, String username, String password_hash) {
-        this.database_url = database_url;
-        this.username = username;
-        this.password_hash = password_hash;
-        this.session_id_set = Boolean.FALSE;
-        this.salt = null;
-    }
 
-    private byte[] uni2bin(String uni) {
+
+            public ServerDatabaseSession(URL database_url, User user) {
+
+            this.database_url = database_url;
+
+
+
+            this.user = user;
+
+            this.session_id_set = Boolean.FALSE;
+
+            this.salt = null;
+
+        }
+
+
+
+        private byte[] uni2bin(String uni) {
         return Base64.decode(uni, Base64.DEFAULT);
     }
 
@@ -117,10 +130,15 @@ public class ServerDatabaseSession {
     }
 
     private byte[] calculate_response(byte[] challenge)
+
     {
-        String salted_pw = BCrypt.hashpw(this.password_hash, BCrypt.gensalt(10, this.salt));
+        String salted_pw = BCrypt.hashpw(this.user.getPw_hash(), BCrypt.gensalt(10, this.salt));
+
         return BCrypt.hashpw(salted_pw, BCrypt.gensalt(10, challenge)).getBytes();
+
     }
+
+
 
     private void check_for_session() throws NoSession {
         if (!this.session_id_set) {
@@ -166,7 +184,7 @@ public class ServerDatabaseSession {
         JSONObject request = new JSONObject();
         try {
             request.put("action", "get_challenge");
-            request.put("username", this.username);
+            request.put("username", this.user.getUser_id());
         } catch(JSONException e){
             //should be impossible as we add a valid parameter to the json
             throw new SBSBaseException();
@@ -292,10 +310,10 @@ public class ServerDatabaseSession {
         return remoteExperiment_list;
     }
 
-    public Integer[] get_last_entry_ids(Integer session_id, Integer experiment_id, Integer entry_count) throws SBSBaseException {
+    public Entry_id_timestamp[] get_last_entry_references(Integer session_id, Integer experiment_id, Integer entry_count) throws SBSBaseException {
         this.check_for_session();
         JSONObject request = new JSONObject();
-        System.out.println("Success0");
+        System.out.println("Success!");
         try {
             request.put("action", "get_last_entry_ids");
             request.put("session_id", this.session_id);
@@ -313,12 +331,21 @@ public class ServerDatabaseSession {
         } catch (JSONException e) {
             throw new SBSBaseException();
         }
-        Integer[] entry_ids;
-        entry_ids = new Integer[entry_id_list.length()];
-        for (int i = 0; i < entry_id_list.length(); i++) {
-          //  entry_ids[i] = Integer(entry_id_list[i]);
-        }
-        return entry_ids;
+        Entry_id_timestamp[] entry_references = null;
+
+            //FIXME this needs to be changed as we changed the return type
+
+                     //entry_references = new Integer[entry_id_list.length()];
+
+                         //for (int i = 0; i < entry_id_list.length(); i++) {
+
+
+        //  entry_ids[i] = Integer(entry_id_list[i]);
+        //}
+
+                return entry_references;
+
+
     }
 
 
