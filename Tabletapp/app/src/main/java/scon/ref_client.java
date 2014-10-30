@@ -23,7 +23,6 @@ public class ref_client {
         System.out.println("Username and PW set");
         User user = new User(username, pw);
 		ServerDatabaseSession SDS = new ServerDatabaseSession(url, user);
-		/*
 		try {
             SDS.start_session();
             LinkedList<RemoteProject> remoteProject_list = SDS.get_projects();
@@ -32,6 +31,6 @@ public class ref_client {
 			System.out.println(remoteExperiment_list);
 		} catch (SBSBaseException e) {
 			System.out.println(e);
-		};*/
+		};
 	};
 };
