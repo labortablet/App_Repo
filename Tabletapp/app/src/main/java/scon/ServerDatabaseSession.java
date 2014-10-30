@@ -12,16 +12,17 @@ package scon;
 import org.json_pc.JSONArray;
 import org.json_pc.JSONException;
 import org.json_pc.JSONObject;
+import scon.Base64;
 
 import imports.User;
-import scon.Base64;
+import scon.Entry_id_timestamp;
 import scon.BCrypt;
-
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
@@ -36,37 +37,24 @@ import exceptions.*;
 public class ServerDatabaseSession {
     private String session_id;
     private Boolean session_id_set;
-    private String username;
-    private String password_hash;
+    private User user;
     private URL database_url;
     private byte[] salt;
-    private User user;
 
 
+    public ServerDatabaseSession(URL database_url, User user) {
+        this.database_url = database_url;
+        this.user = user;
+        this.session_id_set = Boolean.FALSE;
+        this.salt = null;
+    }
 
-
-            public ServerDatabaseSession(URL database_url, User user) {
-
-            this.database_url = database_url;
-
-
-
-            this.user = user;
-
-            this.session_id_set = Boolean.FALSE;
-
-            this.salt = null;
-
-        }
-
-
-
-        private byte[] uni2bin(String uni) {
-        return Base64.decode(uni, Base64.DEFAULT);
+    private byte[] uni2bin(String uni) {
+        return Base64.decode(uni.trim(), Base64.DEFAULT);
     }
 
     private String bin2uni(byte[] bin) {
-        return Base64.encodeToString(bin, Base64.DEFAULT);
+        return Base64.encodeToString(bin, Base64.DEFAULT).trim();
     }
 
     private JSONObject send_json(JSONObject message) throws SBSBaseException {
@@ -130,15 +118,27 @@ public class ServerDatabaseSession {
     }
 
     private byte[] calculate_response(byte[] challenge)
-
     {
-        String salted_pw = BCrypt.hashpw(this.user.getPw_hash(), BCrypt.gensalt(10, this.salt));
+        //FIXME this is not working yet
+        String salted_pw = BCrypt.hashpw(this.user.getPw_hash() , BCrypt.gensalt(10, this.salt));
+        String a = BCrypt.hashpw(this.user.getPw_hash() , BCrypt.gensalt(10, this.salt));
 
-        return BCrypt.hashpw(salted_pw, BCrypt.gensalt(10, challenge)).getBytes();
+        String result = null;
+        try {
+            result = BCrypt.hashpw(salted_pw.trim(), BCrypt.gensalt(10, challenge));
+            System.out.println(salted_pw.getBytes("utf-8"));
+            System.out.println(a);
+            System.out.println("Hashed Password:");
+            System.out.println(bin2uni(this.user.getPw_hashb()));
+            System.out.println("Salt:");
+            System.out.println(bin2uni(this.salt));
+            System.out.println("Calculatin response");
+            System.out.println(this.user.getPw_hashb());
+            System.out.println(salted_pw);
 
+        }catch (Exception e){};
+        return result.getBytes();
     }
-
-
 
     private void check_for_session() throws NoSession {
         if (!this.session_id_set) {
@@ -182,13 +182,8 @@ public class ServerDatabaseSession {
     private byte[] get_challenge() throws SBSBaseException {
         System.out.println("Creating JSON Object for challenge");
         JSONObject request = new JSONObject();
-        try {
-            request.put("action", "get_challenge");
-            request.put("username", this.user.getUser_id());
-        } catch(JSONException e){
-            //should be impossible as we add a valid parameter to the json
-            throw new SBSBaseException();
-        }
+        this.put_wrapper(request, "action", "get_challenge");
+        this.put_wrapper(request, "username", this.user.getUser_id());
         System.out.println("Object is ready and send");
         JSONObject result = null;
         result = this.send_json(request);
@@ -202,7 +197,7 @@ public class ServerDatabaseSession {
         }
         System.out.println("Got session_id");
         try{
-            this.salt = this.uni2bin(result.getString("salt"));
+            this.salt = this.uni2bin(result.getString("salt").trim());
         }catch (JSONException e){
             throw new SBSBaseException();
         }
@@ -214,11 +209,17 @@ public class ServerDatabaseSession {
         }
     }
 
-    private Boolean auth_session(byte[] response){
-        //FIXME not implemented yet
-        return Boolean.TRUE;}
+    private void auth_session(byte[] response) throws SBSBaseException{
+        this.check_for_session();
+        JSONObject request = new JSONObject();
+        this.put_wrapper(request, "action", "auth_session");
+        this.put_wrapper(request, "session_id", this.session_id);
+        this.put_wrapper(request, "response", bin2uni(response));
+        JSONObject result = this.send_json(request);
+        this.check_for_success(result);
+        }
 
-    public void start_session() throws SBSBaseException {
+    public void start_session() throws SBSBaseException{
         byte[] challenge = this.get_challenge();
         byte[] response = this.calculate_response(challenge);
         this.auth_session(response);
@@ -227,13 +228,8 @@ public class ServerDatabaseSession {
     public LinkedList<RemoteProject> get_projects() throws SBSBaseException {
         this.check_for_session();
         JSONObject request = new JSONObject();
-        try {
-            request.put("action", "get_projects");
-            request.put("session_id", this.session_id);
-        } catch (JSONException e) {
-            //should be impossible as we add a valid parameter to the json
-            throw new SBSBaseException();
-        }
+        this.put_wrapper(request, "action", "get_projects");
+        this.put_wrapper(request, "session_id", this.session_id);
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
 
@@ -269,15 +265,8 @@ public class ServerDatabaseSession {
     public LinkedList<RemoteExperiment> get_experiments() throws SBSBaseException {
         this.check_for_session();
         JSONObject request = new JSONObject();
-        System.out.println("Success0");
-        try {
-            request.put("action", "get_experiments");
-            request.put("session_id", this.session_id);
-            //request.put("project_id", project_id);
-        } catch (JSONException e) {
-            //should be impossible as we add a valid parameter to the json
-            throw new SBSBaseException();
-        }
+        this.put_wrapper(request, "action", "get_experiments");
+        this.put_wrapper(request, "session_id", this.session_id);
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
 
@@ -314,14 +303,9 @@ public class ServerDatabaseSession {
         this.check_for_session();
         JSONObject request = new JSONObject();
         System.out.println("Success!");
-        try {
-            request.put("action", "get_last_entry_ids");
-            request.put("session_id", this.session_id);
-            request.put("entry_count", entry_count);
-        } catch (JSONException e) {
-            //should be impossible as we add a valid parameter to the json
-            throw new SBSBaseException();
-        }
+        this.put_wrapper(request, "action", "get_last_entry_ids");
+        this.put_wrapper(request, "session_id", this.session_id);
+        this.put_wrapper(request, "entry_count", entry_count.toString());
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
 
@@ -332,20 +316,12 @@ public class ServerDatabaseSession {
             throw new SBSBaseException();
         }
         Entry_id_timestamp[] entry_references = null;
-
-            //FIXME this needs to be changed as we changed the return type
-
-                     //entry_references = new Integer[entry_id_list.length()];
-
-                         //for (int i = 0; i < entry_id_list.length(); i++) {
-
-
-        //  entry_ids[i] = Integer(entry_id_list[i]);
+        //FIXME this needs to be changed as we changed the return type
+        //entry_references = new Integer[entry_id_list.length()];
+        //for (int i = 0; i < entry_id_list.length(); i++) {
+          //  entry_ids[i] = Integer(entry_id_list[i]);
         //}
-
-                return entry_references;
-
-
+        return entry_references;
     }
 
 
