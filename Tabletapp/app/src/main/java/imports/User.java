@@ -50,13 +50,10 @@ public class User {
     public String getPw_hash(){
         return this.pw_hash;
     }
+    //Added this so we are not bound to use the email as an id
     public String getUser_id(){
-
-               //Added this so we are not bound to use the email as an id
-
-                       return this.user_email;
-
-           }
+        return this.user_email;
+    }
 
 
 
