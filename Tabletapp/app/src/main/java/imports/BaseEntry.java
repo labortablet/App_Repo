@@ -51,6 +51,18 @@ public class BaseEntry {
      * @since 1.0
      */
     protected Long  entry_time;
+    /**
+     *This Value holds the UserObject.
+     * @value
+     * @since 1.0
+     */
+    protected Long change_time;
+    /**
+     *This Value holds the UserObject.
+     * @value
+     * @since 1.0
+     */
+    protected User user;
 
     public Long  getChange_time() {
         return change_time;
@@ -63,23 +75,6 @@ public class BaseEntry {
     public Long  getEntry_time() {
         return entry_time;
     }
-
-    /**
-     *This Value holds the UserObject.
-     * @value
-     * @since 1.0
-     */
-
-    protected Long change_time;
-    /**
-     *This Value holds the UserObject.
-     * @value
-     * @since 1.0
-     */
-    protected User user;
-
-
-
 
     public Integer getExperiment_id() {
         return Experiment_id;
@@ -100,10 +95,6 @@ public class BaseEntry {
     public int getAttachment_type() {
         return attachment_type;
     }
-
-
-
-
 
     public User getUser() {
         return user;
