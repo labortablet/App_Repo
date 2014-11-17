@@ -56,6 +56,7 @@ public class Project_show extends Activity {
         return projectExperimentEntries;
     }
 
+
     @Override
 
         public void onCreate(Bundle savedInstanceState) {
@@ -63,11 +64,11 @@ public class Project_show extends Activity {
        // Toast.makeText(this,test.toString(),Toast.LENGTH_SHORT).show();
         try {
             @SuppressWarnings("unchecked")
-            LinkedList<RemoteProject> remoteProject_list = Start.mService.getProjects();
+            LinkedList<Project> remoteProject_list = Start.mService.getProjects();
             @SuppressWarnings("unchecked")
-            LinkedList<RemoteExperiment> remoteExperiment_list = Start.mService.getExperiments();
+            LinkedList<Experiment> remoteExperiment_list = Start.mService.getExperiments();
             @SuppressWarnings("unchecked")
-            LinkedList<RemoteEntry> remoteEntry_list = Start.mService.getEntries();
+            LinkedList<LocalEntry> remoteEntry_list = Start.mService.getEntries();
             ArrayList<LocalEntry> entries ;
 
 
@@ -77,7 +78,7 @@ public class Project_show extends Activity {
 
            for(int i = 0; i < remoteProject_list.size();i++){
                 experimentEntries = new ArrayList<ExperimentEntry>();
-                projectExperimentEntries.add(new ProjectExperimentEntry(new Project(remoteProject_list.get(i)),experimentEntries));
+                projectExperimentEntries.add(new ProjectExperimentEntry((remoteProject_list.get(i)),experimentEntries));
             }
 
             for(int i = 0 ;i < remoteExperiment_list.size();i++) {
@@ -87,7 +88,7 @@ public class Project_show extends Activity {
                     if (projectExperimentEntries.get(j).getProject().get_id().equals(remoteExperiment_list.get(i).get_project_id()))
                     {
                       entries = new ArrayList<LocalEntry>();
-                      projectExperimentEntries.get(j).getExperimentEntry().add(new ExperimentEntry(new Experiment(remoteExperiment_list.get(i)), entries));
+                      projectExperimentEntries.get(j).getExperimentEntry().add(new ExperimentEntry(remoteExperiment_list.get(i), entries));
                       break;
                     }
                 }
@@ -100,7 +101,7 @@ public class Project_show extends Activity {
                          {
                       if(projectExperimentEntries.get(j).getExperimentEntry().get(k).getExperiments().get_id().equals(remoteEntry_list.get(i).getExperiment_id()))
                       {
-                          projectExperimentEntries.get(j).getExperimentEntry().get(k).getEntriesList().add(new LocalEntry(remoteEntry_list.get(i)));
+                          projectExperimentEntries.get(j).getExperimentEntry().get(k).getEntriesList().add(remoteEntry_list.get(i));
 
                           break;
 

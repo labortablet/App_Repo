@@ -3,25 +3,23 @@ package company;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.DropBoxManager;
 import android.os.IBinder;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import android.util.Log;
+import android.widget.Toast;
 import java.util.LinkedList;
-
-import database.DBAdapter;
-import database.DatabaseHandler;
 import exceptions.SBSBaseException;
 import imports.App_Methodes;
+import imports.AttachmentTable;
 import imports.AttachmentText;
+import imports.Experiment;
+import imports.LocalEntry;
+import imports.Project;
 import imports.User;
 import scon.RemoteEntry;
 import scon.RemoteExperiment;
@@ -38,26 +36,78 @@ public class LocalService extends Service {
     private User user;
     private ServerDatabaseSession SDS;
     private  byte[] challange;
-    private DBAdapter dbAdapter;
-    private Calendar calendar;
+    DBAdapter myDb = Start.myDb;
     public class LocalBinder extends Binder {
         LocalService getService() {
             // Return this instance of LocalService so clients can call public methods
             return LocalService.this;
         }
     }
-    public void onCreate(Bundle savedInstanceState)  {
+    public void onCreate(Context context)  {
+super.onCreate();
 
-        dbAdapter = new DBAdapter(this);
-        try {
-            dbAdapter.open();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
+public LocalService(){
+   openDB();
+                 /*
+    long newId = myDb.insertRemoteProject(new RemoteProject(1, "project 1", "Das ist Project 1"));
+    Cursor cursor = myDb.getProjectRow(newId);
+    Log.d("Project1","Ausgabe 1");
+    Log.d("Project1", cursor.getString(1));
+    newId =  myDb.insertRemoteProject(new RemoteProject(2,"project 2" ,"Das ist Project 2"));
+    cursor = myDb.getProjectRow(newId);
+    Log.d("Project1", "Ausgabe 2");
+    Log.d("Project2", cursor.getString(1));
+    newId = myDb.insertRemoteProject(new RemoteProject(3,"project 3" ,"Das ist Project 3"));
+    cursor = myDb.getProjectRow(newId);
+    Log.d("Project1","Ausgabe 3");
+    Log.d("Project3", cursor.getString(1));     */
+    dummiData();
+}
+     private void openDB() {
+             myDb.open();
+         }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
+    }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        closeDB();
+    }
+    private void dummiData(){
+  //   try{
+        user = new User("Hans@dampf.net","passwd","Hans","Dampf");
+        myDb.insertNewUser(new User("Hans@dampf.net","passwd","Hans","Dampf"));
+        myDb.insertRemoteProject(new RemoteProject(1, "project 1", "Das ist Project 1"));
+        myDb.insertRemoteProject(new RemoteProject(2,"project 2" ,"Das ist Project 2"));
+        myDb.insertRemoteProject(new RemoteProject(3,"project 3" ,"Das ist Project 3"));
+        myDb.insertRemoteExperiment(new RemoteExperiment(1, 1, "Experiment 1", "Inhalt 1"));
+        myDb.insertRemoteExperiment(new RemoteExperiment(1, 2, "Experiment 2", "Inhalt 2"));
+        myDb.insertRemoteExperiment(new RemoteExperiment(2, 3, "Experiment 3", "Inhalt 3"));
+        myDb.insertRemoteExperiment(new RemoteExperiment(2, 4, "Experiment 4", "Inhalt 4"));
+        myDb.insertRemoteExperiment(new RemoteExperiment(3, 5, "Experiment 5", "Inhalt 5"));
+        myDb.insertRemoteExperiment(new RemoteExperiment(3, 6, "Experiment 6", "Inhalt 6"));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),1,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test1",user));
+         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),2,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test2",user));
+         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),3,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test3",user));
+         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),4,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test4",user));
+         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
+         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
+ /*   }
+    catch (Exception e)
+    {
+        e.printStackTrace();
+    }*/
+    }
+    private void closeDB() {
+      myDb.close();
+    }
 
 
 
@@ -108,19 +158,43 @@ public class LocalService extends Service {
     // }else return 2;
    }*/
 // Method to get all active Projects From the user
-    public LinkedList getProjects() throws SBSBaseException {
-
-        LinkedList<RemoteProject> remoteProject_list = new LinkedList<RemoteProject>();// = SDS.get_projects();
-
-        remoteProject_list.add(0,new RemoteProject(1,"project 1" ,"Das ist Project 1"));
-        remoteProject_list.add(1,new RemoteProject(2,"project 2" ,"Das ist Project 2"));
-        remoteProject_list.add(2,new RemoteProject(3,"project 3" ,"Das ist Project 3"));
-        return remoteProject_list;
+    public LinkedList<Project> getProjects() throws SBSBaseException {
+      // LinkedList<Project> remoteProject_list = new LinkedList<Project>();// = SDS.get_projects();
+       return displayProjects(myDb.getAllProjectRows());
+    //    remoteProject_list.add(0,new Project(new RemoteProject(1,"project 1" ,"Das ist Project 1")));
+      //  remoteProject_list.add(1,new Project(new RemoteProject(2,"project 2" ,"Das ist Project 2")));
+      //  remoteProject_list.add(2,new Project(new RemoteProject(3,"project 3" ,"Das ist Project 3")));
+      //  return remoteProject_list;
     }
-    // Method to get all active Experiments From the user
-    public LinkedList getExperiments() throws SBSBaseException {
 
-        LinkedList<RemoteExperiment> remoteExperiments_list = new LinkedList<RemoteExperiment>(); // SDS.get_experiments();
+    private LinkedList<Project> displayProjects(Cursor cursor) {
+       try {
+
+           LinkedList<Project> remoteProjects = new LinkedList<Project>();
+           // populate the message from the cursor
+
+           // Reset cursor to start, checking to see if there's data:
+           if (cursor.moveToFirst()) {
+               do {
+                   // Process the data:
+                   remoteProjects.add(new Project(cursor.getInt(DBAdapter.COL_ProjectID), cursor.getInt(DBAdapter.COL_ProjectRemoteID), cursor.getString(DBAdapter.COL_ProjectName), cursor.getString(DBAdapter.COL_ProjectDescription)));
+
+               } while (cursor.moveToNext());
+           }
+           // Close the cursor to avoid a resource leak.
+           cursor.close();
+           return  remoteProjects;
+       }catch (Exception e){
+           e.printStackTrace();
+           return null;
+       }
+
+    }
+
+    // Method to get all active Experiments From the user
+    public LinkedList<Experiment> getExperiments() throws SBSBaseException {
+/*
+        LinkedList<Experiment> remoteExperiments_list = new LinkedList<Experiment>(); // SDS.get_experiments();
 
         remoteExperiments_list.add(0,new RemoteExperiment(1, 1, "Experiment 1", "Inhalt 1"));
         remoteExperiments_list.add(1,new RemoteExperiment(1, 2, "Experiment 2", "Inhalt 2"));
@@ -128,22 +202,84 @@ public class LocalService extends Service {
         remoteExperiments_list.add(3,new RemoteExperiment(2, 4, "Experiment 4", "Inhalt 4"));
         remoteExperiments_list.add(4,new RemoteExperiment(3, 5, "Experiment 5", "Inhalt 5"));
         remoteExperiments_list.add(5,new RemoteExperiment(3, 6, "Experiment 6", "Inhalt 6"));
-        return remoteExperiments_list;
+        return remoteExperiments_list;*/
+        return displayExperiments(myDb.getAllExperimentRows());
     }
+
+    private LinkedList<Experiment> displayExperiments(Cursor cursor) {
+        try {
+
+            LinkedList<Experiment> experiments = new LinkedList<Experiment>();
+            // populate the message from the cursor
+
+            // Reset cursor to start, checking to see if there's data:
+            if (cursor.moveToFirst()) {
+                do {
+                    // Process the data:
+                    experiments.add(new Experiment(cursor.getInt(DBAdapter.COL_ExperimentID), cursor.getInt(DBAdapter.COL_ExperimentRemoteID),cursor.getInt(DBAdapter.COL_ExperimentProjectID), cursor.getString(DBAdapter.COL_ExperimentName), cursor.getString(DBAdapter.COL_ExperimentDescription)));
+
+                } while (cursor.moveToNext());
+            }
+            // Close the cursor to avoid a resource leak.
+            cursor.close();
+            return  experiments;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }}
     // Method to get all active Entries From the user
-    public LinkedList getEntries() throws SBSBaseException {
+    public LinkedList<LocalEntry> getEntries() throws SBSBaseException {
         //TODO : add entry call function here!
-        LinkedList<RemoteEntry> remoteEntries_list = new LinkedList<RemoteEntry>();
+     /*   LinkedList<RemoteEntry> remoteEntries_list = new LinkedList<RemoteEntry>();
 
         remoteEntries_list.add(0,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),1,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test1",user));
         remoteEntries_list.add(1,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),2,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test2",user));
         remoteEntries_list.add(2,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),3,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test3",user));
         remoteEntries_list.add(3,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),4,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test4",user));
         remoteEntries_list.add(4,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
-        remoteEntries_list.add(5,new RemoteEntry(new AttachmentText("test"),1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
+        remoteEntries_list.add(5,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
 
-        return remoteEntries_list;
+        return remoteEntries_list;*/
+        return displayEntries(myDb.getAllEntryRows());
     }
+
+    private LinkedList<LocalEntry> displayEntries(Cursor cursor) {
+        try {
+
+            LinkedList<LocalEntry> entries;
+            entries = new LinkedList<LocalEntry>();
+            // populate the message from the cursor
+
+            // Reset cursor to start, checking to see if there's data:
+            if (cursor.moveToFirst()) {
+                do {
+                    // Process the data:
+                    switch(cursor.getInt((DBAdapter.COL_EntryTyp))) {
+                        case 1:
+                            if(cursor.getInt(DBAdapter.COL_EntrySync) == 1)
+                                entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), cursor.getString(DBAdapter.COL_EntryContent), cursor.getLong(DBAdapter.COL_EntryCreationDate),new User(cursor.getString(DBAdapter.COL_EntryUserID)),true,cursor.getInt(DBAdapter.COL_EntryID),cursor.getInt(DBAdapter.COL_EntryExperimentID),cursor.getLong(DBAdapter.COL_EntrySync),cursor.getLong(DBAdapter.COL_EntryChangeDate)));
+                            else
+                                entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), cursor.getString(DBAdapter.COL_EntryContent), cursor.getLong(DBAdapter.COL_EntryCreationDate),new User(cursor.getString(DBAdapter.COL_EntryUserID)),false,cursor.getInt(DBAdapter.COL_EntryID),cursor.getInt(DBAdapter.COL_EntryExperimentID),cursor.getLong(DBAdapter.COL_EntrySync),cursor.getLong(DBAdapter.COL_EntryChangeDate)));
+                        break;
+                        case 2:
+                            if(cursor.getInt(DBAdapter.COL_EntrySync) == 1)
+                            entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle),StringTo2DArray(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(DBAdapter.COL_EntryCreationDate),new User(cursor.getString(DBAdapter.COL_EntryUserID)),true,cursor.getInt(DBAdapter.COL_EntryID),cursor.getInt(DBAdapter.COL_EntryExperimentID),cursor.getLong(DBAdapter.COL_EntrySync),cursor.getLong(DBAdapter.COL_EntryChangeDate)));
+                                else
+                            entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle),StringTo2DArray(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(DBAdapter.COL_EntryCreationDate),new User(cursor.getString(DBAdapter.COL_EntryUserID)),false,cursor.getInt(DBAdapter.COL_EntryID),cursor.getInt(DBAdapter.COL_EntryExperimentID),cursor.getLong(DBAdapter.COL_EntrySync),cursor.getLong(DBAdapter.COL_EntryChangeDate)));
+                        break;
+                    }
+                } while (cursor.moveToNext());
+            }
+            // Close the cursor to avoid a resource leak.
+            cursor.close();
+            return  entries;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }}
+
+
+
 
     public LinkedList getLastEntries(int projectID,int experimentID,int entryID,int NumbersToCall){
         LinkedList<RemoteEntry> remoteEntries_list = new LinkedList<RemoteEntry>();
@@ -181,6 +317,25 @@ public class LocalService extends Service {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();}
 
+    public String[][] StringTo2DArray(String strings){
+        String[] string = strings.split(";");
+        int x = countLetter(string[0],",");
+        int y = string.length;
+        String[][] temp =new String[y][x];
+        for (int i = 0; i < y ; i++) {
+            for (int j = 0;j < x;j++) {
+                int pos = string[y].indexOf(",");
+                temp[i][j] = string[y].substring(pos);
+                string[y] = string[y].substring(pos+1,strings.length());
+            }
+        }
+        return temp;
+    }
+    private static int countLetter(String str, String letter) {
+        int count = 0;
+        for (int pos = -1; (pos = str.indexOf(letter, pos+1)) != -1; count++);
+        return count;
+    }
 }
 
 
