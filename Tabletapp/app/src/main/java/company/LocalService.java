@@ -63,6 +63,10 @@ public LocalService(){
     cursor = myDb.getProjectRow(newId);
     Log.d("Project1","Ausgabe 3");
     Log.d("Project3", cursor.getString(1));     */
+
+    Cursor cur = myDb.getAllProjectRows();
+    cur.moveToFirst();
+    if (cur.getCount() == 0)
     dummiData();
 }
      private void openDB() {
@@ -81,7 +85,7 @@ public LocalService(){
         closeDB();
     }
     private void dummiData(){
-  //   try{
+     try{
         user = new User("Hans@dampf.net","passwd","Hans","Dampf");
         myDb.insertNewUser(new User("Hans@dampf.net","passwd","Hans","Dampf"));
         myDb.insertRemoteProject(new RemoteProject(1, "project 1", "Das ist Project 1"));
@@ -94,23 +98,20 @@ public LocalService(){
         myDb.insertRemoteExperiment(new RemoteExperiment(3, 5, "Experiment 5", "Inhalt 5"));
         myDb.insertRemoteExperiment(new RemoteExperiment(3, 6, "Experiment 6", "Inhalt 6"));
         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),1,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test1",user));
-         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),2,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test2",user));
-         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),3,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test3",user));
-         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),4,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test4",user));
-         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
-         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
- /*   }
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),2,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test2",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),3,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test3",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),4,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test4",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
+    }
     catch (Exception e)
     {
         e.printStackTrace();
-    }*/
+    }
     }
     private void closeDB() {
       myDb.close();
     }
-
-
-
       /*  try {
             myDB = this.openOrCreateDatabase("Lablet.db", MODE_PRIVATE, null);
             return true;

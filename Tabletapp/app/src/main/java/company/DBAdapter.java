@@ -81,13 +81,13 @@ public class DBAdapter {
     public static final String[] Experiment_KEYS = new String[] {Experiment_ID,Experiment_Name,Experiment_Description,Experiment_Sync,Experiment_RemoteID,Experiment_ProjectID};
     public static final String[] Project_KEYS = new String[] {Project_ID,Project_Name,Project_Description,Project_Sync,Project_RemoteID};
     // DB info: it's name, and the table we are using (just one).
-    public static final String DATABASE_NAME = "Lablet";
+    public static final String DATABASE_NAME = "LabletDB";
     public static final String Table_Entry = " _entry ";
     public static final String Table_User = " _user ";
     public static final String Table_Project = " _project ";
     public static final String Table_Experiment = " _experiment ";
     // Track DB version if a new version of your app changes the format.
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     //
     private static final String DATABASE_CREATE_USER =
             "CREATE TABLE IF NOT EXISTS" + Table_User
