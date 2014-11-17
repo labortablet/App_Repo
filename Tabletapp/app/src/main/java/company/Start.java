@@ -36,10 +36,10 @@ public class Start extends Activity {
     public static void setUser(User user) {
         Start.user = user;
     }
+
     static LocalService mService;
-
-
-
+static Context context;
+    public static DBAdapter myDb;
     private static User user;
 
     boolean mBound = false;
@@ -87,6 +87,8 @@ public class Start extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myDb = new DBAdapter(this);
+        context = getApplicationContext();
         setContentView(R.layout.start_show);
         //doBindService();
         ActivityRegistry.register(this);

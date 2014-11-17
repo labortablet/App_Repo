@@ -30,7 +30,10 @@ public class User {
         this.pw_hashb = resultb;
     }
 
-
+public User(String email)
+{
+    this.user_email = email;
+}
     public User(String firstname, String lastname, String user_email, String pw_hash){
         this.lastname = lastname;
         this.firstname = firstname;
@@ -66,7 +69,13 @@ public class User {
         }
     }
 
+    public String getLastname() {
+        return lastname;
+    }
 
+    public String getFirstname() {
+        return firstname;
+    }
 
     public void setName(String firstname, String lastname){
         this.firstname = firstname;

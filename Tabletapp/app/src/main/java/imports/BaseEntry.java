@@ -13,13 +13,18 @@ public class BaseEntry {
      * @value
      * @since 1.0
      */
-    protected Integer remote_id;
+    public Integer remote_id;
+
+    public void setAttachment(Object attachment) {
+        this.attachment = attachment;
+    }
 
     /**
      *This is the title of an LocalEntry
      * @value
      * @since 1.0
      */
+
     protected Integer Experiment_id;
     /**
      *This is the title of an LocalEntry
@@ -44,7 +49,7 @@ public class BaseEntry {
      * @value
      * @since 1.0
      */
-    protected Long sync_time;
+    public Long sync_time;
     /**
      *This is the entry_time it holds the time, the LocalEntry was finished in the app.
      * @value
