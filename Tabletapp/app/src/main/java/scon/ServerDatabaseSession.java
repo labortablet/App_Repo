@@ -16,7 +16,6 @@ import scon.Base64;
 
 import imports.User;
 import scon.Entry_id_timestamp;
-import scon.BCrypt;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -119,25 +119,24 @@ public class ServerDatabaseSession {
 
     private byte[] calculate_response(byte[] challenge)
     {
-        //FIXME this is not working yet
-        String salted_pw = BCrypt.hashpw(this.user.getPw_hash() , BCrypt.gensalt(10, this.salt));
-        String a = BCrypt.hashpw(this.user.getPw_hash() , BCrypt.gensalt(10, this.salt));
+        MessageDigest sha256 = null;
+        byte[] pw_hash = this.user.getPw_hash();
+        byte[] result1 = new byte[pw_hash.length + this.salt.length];
+        System.arraycopy(this.salt, 0, result1, 0, this.salt.length);
+        System.arraycopy(pw_hash, 0, result1, this.salt.length, pw_hash.length);
 
-        String result = null;
         try {
-            result = BCrypt.hashpw(salted_pw.trim(), BCrypt.gensalt(10, challenge));
-            System.out.println(salted_pw.getBytes("utf-8"));
-            System.out.println(a);
-            System.out.println("Hashed Password:");
-            System.out.println(bin2uni(this.user.getPw_hashb()));
-            System.out.println("Salt:");
-            System.out.println(bin2uni(this.salt));
-            System.out.println("Calculatin response");
-            System.out.println(this.user.getPw_hashb());
-            System.out.println(salted_pw);
-
-        }catch (Exception e){};
-        return result.getBytes();
+            sha256 = MessageDigest.getInstance("SHA-256");
+        }catch (java.security.NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-265 not available, this should really not happen");
+        }
+        sha256.reset();
+        byte[] inner_hash = sha256.digest(result1);
+        byte[] result2 = new byte[challenge.length + inner_hash.length];
+        System.arraycopy(challenge, 0, result2, 0, challenge.length);
+        System.arraycopy(result1, 0, result2, challenge.length, result1.length);
+        sha256.reset();
+        return sha256.digest(result2);
     }
 
     private void check_for_session() throws NoSession {
@@ -145,7 +144,6 @@ public class ServerDatabaseSession {
             //we need a session id before we try to get projects
             throw new NoSession();
         }
-
     }
 
     private void check_for_success(JSONObject result) throws SBSBaseException {
@@ -323,8 +321,4 @@ public class ServerDatabaseSession {
         //}
         return entry_references;
     }
-
-
-
-
 }

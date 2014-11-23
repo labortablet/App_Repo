@@ -5,7 +5,6 @@ public class User {
     private String lastname;
     private String firstname;
     private String user_email;
-    private String pw_hash;
     private byte[] pw_hashb;
     private static Boolean lastname_first = false;
 
@@ -22,11 +21,9 @@ public class User {
         sha256.reset();
         try {
             resultb = sha256.digest(password.getBytes("UTF-8"));
-            result = new String(resultb, "UTF-8");
         }catch (java.io.UnsupportedEncodingException e) {
             throw new RuntimeException("UTF-8 encoding not available, this should really not happen");
         }
-        this.pw_hash = result;
         this.pw_hashb = resultb;
     }
 
@@ -34,27 +31,17 @@ public User(String email)
 {
     this.user_email = email;
 }
-    public User(String firstname, String lastname, String user_email, String pw_hash){
+    public User(String firstname, String lastname, String user_email, String password){
         this.lastname = lastname;
         this.firstname = firstname;
         this.user_email = user_email;
-        this.pw_hash = pw_hash;
-        try {
-            this.pw_hashb = pw_hash.getBytes("UTF_8");
-        }catch (java.io.UnsupportedEncodingException e) {
-            throw new RuntimeException("UTF-8 encoding not available, this should really not happen");
-        }
+        this.setPw(password);
 
 
     }
-    public User(String user_email, String pw_hash){
-        this.pw_hash = pw_hash;
+    public User(String user_email, String password){
         this.user_email = user_email;
-        try {
-            this.pw_hashb = pw_hash.getBytes("UTF_8");
-        }catch (java.io.UnsupportedEncodingException e) {
-            throw new RuntimeException("UTF-8 encoding not available, this should really not happen");
-        }
+        this.setPw(password);
     }
 
     public String display(String separator){
@@ -82,20 +69,16 @@ public User(String email)
         this.lastname = lastname;
     }
 
-    public void setLogin(String user_email, String pw_hash){
+    public void setLogin(String user_email, String password){
         this.user_email = user_email;
-        this.pw_hash = pw_hash;
+        this.setPw(password);
     }
 
     public String getUser_email(){
         return this.user_email;
     }
 
-    public String getPw_hash(){
-        return this.pw_hash;
-    }
-
-    public byte[] getPw_hashb(){
+    public byte[] getPw_hash(){
         return this.pw_hashb;
     }
 
