@@ -12,6 +12,8 @@ package scon;
 import org.json_pc.JSONArray;
 import org.json_pc.JSONException;
 import org.json_pc.JSONObject;
+
+import imports.BaseEntry;
 import scon.Base64;
 
 import imports.User;
@@ -66,10 +68,6 @@ public class ServerDatabaseSession {
         byte[] message_bytes = null;
         try {
             message_bytes = message.toString().getBytes("UTF-8");
-            System.out.println("Bytes prepared");
-            System.out.println(message);
-            System.out.println(message.toString());
-            System.out.println(message_bytes);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("UTF-8 encoding not available, this should really not happen");
         }
@@ -96,7 +94,6 @@ public class ServerDatabaseSession {
         } catch (SSLHandshakeException e) {
             throw new NoValidSSLCert();
         } catch (IOException e) {
-            System.out.println(e);
             throw new NoServerConnectionException();
         }
 
@@ -107,12 +104,8 @@ public class ServerDatabaseSession {
 
 
         try {
-            System.out.println("Got response");
-            System.out.println(response_string);
             return new JSONObject(response_string);
         } catch (JSONException e) {
-            System.out.println(response_string);
-            System.out.println(e);
             throw new ErroneousResponse();
         }
     }
@@ -295,6 +288,10 @@ public class ServerDatabaseSession {
 
         }
         return remoteExperiment_list;
+    }
+
+    public Integer sendEntry(BaseEntry Entry) throws SBSBaseException{
+        return 0;
     }
 
     public Entry_id_timestamp[] get_last_entry_references(Integer session_id, Integer experiment_id, Integer entry_count) throws SBSBaseException {
