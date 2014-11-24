@@ -17,7 +17,7 @@ public class ref_client {
 		} catch (MalformedURLException e) {
 			System.exit(1);
 		};
-        System.out.println("URL nor malformed");
+        System.out.println("URL not malformed");
 		String username = "fredi@uni-siegen.de";
 		String pw = "test";
         System.out.println("Username and PW set");
