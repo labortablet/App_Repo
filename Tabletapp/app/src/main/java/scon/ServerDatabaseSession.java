@@ -13,6 +13,7 @@ import org.json_pc.JSONArray;
 import org.json_pc.JSONException;
 import org.json_pc.JSONObject;
 
+import imports.AttachmentText;
 import imports.BaseEntry;
 import scon.Base64;
 
@@ -96,16 +97,15 @@ public class ServerDatabaseSession {
         } catch (IOException e) {
             throw new NoServerConnectionException();
         }
-
         //maybe we should return a JSONObject with success:failed here and add the string as a parameter
         if (response_string.startsWith("<html>")) {
             throw new ServerSideException();
         }
-
-
         try {
             return new JSONObject(response_string);
         } catch (JSONException e) {
+            System.out.println(response_string);
+            System.out.println(e);
             throw new ErroneousResponse();
         }
     }
@@ -114,9 +114,9 @@ public class ServerDatabaseSession {
     {
         MessageDigest sha256 = null;
         byte[] pw_hash = this.user.getPw_hash();
-        byte[] result1 = new byte[pw_hash.length + this.salt.length];
-        System.arraycopy(this.salt, 0, result1, 0, this.salt.length);
-        System.arraycopy(pw_hash, 0, result1, this.salt.length, pw_hash.length);
+        byte[] inner_hash = new byte[pw_hash.length + this.salt.length];
+        System.arraycopy(this.salt, 0, inner_hash, 0, this.salt.length);
+        System.arraycopy(pw_hash, 0, inner_hash, this.salt.length, pw_hash.length);
 
         try {
             sha256 = MessageDigest.getInstance("SHA-256");
@@ -124,12 +124,13 @@ public class ServerDatabaseSession {
             throw new RuntimeException("SHA-265 not available, this should really not happen");
         }
         sha256.reset();
-        byte[] inner_hash = sha256.digest(result1);
-        byte[] result2 = new byte[challenge.length + inner_hash.length];
-        System.arraycopy(challenge, 0, result2, 0, challenge.length);
-        System.arraycopy(result1, 0, result2, challenge.length, result1.length);
+        byte[] pw_hash_salted = sha256.digest(inner_hash);
+        byte[] outer_hash = new byte[challenge.length + pw_hash_salted.length];
+        System.arraycopy(challenge, 0, outer_hash, 0, challenge.length);
+        System.arraycopy(pw_hash_salted, 0, outer_hash, challenge.length, pw_hash_salted.length);
         sha256.reset();
-        return sha256.digest(result2);
+        return sha256.digest(outer_hash);
+
     }
 
     private void check_for_session() throws NoSession {
@@ -137,6 +138,7 @@ public class ServerDatabaseSession {
             //we need a session id before we try to get projects
             throw new NoSession();
         }
+
     }
 
     private void check_for_success(JSONObject result) throws SBSBaseException {
@@ -171,28 +173,22 @@ public class ServerDatabaseSession {
     }
 
     private byte[] get_challenge() throws SBSBaseException {
-        System.out.println("Creating JSON Object for challenge");
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_challenge");
         this.put_wrapper(request, "username", this.user.getUser_id());
-        System.out.println("Object is ready and send");
         JSONObject result = null;
         result = this.send_json(request);
-        System.out.println("got result");
-        System.out.println(result);
         try {
             this.session_id = result.getString("session_id");
             this.session_id_set = Boolean.TRUE;
         }catch (JSONException e){
             throw new SBSBaseException();
         }
-        System.out.println("Got session_id");
         try{
             this.salt = this.uni2bin(result.getString("salt").trim());
         }catch (JSONException e){
             throw new SBSBaseException();
         }
-        System.out.println("Got salt");
         try{
             return this.uni2bin(result.getString("challenge"));
         }catch (JSONException e){
@@ -265,6 +261,8 @@ public class ServerDatabaseSession {
         try {
             experiment_json_array = result.getJSONArray("experiments");
         } catch (JSONException e) {
+            System.out.println(result);
+            System.out.println(e);
             throw new SBSBaseException();
         }
         LinkedList<RemoteExperiment> remoteExperiment_list = new LinkedList<RemoteExperiment>();
@@ -282,6 +280,7 @@ public class ServerDatabaseSession {
                 description = experiment_json.getString(3);
                 remoteExperiment_list.add(new RemoteExperiment(project_id, id, name, description));
             } catch (JSONException e) {
+                System.out.println(e);
                 //some project did not decode correctly
                 throw new SBSBaseException();
             }
@@ -290,32 +289,71 @@ public class ServerDatabaseSession {
         return remoteExperiment_list;
     }
 
-    public Integer sendEntry(BaseEntry Entry) throws SBSBaseException{
-        return 0;
-    }
-
-    public Entry_id_timestamp[] get_last_entry_references(Integer session_id, Integer experiment_id, Integer entry_count) throws SBSBaseException {
+    public LinkedList<Entry_id_timestamp> get_last_entry_references(Integer experiment_id, Integer entry_count, LinkedList<Entry_id_timestamp> excluded) throws SBSBaseException {
+        //excluded is ignored right now but in the future, you will be able
+        //to list entries you do not like to be shown so you only will
+        //see entries which you do not know.
         this.check_for_session();
         JSONObject request = new JSONObject();
-        System.out.println("Success!");
         this.put_wrapper(request, "action", "get_last_entry_ids");
         this.put_wrapper(request, "session_id", this.session_id);
         this.put_wrapper(request, "entry_count", entry_count.toString());
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
 
-        JSONArray entry_id_list = null;
+        JSONArray entry_id_timestamps = null;
         try {
-            entry_id_list = result.getJSONArray("entry_ids");
+            entry_id_timestamps = result.getJSONArray("entry_id_timestamps");
         } catch (JSONException e) {
             throw new SBSBaseException();
         }
-        Entry_id_timestamp[] entry_references = null;
-        //FIXME this needs to be changed as we changed the return type
-        //entry_references = new Integer[entry_id_list.length()];
-        //for (int i = 0; i < entry_id_list.length(); i++) {
-          //  entry_ids[i] = Integer(entry_id_list[i]);
-        //}
+        LinkedList<Entry_id_timestamp> entry_references = new LinkedList<Entry_id_timestamp>();
+
+        for (int i = 0; i < entry_id_timestamps.length(); i++) {
+            JSONArray id_timestamp = entry_id_timestamps.getJSONArray(i);
+            Integer id = id_timestamp.getInt(0);
+            Long timestamp = id_timestamp.getLong(1);
+            entry_references.add(new Entry_id_timestamp(id, timestamp));
+        }
         return entry_references;
     }
+
+    public Entry_id_timestamp send_entry(BaseEntry a) throws SBSBaseException{
+        this.check_for_session();
+        //only text right now
+        JSONObject request = new JSONObject();
+        this.put_wrapper(request, "action", "send_entry");
+        this.put_wrapper(request, "session_id", this.session_id);
+        this.put_wrapper(request, "title", a.getTitle());
+        this.put_wrapper(request, "date_user", a.getEntry_time().toString());
+        this.put_wrapper(request, "attachment", ((AttachmentText)a.getAttachment()).getText());
+        this.put_wrapper(request, "attachment_type", "0");
+        this.put_wrapper(request, "experiment_id", a.getExperiment_id().toString());
+        JSONObject result = this.send_json(request);
+        this.check_for_success(result);
+        JSONArray entry_id_timestamp = null;
+        try {
+            entry_id_timestamp = result.getJSONArray("entry_id_timestamp");
+        } catch (JSONException e) {
+            throw new SBSBaseException();
+        }
+        return new Entry_id_timestamp(entry_id_timestamp.getInt(0), entry_id_timestamp.getLong(1));
+    }
+
+    public RemoteEntry get_entry(Entry_id_timestamp a) throws SBSBaseException{
+        this.check_for_session();
+        JSONObject request = new JSONObject();
+        this.put_wrapper(request, "action", "get_entry");
+        this.put_wrapper(request, "session_id", this.session_id);
+        this.put_wrapper(request, "entry_id", a.getId().toString());
+        this.put_wrapper(request, "entry_change_time", a.getLast_change().toString());
+        JSONObject result = this.send_json(request);
+        this.check_for_success(result);
+        JSONArray entry_id_timestamp = null;
+        //FIXMEEEE
+        return new RemoteEntry();
+    }
+
+
+
 }
