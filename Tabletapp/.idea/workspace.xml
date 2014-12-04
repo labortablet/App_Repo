@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AndroidConfiguredLogFilters">
+    <filters>
+      <filter>
+        <option name="name" value="app: com.example.test1.tabletapp.app" />
+        <option name="packageNamePattern" value="com.example.test1.tabletapp.app" />
+      </filter>
+    </filters>
+  </component>
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="DEBUG" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="app: com.example.test1.tabletapp.app" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="e0d35c34-29de-4248-91ef-0240d22f1827" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/DBAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/DBAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/LocalService.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/LocalService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/Project_show.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/Project_show.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/Start.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/Start.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tabletapp.iml" afterPath="$PROJECT_DIR$/Tabletapp.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_start.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_start.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/local.properties" afterPath="$PROJECT_DIR$/local.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/scon/ref_client.java" afterPath="$PROJECT_DIR$/app/src/main/java/scon/ref_client.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/start_show.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/start_show.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Tabletapp.iws" />
@@ -25,32 +55,99 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="User.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/imports/User.java">
+      <file leaf-file-name="Project_show.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/company/Project_show.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="1470">
-              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="4675">
+              <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+              <folding>
+                <element signature="e#1048#1057#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LocalService.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/company/LocalService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.5659091" vertical-offset="992" max-vertical-offset="4896">
+              <caret line="110" column="10" selection-start-line="110" selection-start-column="10" selection-end-line="110" selection-end-column="10" />
+              <folding>
+                <element signature="e#1325#1340#0" expanded="true" />
+                <element signature="e#1413#1431#0" expanded="true" />
+                <element signature="e#1495#1508#0" expanded="true" />
+                <element signature="e#2436#2437#0" expanded="true" />
+                <element signature="e#2473#2474#0" expanded="true" />
+                <element signature="method#onStartCommand#0;class#LocalService#0" expanded="false" />
+                <element signature="method#dummiData#0;class#LocalService#0" expanded="false" />
+                <element signature="e#5541#5542#0" expanded="true" />
+                <element signature="e#5567#5568#0" expanded="true" />
+                <element signature="method#deleteAllSynced#0;class#LocalService#0" expanded="false" />
+                <element signature="method#getProjects#0;class#LocalService#0" expanded="false" />
+                <element signature="e#7545#7554#0" expanded="true" />
+                <element signature="method#displayProjects#0;class#LocalService#0" expanded="false" />
+                <element signature="e#8250#8259#0" expanded="true" />
+                <element signature="method#getExperiments#0;class#LocalService#0" expanded="false" />
+                <element signature="method#displayExperiments#0;class#LocalService#0" expanded="false" />
+                <element signature="method#getEntries#0;class#LocalService#0" expanded="false" />
+                <element signature="method#displayEntries#0;class#LocalService#0" expanded="false" />
+                <element signature="method#getLastEntries#0;class#LocalService#0" expanded="false" />
+                <element signature="method#isOnline#0;class#LocalService#0" expanded="false" />
+                <element signature="method#isNetworkAvailable#0;class#LocalService#0" expanded="false" />
+                <element signature="method#StringTo2DArray#0;class#LocalService#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DatabaseHandler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/database/DatabaseHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="6273" max-vertical-offset="7123">
+              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ServerDatabaseSession.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/ServerDatabaseSession.java">
+      <file leaf-file-name="DBAdapter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/company/DBAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.9816754" vertical-offset="1230" max-vertical-offset="5025">
-              <caret line="136" column="35" selection-start-line="136" selection-start-column="35" selection-end-line="136" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Entry_id_timestamp.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/Entry_id_timestamp.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="225" max-vertical-offset="420">
-              <caret line="15" column="11" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="3052" max-vertical-offset="5440">
+              <caret line="355" column="0" selection-start-line="355" selection-start-column="0" selection-end-line="355" selection-end-column="0" />
+              <folding>
+                <element signature="method#open#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#insertNewUser#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#insertRemoteProject#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#insertRemoteExperiment#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#insertRemoteEntry#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#insertLocalEntry#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteUserByID#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteProjectByID#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteExperimentByID#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteEntryByID#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteAllUsers#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteAllProjects#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteAllExperiments#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteAllEntries#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteAllSyncedProjects#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteAllSyncedExperiments#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#deleteAllSyncedEntries#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getAllSyncedExperimentRows#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getAllSyncedEntryRows#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getAllUserRows#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getAllProjectRows#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getAllExperimentRows#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getAllEntryRows#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getUserRow#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getEntryRow#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getProjectRow#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getExperimentRow#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getAllUnsyncedEntries#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getAllEntryForCompare#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#getUserByEmail#0;class#DBAdapter#0" expanded="false" />
+                <element signature="method#updateEntry#0;class#DBAdapter#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -886,13 +983,20 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/app/src/main/java/scon/Entry_id_timestamp.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_start.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/scon/ref_client.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/company/DBAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/start_show.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/scon/ServerDatabaseSession.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/company/Start.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/company/Project_show.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/company/LocalService.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="1280" />
-    <option name="height" value="769" />
+    <option name="width" value="840" />
+    <option name="height" value="1010" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -921,6 +1025,7 @@
     </navigator>
     <panes>
       <pane id="ProjectPane" />
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
@@ -938,6 +1043,28 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Tabletapp" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="layout" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -972,9 +1099,54 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Tabletapp" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="imports" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Tabletapp" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="company" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Tabletapp" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -987,8 +1159,12 @@
     <property name="recentsLimit" value="5" />
     <property name="FullScreen" value="false" />
     <property name="dynamic.classpath" value="false" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="015d2ebead302013" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Nexus_10_API_19" />
+    <property name="OverrideImplement.combined" value="true" />
+    <property name="OverrideImplement.overriding.sorted" value="false" />
   </component>
-  <component name="RunManager" selected="Application.ref_client">
+  <component name="RunManager" selected="Android Application.app">
     <configuration default="false" name="ref_client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="scon.ref_client" />
       <option name="VM_PARAMETERS" />
@@ -1001,7 +1177,13 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="app" />
       <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -1122,7 +1304,7 @@
       <option name="DEPLOY" value="true" />
       <option name="ARTIFACT_NAME" value="" />
       <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="true" />
       <option name="PREFERRED_AVD" value="" />
       <option name="USE_COMMAND_LINE" value="true" />
       <option name="COMMAND_LINE" value="" />
@@ -1133,6 +1315,8 @@
       <option name="CLEAR_LOGCAT" value="false" />
       <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
       <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+      <RunnerSettings RunnerId="AndroidDebugRunner" />
+      <ConfigurationWrapper RunnerId="AndroidDebugRunner" />
       <method />
     </configuration>
     <list size="2">
@@ -1178,31 +1362,52 @@
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
+  <component name="TodoView" selected-index="0">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1280" height="769" extended-state="0" />
-    <editor active="false" />
+    <frame x="0" y="0" width="840" height="1010" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294621" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988507" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41978288" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41978288" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3280757" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275862" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39770114" sideWeight="0.84902203" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988507" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3290938" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4679487" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3268999" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -1231,9 +1436,48 @@
     <option name="LAST_COMMIT_MESSAGE" value="Status of sync:&#10; * auth working&#10; * get projects working&#10; * get experiments working&#10; * interfaces for the rest are there but logic is not working yet" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="41" />
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/imports/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1666">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/ServerDatabaseSession.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1819" max-vertical-offset="5695">
+          <caret line="136" column="35" selection-start-line="136" selection-start-column="35" selection-end-line="136" selection-end-column="35" />
+          <folding>
+            <element signature="method#calculate_response#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#check_for_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#check_for_success#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#put_wrapper#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#send_action_after_auth_and_get_result#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_challenge#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#auth_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#start_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_projects#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_experiments#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#send_entry#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_entry#0;class#ServerDatabaseSession#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/Entry_id_timestamp.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="476">
+          <caret line="15" column="11" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/imports/User.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1470">
@@ -1246,7 +1490,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1245" max-vertical-offset="4440">
           <caret line="111" column="0" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="method#calculate_response#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#check_for_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#check_for_success#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#put_wrapper#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#send_action_after_auth_and_get_result#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_challenge#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#auth_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#start_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_projects#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_experiments#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#send_entry#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_entry#0;class#ServerDatabaseSession#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1266,19 +1523,188 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_start.xml">
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1632">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../adt-bundle-windows-x86_64-20140702/sdk/sources/android-19/android/app/ActivityThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="72218" max-vertical-offset="82569">
+          <caret line="4423" column="0" selection-start-line="4423" selection-start-column="0" selection-end-line="4423" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/start_show.xml">
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1632">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/RemoteEntry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43714285" vertical-offset="0" max-vertical-offset="901">
+          <caret line="13" column="44" selection-start-line="13" selection-start-column="44" selection-end-line="13" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/Entry_id_timestamp.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="420">
-          <caret line="15" column="11" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
+        <state vertical-scroll-proportion="0.09714286" vertical-offset="0" max-vertical-offset="408">
+          <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/RemoteExperiment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.09714286" vertical-offset="0" max-vertical-offset="765">
+          <caret line="2" column="23" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/ref_client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.55060726" vertical-offset="0" max-vertical-offset="816">
+          <caret line="21" column="48" selection-start-line="21" selection-start-column="48" selection-end-line="21" selection-end-column="48" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/ServerDatabaseSession.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9816754" vertical-offset="1230" max-vertical-offset="5025">
-          <caret line="136" column="35" selection-start-line="136" selection-start-column="35" selection-end-line="136" selection-end-column="35" />
+        <state vertical-scroll-proportion="2.3229814" vertical-offset="816" max-vertical-offset="2482">
+          <caret line="300" column="0" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
+          <folding>
+            <element signature="method#calculate_response#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#check_for_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#check_for_success#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#put_wrapper#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#send_action_after_auth_and_get_result#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_challenge#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#auth_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#start_session#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_projects#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_experiments#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#send_entry#0;class#ServerDatabaseSession#0" expanded="false" />
+            <element signature="method#get_entry#0;class#ServerDatabaseSession#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/company/DBAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3052" max-vertical-offset="5440">
+          <caret line="355" column="0" selection-start-line="355" selection-start-column="0" selection-end-line="355" selection-end-column="0" />
+          <folding>
+            <element signature="method#open#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#insertNewUser#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#insertRemoteProject#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#insertRemoteExperiment#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#insertRemoteEntry#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#insertLocalEntry#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteUserByID#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteProjectByID#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteExperimentByID#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteEntryByID#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteAllUsers#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteAllProjects#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteAllExperiments#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteAllEntries#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteAllSyncedProjects#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteAllSyncedExperiments#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#deleteAllSyncedEntries#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getAllSyncedExperimentRows#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getAllSyncedEntryRows#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getAllUserRows#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getAllProjectRows#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getAllExperimentRows#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getAllEntryRows#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getUserRow#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getEntryRow#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getProjectRow#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getExperimentRow#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getAllUnsyncedEntries#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getAllEntryForCompare#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#getUserByEmail#0;class#DBAdapter#0" expanded="false" />
+            <element signature="method#updateEntry#0;class#DBAdapter#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/database/DatabaseHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6273" max-vertical-offset="7123">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/company/Start.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="4.5548654" vertical-offset="928" max-vertical-offset="6375">
+          <caret line="206" column="34" selection-start-line="206" selection-start-column="34" selection-end-line="206" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#Start#0;class#Start#0" expanded="false" />
+            <element signature="e#6274#6275#0" expanded="true" />
+            <element signature="e#6308#6309#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/company/Project_show.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="357" max-vertical-offset="4675">
+          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+          <folding>
+            <element signature="e#1048#1057#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/company/LocalService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5659091" vertical-offset="992" max-vertical-offset="4896">
+          <caret line="110" column="10" selection-start-line="110" selection-start-column="10" selection-end-line="110" selection-end-column="10" />
+          <folding>
+            <element signature="e#1325#1340#0" expanded="true" />
+            <element signature="e#1413#1431#0" expanded="true" />
+            <element signature="e#1495#1508#0" expanded="true" />
+            <element signature="e#2436#2437#0" expanded="true" />
+            <element signature="e#2473#2474#0" expanded="true" />
+            <element signature="method#onStartCommand#0;class#LocalService#0" expanded="false" />
+            <element signature="method#dummiData#0;class#LocalService#0" expanded="false" />
+            <element signature="e#5541#5542#0" expanded="true" />
+            <element signature="e#5567#5568#0" expanded="true" />
+            <element signature="method#deleteAllSynced#0;class#LocalService#0" expanded="false" />
+            <element signature="method#getProjects#0;class#LocalService#0" expanded="false" />
+            <element signature="e#7545#7554#0" expanded="true" />
+            <element signature="method#displayProjects#0;class#LocalService#0" expanded="false" />
+            <element signature="e#8250#8259#0" expanded="true" />
+            <element signature="method#getExperiments#0;class#LocalService#0" expanded="false" />
+            <element signature="method#displayExperiments#0;class#LocalService#0" expanded="false" />
+            <element signature="method#getEntries#0;class#LocalService#0" expanded="false" />
+            <element signature="method#displayEntries#0;class#LocalService#0" expanded="false" />
+            <element signature="method#getLastEntries#0;class#LocalService#0" expanded="false" />
+            <element signature="method#isOnline#0;class#LocalService#0" expanded="false" />
+            <element signature="method#isNetworkAvailable#0;class#LocalService#0" expanded="false" />
+            <element signature="method#StringTo2DArray#0;class#LocalService#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

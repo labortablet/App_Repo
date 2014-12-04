@@ -65,7 +65,7 @@
         android:id="@+id/editText3"
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"
-        android:text="sad" />
+        android:text="test" />
 
     <Button
         android:layout_width="wrap_content"

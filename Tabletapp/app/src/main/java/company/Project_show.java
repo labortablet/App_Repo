@@ -30,12 +30,10 @@ public class Project_show extends Activity {
 
     private static int experiment_Selected;
     private static int project_Selected;
-    private User user;
-
-
     private static List<ExperimentEntry>  experimentEntries;
     private static List<ExperimentEntry>  experimentEntries1;
     private static List<ProjectExperimentEntry> projectExperimentEntries;
+    LinkedList<Project> remoteProject_list = new LinkedList<Project>();
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
@@ -60,11 +58,11 @@ public class Project_show extends Activity {
     @Override
 
         public void onCreate(Bundle savedInstanceState) {
+Start.mService.insertInDb();
        // Boolean test = Start.mService.Create_DB();
        // Toast.makeText(this,test.toString(),Toast.LENGTH_SHORT).show();
         try {
-            @SuppressWarnings("unchecked")
-            LinkedList<Project> remoteProject_list = Start.mService.getProjects();
+            remoteProject_list = Start.mService.getProjects();
             @SuppressWarnings("unchecked")
             LinkedList<Experiment> remoteExperiment_list = Start.mService.getExperiments();
             @SuppressWarnings("unchecked")
@@ -74,6 +72,7 @@ public class Project_show extends Activity {
 
 
             projectExperimentEntries = new ArrayList<ProjectExperimentEntry>();
+
 
 
            for(int i = 0; i < remoteProject_list.size();i++){
@@ -119,7 +118,7 @@ public class Project_show extends Activity {
 
         }
 
-        user = Start.getUser();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_show);
         ActivityRegistry.register(this);
@@ -164,23 +163,24 @@ public class Project_show extends Activity {
 */
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
-        // preparing list data
+       // preparing list data
         prepareListData();
 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+       listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
 
         // setting list adapter
-        expListView.setAdapter(listAdapter);
+       expListView.setAdapter(listAdapter);
 
     }
         /*
          * Preparing the list data
          */
         private void prepareListData() {
+            try{
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
         // Adding child data
-        for(int i = 0; i< projectExperimentEntries.size();i++) {
+        for(int i = 0; i < projectExperimentEntries.size();i++) {
 
             listDataHeader.add(projectExperimentEntries.get(i).getProject().get_name());
             List<String> list = new ArrayList<String>();
@@ -191,7 +191,8 @@ public class Project_show extends Activity {
             }
             listDataChild.put(listDataHeader.get(i), list);
 
-        }
+        }}catch (Exception e)
+            {}
 
 
 

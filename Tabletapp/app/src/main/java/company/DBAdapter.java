@@ -275,7 +275,7 @@ public class DBAdapter {
         String where = Entry_ID + " = " + rowId;
         return db.delete(Table_Entry, where, null) != 0;
     }
-    //delets every in the specific table
+    //Deletes every in the specific table
     public void deleteAllUsers() {
         Cursor c = getAllUserRows();
         long rowId = c.getColumnIndexOrThrow(User_ID.trim());
@@ -316,7 +316,70 @@ public class DBAdapter {
         }
         c.close();
     }
-    // Return all data in the database.
+
+    //Deletes every what is Already synced
+    public void deleteAllSyncedProjects(){
+        Cursor c = getAllSyncedProjectRows();
+        long rowId = c.getColumnIndexOrThrow(Project_ID.trim());
+        if (c.moveToFirst()) {
+            do {
+                deleteProjectByID(c.getLong((int) rowId));
+            } while (c.moveToNext());
+        }
+        c.close();
+
+    }
+    public void deleteAllSyncedExperiments(){
+        Cursor c = getAllSyncedExperimentRows();
+        long rowId = c.getColumnIndexOrThrow(Experiment_ID.trim());
+        if (c.moveToFirst()) {
+            do {
+                deleteExperimentByID(c.getLong((int) rowId));
+            } while (c.moveToNext());
+        }
+        c.close();
+    }
+    public void deleteAllSyncedEntries(){
+        Cursor c = getAllSyncedEntryRows();
+        long rowId = c.getColumnIndexOrThrow(Entry_ID.trim());
+        if (c.moveToFirst()) {
+            do {
+                deleteEntryByID(c.getLong((int) rowId));
+            } while (c.moveToNext());
+        }
+        c.close();
+    }
+
+    // Returns all Synced Data's in the database
+    public Cursor getAllSyncedProjectRows() {
+        String where = Project_Sync + " = 1";
+        Cursor c = 	db.query(true, Table_Project, Project_KEYS,
+                where, null, null, null, null, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+    public Cursor getAllSyncedExperimentRows() {
+        String where = Experiment_Sync + " = 1";
+        Cursor c = 	db.query(true, Table_Experiment, Experiment_KEYS,
+                where, null, null, null, null, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+    public Cursor getAllSyncedEntryRows() {
+        String where = Entry_Sync + " = 1";
+        Cursor c = 	db.query(true, Table_Entry, Entry_KEYS,
+                where, null, null, null, null, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+
+    // Return all Data in the Database.
     public Cursor getAllUserRows() {
         String where = null;
         Cursor c = 	db.query(true, Table_User, User_KEYS,
@@ -353,6 +416,7 @@ public class DBAdapter {
         }
         return c;
     }
+
     // Get a specific row (by rowId)
     public Cursor getUserRow(long rowString) {
         String where = User_ID + " = " + rowString;
@@ -390,6 +454,7 @@ public class DBAdapter {
         }
         return c;
     }
+
     // Methods for getting all unsynced entries
     public Cursor getAllUnsyncedEntries(){
         String where = Entry_Sync + " != 1";
@@ -401,9 +466,9 @@ public class DBAdapter {
         return c;
 
     }
+
     //method for getting the actual Entries only the Entry_id_timestamp info's
     public void getAllEntryForCompare(ArrayList<Entry_id_timestamp> arrayList)   {
-
         for (Entry_id_timestamp anArrayList : arrayList) {
             String where = Entry_RemoteID + " = " + anArrayList.getId();
             Cursor c = 	db.query(true, Table_Entry, Entry_KEYS,
@@ -420,6 +485,7 @@ public class DBAdapter {
         }
 
     }
+
     //update a entrie if a new revision on the server
     public int getUserByEmail(String strings){
         String where = User_EMail + " = " + strings;
@@ -436,6 +502,7 @@ public class DBAdapter {
         }
         return c.getInt(DBAdapter.COL_UserID);
     }
+
     // Needs a Remote entry and the User-email
     public boolean updateEntry(RemoteEntry obj,String userEmail){
         String where = Entry_RemoteID + " = " + obj.getRemote_id();

@@ -125,7 +125,7 @@ static Context context;
 
         switch (v.getId()) {  // switch ID button
 
-            case R.id.button:   // button Login TODO: Loginfunct. von background app aufrufen
+            case R.id.button:
                 text = (EditText) findViewById(R.id.editText);
                 text2 = (EditText) findViewById(R.id.editText2);
                 text3 = (EditText) findViewById(R.id.editText3);
@@ -139,19 +139,20 @@ static Context context;
 
                 if (validate(text2.getText().toString())) { // abfrage der korrektheit der email
 
-                    Server = text.getText().toString();
-                    email = text2.getText().toString();
-                    password = text3.getText().toString();
-                    int i = 0;
-                   user = new User(email, sha265(password));
-                 //   i = mService.connect(Server,user);
+                   Server = text.getText().toString();
+                   email = text2.getText().toString();
+                   password = text3.getText().toString();
+
+                   mService.setUserAndURL(new User(email, password),Server);
+                    mService.connect(Server);
 
 
-                    switch (i) {
-                        case 0:
-                            start_NewActivity();
+                  switch (0) {
+                       case 0:
+                           Intent intent = new Intent(this, Project_show.class);
+                           startActivity(intent);
                             break;
-                        case 1:
+                       case 1:
                             Popup popup = new Popup();            // Popup für email
                             popup.set_String(R.string.MalformedURLException);
                             popup.show(getFragmentManager(), "this");
@@ -179,7 +180,7 @@ static Context context;
             }
         } catch (NullPointerException Ignored) {
 
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
                 break;
@@ -208,7 +209,14 @@ static Context context;
             unbindService(mConnection);
             mBound = false;
         }
+
     }
+    @Override
+    protected void onDestroy(){
+mService.deleteAllSynced();
+    }
+
+
 
 
     private ServiceConnection mConnection = new ServiceConnection() {

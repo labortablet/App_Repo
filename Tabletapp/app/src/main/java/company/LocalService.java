@@ -4,15 +4,23 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.DropBoxManager;
 import android.os.IBinder;
+import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
+
 import exceptions.SBSBaseException;
 import imports.App_Methodes;
 import imports.AttachmentTable;
@@ -21,6 +29,7 @@ import imports.Experiment;
 import imports.LocalEntry;
 import imports.Project;
 import imports.User;
+import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
 import scon.RemoteExperiment;
 import scon.RemoteProject;
@@ -34,7 +43,11 @@ public class LocalService extends Service {
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
     private User user;
+    private String url;
     private ServerDatabaseSession SDS;
+    private LinkedList<RemoteProject> projects = new LinkedList<RemoteProject>();
+    private LinkedList<RemoteExperiment> experiments = new LinkedList<RemoteExperiment>();
+    private LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
     private  byte[] challange;
     DBAdapter myDb = Start.myDb;
     public class LocalBinder extends Binder {
@@ -48,26 +61,26 @@ super.onCreate();
 
     }
 
-public LocalService(){
-   openDB();
-                 /*
-    long newId = myDb.insertRemoteProject(new RemoteProject(1, "project 1", "Das ist Project 1"));
-    Cursor cursor = myDb.getProjectRow(newId);
-    Log.d("Project1","Ausgabe 1");
-    Log.d("Project1", cursor.getString(1));
-    newId =  myDb.insertRemoteProject(new RemoteProject(2,"project 2" ,"Das ist Project 2"));
-    cursor = myDb.getProjectRow(newId);
-    Log.d("Project1", "Ausgabe 2");
-    Log.d("Project2", cursor.getString(1));
-    newId = myDb.insertRemoteProject(new RemoteProject(3,"project 3" ,"Das ist Project 3"));
-    cursor = myDb.getProjectRow(newId);
-    Log.d("Project1","Ausgabe 3");
-    Log.d("Project3", cursor.getString(1));     */
+    public void setUserAndURL(User user,String url) {
+        this.user = user;
+        this.url = url;
+    }
 
-    Cursor cur = myDb.getAllProjectRows();
-    cur.moveToFirst();
-    if (cur.getCount() == 0)
-    dummiData();
+    public LocalService(){
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy =
+                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
+
+        }
+        openDB();
+       deleteAllSynced();
+  //  Cursor cur = myDb.getAllProjectRows();
+   //cur.moveToFirst();
+    //if (cur.getCount() == 0)
+  // dummiData();
+
 }
      private void openDB() {
              myDb.open();
@@ -83,6 +96,23 @@ public LocalService(){
     public void onDestroy() {
         super.onDestroy();
         closeDB();
+    }
+    public void insertInDb(){
+
+      try {
+          for (RemoteProject project : projects) {
+              myDb.insertRemoteProject(project);
+          }
+
+          for (RemoteExperiment experiment : experiments) {
+              myDb.insertRemoteExperiment(experiment);
+          }
+
+          for (RemoteEntry entry : entries) {
+              myDb.insertRemoteEntry(entry);
+          }
+      }catch (Exception e)
+      {e.printStackTrace();}
     }
     private void dummiData(){
      try{
@@ -112,6 +142,14 @@ public LocalService(){
     private void closeDB() {
       myDb.close();
     }
+
+    public void deleteAllSynced(){
+        this.myDb.deleteAllSyncedProjects();
+        this.myDb.deleteAllSyncedExperiments();
+        this.myDb.deleteAllSyncedEntries();
+
+
+    }
       /*  try {
             myDB = this.openOrCreateDatabase("Lablet.db", MODE_PRIVATE, null);
             return true;
@@ -128,40 +166,51 @@ public LocalService(){
 
 
     // connection method For connecting with server
-    /*
-   public int connect(String adress,User user){
-       this.user = user;
-       this.user.setName("Hans","dieter");
-       SQLiteDatabase mydatabase = openOrCreateDatabase("Test",MODE_PRIVATE,null);
-       URL url = null;
+
+   public int connect(String adress)  {
+       URL url;
        try {
-         url = new URL(adress);
+           url = new URL(adress);
        } catch (MalformedURLException e) {
            e.printStackTrace();
            return 1;
        }
-     // TODO: ACTIVATE THIS  SDS = new ServerDatabaseSession(url, user.getUser_email(), user.getPw_hash());
+       if (isNetworkAvailable()) {
 
-     if(isNetworkAvailable()){
+           if (isOnline()) {
+         //      try
+               SDS = new ServerDatabaseSession(url, user);
+               try {
+                   SDS.start_session();
+                   projects = SDS.get_projects();
+                   experiments = SDS.get_experiments();
+                   for (int i = 0;experiments.size() >= i ;i++ ){
+                   LinkedList<Entry_id_timestamp> entry_id_timestamps= SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
+                       for(int j=0; entry_id_timestamps.size() >= j;j++) {
+                           entries.add(SDS.get_entry(entry_id_timestamps.get(j)));
+                       }
+                   }
+                   return 0;
+              } catch (SBSBaseException e) {
+                   e.printStackTrace();
+                   return 2;
+               }
+           } else return 2;
 
-         if(isOnline()){
-   /*    try {
-   //TODO: add chalange function
-           challange = SDS.get_challenge();
-       } catch (SBSBaseException e) {
-           e.printStackTrace();
-           return 2;
 
-             return 0;
-       }else return 2;}else return 2;
-
-
-    // }else return 2;
-   }*/
+           // }else return 2;
+       } else return 2;
+   }
 // Method to get all active Projects From the user
     public LinkedList<Project> getProjects() throws SBSBaseException {
       // LinkedList<Project> remoteProject_list = new LinkedList<Project>();// = SDS.get_projects();
-       return displayProjects(myDb.getAllProjectRows());
+        LinkedList<Project> projects1 = new LinkedList<Project>();
+
+    /*    for (RemoteProject project : projects) {
+            projects1.add(new Project(project));
+        }
+        return projects1;*/
+      return displayProjects(myDb.getAllProjectRows());
     //    remoteProject_list.add(0,new Project(new RemoteProject(1,"project 1" ,"Das ist Project 1")));
       //  remoteProject_list.add(1,new Project(new RemoteProject(2,"project 2" ,"Das ist Project 2")));
       //  remoteProject_list.add(2,new Project(new RemoteProject(3,"project 3" ,"Das ist Project 3")));
