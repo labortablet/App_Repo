@@ -44,6 +44,11 @@ public class LocalService extends Service {
     private final IBinder mBinder = new LocalBinder();
     private User user;
     private String url;
+
+    public User getUser() {
+        return user;
+    }
+
     private ServerDatabaseSession SDS;
     private LinkedList<RemoteProject> projects = new LinkedList<RemoteProject>();
     private LinkedList<RemoteExperiment> experiments = new LinkedList<RemoteExperiment>();
@@ -139,10 +144,18 @@ super.onCreate();
         e.printStackTrace();
     }
     }
+
     private void closeDB() {
       myDb.close();
     }
+public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
+    switch (typ)
+    {
+        case 1 : myDb.insertLocalEntry(entry);
+                 break;
 
+    }
+}
     public void deleteAllSynced(){
         this.myDb.deleteAllSyncedProjects();
         this.myDb.deleteAllSyncedExperiments();

@@ -251,11 +251,7 @@ public class DBAdapter {
         }
         initialValues.put(Entry_Sync,0);
         initialValues.put(Entry_ExperimentID,localEntry.getExperiment_id());
-        initialValues.put(Entry_UserID,localEntry.getUser().getUser_email());
-        initialValues.put(Entry_RemoteID,localEntry.getRemote_id());
         initialValues.put(Entry_CreationDate,localEntry.getEntry_time());
-        initialValues.put(Entry_SyncDate,localEntry.getSync_time());
-        initialValues.put(Entry_ChangeDate,localEntry.getChange_time());
         return db.insert(Table_Entry,null,initialValues);
     }
     // Delete a row from the database, by rowId (primary key)

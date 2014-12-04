@@ -32,22 +32,22 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
 
     /**
      * Konstruktor For the converting the Remote to Local entry
-     *@param rem_id   The Remote ID
+     *@param exp_id  the Exp ID
      *@param title Title of the LocalEntry
      *@param attachment Content of the LocalEntry
-     *@param sync_time Sync time of the LocalEntry
+
      *@param entry_time Time when the entry was created
      *@param user The name of the LocalEntry creator
 
      *@param sync The value which says if the LocalEntry already on the Server
      */
 
-    public LocalEntry(Integer rem_id, String title, String attachment, Long sync_time, Long  entry_time, User user, boolean sync) {
-        this.remote_id = rem_id;
+    public LocalEntry(Integer exp_id, String title, String attachment, Long  entry_time, User user, boolean sync) {
+        this.Experiment_id = exp_id;
         this.title = title;
         this.attachment = new AttachmentText(attachment);
         this.attachment_type = 1;
-        this.sync_time = sync_time;
+
         this.entry_time = entry_time;
         this.user = user;
         this.sync = sync;

@@ -2,6 +2,7 @@ package company;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ public class Keyboard_entry extends Activity {
     private Integer project_Selected = Project_show.getProject_Selected();
     private Integer experiment_Selected = Project_show.getExperiment_Selected();
     private Lablet_Functions lablet = new Lablet_Functions();
+   private static LocalService loc = Start.mService;
     EditText title; // titel des entries
     private static List<ProjectExperimentEntry> projectExperimentEntries = Project_show.getProjectExperimentEntries();
 private Calendar calendar;
@@ -59,13 +61,17 @@ private Calendar calendar;
                             String title1 = title.getText().toString();
                             experiment_Selected = Project_show.getExperiment_Selected();
 
-                            LocalEntry edit = new LocalEntry(title1, attachment, App_Methodes.generateTimestamp(), Start.getUser(),false);
-                            projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(edit);
+                            LocalEntry edit = new LocalEntry(experiment_Selected,title1, attachment, App_Methodes.generateTimestamp(), Start.mService.getUser(),false);
+                            Start.myDb.open();
+                            Start.myDb.insertLocalEntry(edit);
+                            Start.myDb.close();
 
+                            projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(edit);
                             Project_show.setProjectExperimentEntries(projectExperimentEntries);
                             this.finish();
 
-                        } catch (Exception ignored) {
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     } else {
                         Popup popup = new Popup();            // Popup für leeren title
