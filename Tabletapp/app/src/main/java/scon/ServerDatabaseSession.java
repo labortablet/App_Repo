@@ -146,6 +146,7 @@ public class ServerDatabaseSession {
         //check if we succeeded
         try {
             if (!result.getString("status").toLowerCase().equals("success")) {
+                System.out.println(result.getString("E"));
                 throw new NoSuccess();
             }
 
