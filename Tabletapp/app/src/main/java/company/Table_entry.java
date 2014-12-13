@@ -80,8 +80,8 @@ public class Table_entry extends Activity {
 
                 String title1 = text.getText().toString();
 
-
-                projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(new LocalEntry(title1, App_Methodes.generateTimestamp(),Start.getUser(),string_array,false));
+//TODO: Fix table entry
+              //  projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(new LocalEntry(title1, App_Methodes.generateTimestamp(),Start.getUser(),string_array,false));
                 Project_show.setProjectExperimentEntries(projectExperimentEntries);
                 this.finish();
 

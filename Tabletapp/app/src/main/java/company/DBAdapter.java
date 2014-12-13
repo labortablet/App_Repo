@@ -216,16 +216,7 @@ public class DBAdapter {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,remoteEntry.getTitle());
         initialValues.put(Entry_Typ,remoteEntry.getAttachment_type());
-        if(remoteEntry.getAttachment_type() == 1)
-        {
-            AttachmentText text  = (AttachmentText) remoteEntry.getAttachment();
-            initialValues.put(Entry_Content,text.getText());
-        }
-        else
-        {
-            AttachmentTable table= (AttachmentTable) remoteEntry.getAttachment();
-            initialValues.put(Entry_Content,table.getText());
-        }
+        initialValues.put(Entry_Content,remoteEntry.getAttachment().toString());
         initialValues.put(Entry_Sync,1);
         initialValues.put(Entry_ExperimentID,remoteEntry.getExperiment_id());
         initialValues.put(Entry_UserID,remoteEntry.getUser().getUser_email());
@@ -239,16 +230,7 @@ public class DBAdapter {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,localEntry.getTitle());
         initialValues.put(Entry_Typ,localEntry.getAttachment_type());
-        if(localEntry.getAttachment_type() == 1)
-        {
-            AttachmentText text  = (AttachmentText) localEntry.getAttachment();
-            initialValues.put(Entry_Content,text.getText());
-        }
-        else
-        {
-            AttachmentTable table= (AttachmentTable) localEntry.getAttachment();
-            initialValues.put(Entry_Content,table.getText());
-        }
+        initialValues.put(Entry_Content,localEntry.getAttachment().toString());
         initialValues.put(Entry_Sync,0);
         initialValues.put(Entry_ExperimentID,localEntry.getExperiment_id());
         initialValues.put(Entry_CreationDate,localEntry.getEntry_time());
@@ -505,14 +487,7 @@ public class DBAdapter {
         ContentValues newValues = new ContentValues();
         newValues.put(Entry_Titel,obj.getTitle());
         newValues.put(Entry_Typ,obj.getAttachment_type());
-        switch (obj.getAttachment_type()) {
-            case 1:
-                AttachmentText text = (AttachmentText) obj.getAttachment();
-                newValues.put(Entry_Content,text.getText());
-            case 2:
-                AttachmentTable table =(AttachmentTable) obj.getAttachment();
-                newValues.put(Entry_Content,Array2DToString(table.getTable_array()));
-        }
+                newValues.put(Entry_Content,obj.getAttachment().toString());
         newValues.put(Entry_Sync,1);
         newValues.put(Entry_CreationDate,obj.getEntry_time());
         newValues.put(Entry_ChangeDate,obj.getChange_time());

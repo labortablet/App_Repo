@@ -13,10 +13,17 @@ import android.widget.ExpandableListView;
 
 import com.example.test1.tabletapp.app.R;
 
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
+import imports.AttachmentBase;
 import imports.AttachmentTable;
 import imports.AttachmentText;
 
@@ -56,12 +63,9 @@ public class Entry_show extends Activity {
 
         // preparing list data
 
-            prepareListData();
+        prepareListData();
         for (String aDebugList : debugList) Log.d("debug",aDebugList);
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, img, listDataDate);
-
-
-
         // setting list adapter
         expListView.setAdapter(listAdapter);
 
@@ -80,45 +84,23 @@ public class Entry_show extends Activity {
         // Adding child data
         try {
             for (int i = 0; i < projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().size(); i++) {
-
                 img.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).isSync());
-
                 listDataHeader.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getTitle());
-
                if(!projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getEntry_time().toString().isEmpty()) {
-                   listDataDate.add("   entry date: " + projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getEntry_time());
+                   Long long1 = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getEntry_time()*1000;
+                   listDataDate.add("   entry date:  " + new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getEntry_time()*1000))); // ("dd/MM/yyyy HH:mm:ss") Für minuten stunden etc ...
                }
                 else {
                    listDataDate.add("empty");
-
                }
 
-
-
                 List<String> list = new ArrayList<String>();
-                switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment_type()) {
-                    case 1:
-
-                        AttachmentText text = (AttachmentText) projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment();
-                        list.add(  text.getText() );
-                        debugList.add(text.getText());
-                        break;
-
-                    case 2:
-                        AttachmentTable table = (AttachmentTable) projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment();
-                        String[][] strings = table.getTable_array();
-                        for (String[] s : strings) {
-                            String temp = "";
-                            for (String string : s) {
-
-                                temp += (string + ",");
-                            }
-                            temp = temp.substring(0, temp.length() - 1);
-                            list.add(temp + ";");
-                        }
-                        break;
-
-                }
+                //TODO:: fix this problem here wheres the string????
+                //AttachmentBase attachmentBase = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment();
+              // AttachmentBase attachmentbase = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment();
+             //   Object obj = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getAttachment();
+               //String string = obj.toString();
+                list.add( projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getAttachment().toString());
 
 
 expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -215,6 +197,7 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
 
         }
     }
+
     /**
      * Starts the new Intent for creating new Entries
      */
@@ -222,6 +205,15 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         Intent intent;
         intent = new Intent(this, New_Entry_Select.class);
         startActivity(intent);
+
+    }
+    private String usingDateFormatter(long input){
+        Date date = new Date(input);
+        Calendar cal = new GregorianCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MMM/dd hh:mm:ss z");
+        sdf.setCalendar(cal);
+        cal.setTime(date);
+        return sdf.format(date);
 
     }
     /**

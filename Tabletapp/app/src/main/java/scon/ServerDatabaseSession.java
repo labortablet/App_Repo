@@ -326,7 +326,7 @@ public class ServerDatabaseSession {
         this.put_wrapper(request, "session_id", this.session_id);
         this.put_wrapper(request, "title", a.getTitle());
         this.put_wrapper(request, "date_user", a.getEntry_time().toString());
-        this.put_wrapper(request, "attachment", ((AttachmentText)a.getAttachment()).getText());
+        this.put_wrapper(request, "attachment", (a.getAttachment().toString()));
         this.put_wrapper(request, "attachment_type", "0");
         this.put_wrapper(request, "experiment_id", a.getExperiment_id().toString());
         JSONObject result = this.send_json(request);

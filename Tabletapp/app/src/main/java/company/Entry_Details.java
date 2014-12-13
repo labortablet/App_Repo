@@ -95,44 +95,62 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Project_s
 
         super.onCreate(savedInstanceState);
         ActivityRegistry.register(this);
-        switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment_type())
-        {
+        switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment_type()) {
             case 1: // For Keyboard LocalEntry
-                if(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
-                setContentView(R.layout.entry_keyboarddetails_synctrue); // Setting Layout
+                if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
+                    setContentView(R.layout.entry_keyboarddetails_synctrue); // Setting Layout
                 else
-                setContentView(R.layout.entry_keyboarddetails_syncfalse);
+                    setContentView(R.layout.entry_keyboarddetails_syncfalse);
 
-                textView = (TextView)findViewById(R.id.textView2);
-                textView2 = (TextView)findViewById(R.id.textView4);
-                textView3 = (TextView)findViewById(R.id.textView6);
-                textView4 = (TextView)findViewById(R.id.textView8);
+                textView = (TextView) findViewById(R.id.textView2);
+                textView2 = (TextView) findViewById(R.id.textView4);
+                textView3 = (TextView) findViewById(R.id.textView6);
+                textView4 = (TextView) findViewById(R.id.textView8);
 
                 textView.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getTitle());
-                AttachmentText text = (AttachmentText) projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment();
-                textView2.setText(text.getText());
-                textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
+
+                textView2.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().toString());
+                textView3.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time()*1000)));
+           //     textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
                 textView4.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getUser().display("  "));
-            break;
+                break;
             case 2: //For Table LocalEntry
-                if(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
-                 setContentView(R.layout.entry_tabledetails_synctrue);  // Setting Layout
+                if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
+                    setContentView(R.layout.entry_tabledetails_synctrue);  // Setting Layout
                 else
-                setContentView(R.layout.entry_tabledetails_syncfalse);
+                    setContentView(R.layout.entry_tabledetails_syncfalse);
 
-                 textView = (TextView)findViewById(R.id.textView2);
-                 textView2 = (TextView)findViewById(R.id.textView4);
-                 textView3 = (TextView)findViewById(R.id.textView6);
-                 table = (TableLayout)findViewById(R.id.tableLayout2);
+                textView = (TextView) findViewById(R.id.textView2);
+                textView2 = (TextView) findViewById(R.id.textView4);
+                textView3 = (TextView) findViewById(R.id.textView6);
+                table = (TableLayout) findViewById(R.id.tableLayout2);
 
-                 textView.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getTitle());
-                 textView2.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
-                 textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getUser().display("  "));
-                 AttachmentTable table1 = (AttachmentTable) projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment();
-                 String[][] strings = table1.getTable_array();
+                textView.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getTitle());
+                textView2.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
+                textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getUser().display("  "));
+                String strings = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().toString();
+                String[] string = strings.split(";");
+                int x = countLetter(string[0], ",");
+                int y = string.length;
+                for (int i = 0; i < y; i++) {
+                    TableRow row = new TableRow(this);
+                    row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                            TableRow.LayoutParams.WRAP_CONTENT));
+                    for (int j = 0; j < x; j++) {
+                        EditText tv = new EditText(this);
+                        tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                                TableRow.LayoutParams.WRAP_CONTENT));
+                        int pos = string[y].indexOf(",");
+                        tv.setPadding(5, 5, 5, 5);
+                        tv.setText(string[y].substring(pos));
+                        tv.setKeyListener(null);
+                        string[y] = string[y].substring(pos + 1, strings.length());
+                    }
+                    table.addView(row);
+                }
 
 
-                for(String[] s: strings) { // Starting Table output
+              /*  for(String[] s: strings) { // Starting Table output
                     TableRow row = new TableRow(this);
                     row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                             TableRow.LayoutParams.WRAP_CONTENT));
@@ -152,9 +170,10 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Project_s
 
                     table.addView(row);
                     } // End Table output
-                break;
-                }
-        }
+                    */
+
+
+        }}
 
 
 
@@ -189,6 +208,11 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Project_s
         }
 
 
+    }
+    private int countLetter(String str, String letter) {
+        int count = 0;
+        for (int pos = -1; (pos = str.indexOf(letter, pos+1)) != -1; count++);
+        return count;
     }
 
 

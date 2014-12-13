@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import imports.App_Methodes;
+import imports.AttachmentBase;
+import imports.AttachmentText;
 import imports.LocalEntry;
 import imports.Lablet_Functions;
 
@@ -31,7 +33,7 @@ public class Keyboard_entry extends Activity {
    private static LocalService loc = Start.mService;
     EditText title; // titel des entries
     private static List<ProjectExperimentEntry> projectExperimentEntries = Project_show.getProjectExperimentEntries();
-private Calendar calendar;
+
 
 
     public void buttonEventHandler(View v) {  // butten events
@@ -55,21 +57,13 @@ private Calendar calendar;
                         !(title.getText().toString().trim().isEmpty())) {
                    if (!unique_Test(title.getText().toString())) {
                         try {
-
-
-                            String attachment = content.getText().toString().trim();
-                            String title1 = title.getText().toString();
-                            experiment_Selected = Project_show.getExperiment_Selected();
-
-                            LocalEntry edit = new LocalEntry(experiment_Selected,title1, attachment, App_Methodes.generateTimestamp(), Start.mService.getUser(),false);
+                            LocalEntry edit = new LocalEntry(title.getText().toString(), new AttachmentText(content.getText().toString().trim()),1, App_Methodes.generateTimestamp(), Start.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
                             Start.myDb.open();
                             Start.myDb.insertLocalEntry(edit);
                             Start.myDb.close();
-
                             projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(edit);
                             Project_show.setProjectExperimentEntries(projectExperimentEntries);
                             this.finish();
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -77,8 +71,6 @@ private Calendar calendar;
                         Popup popup = new Popup();            // Popup für leeren title
                         popup.set_String(R.string.popup4);
                         popup.show(getFragmentManager(), "this");
-
-
                     }}
                  else {
                     Popup popup = new Popup();            // Popup für leeren title

@@ -3,33 +3,27 @@ package imports;
 /**
  * Created by Hawky on 18.08.2014.
  */
-public class AttachmentTable  {
+public class AttachmentTable extends AttachmentBase  {
+
+   String Attachment;
 
 
-    private String[][] table_array;
-    private String tablestring;
-
-    public String getTablestring() {
-        return tablestring;
+    @Override
+    public String getAttachment() {
+       return this.Attachment;
     }
-
-    public void setTablestring(String tablestring) {
-        this.tablestring = tablestring;
-    }
-
     /**
      * Returns the 2D Array, which holds the content of the Table
      * @return   table_array
      */
-    public String[][] getTable_array(){
-        return table_array;
+
+    public AttachmentTable(String tablestring)
+    {this.Attachment = tablestring;
+
     }
 
-    public AttachmentTable(String[][] array){
-        this.table_array = array;
-    }
 
-
+/*
     public String getText() {
         String finalstr ="";
         for (String[] s : table_array) {
@@ -61,5 +55,5 @@ public class AttachmentTable  {
         int count = 0;
         for (int pos = -1; (pos = str.indexOf(letter, pos+1)) != -1; count++);
         return count;
-    }
+    }*/
 }

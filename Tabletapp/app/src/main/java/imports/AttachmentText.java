@@ -3,14 +3,16 @@ package imports;
 /**
  * Created by Hawky on 18.08.2014.
  */
-public class AttachmentText extends AttachmentBase{
-	private String text;
+public class AttachmentText extends AttachmentBase {
 
+   String Attachment;
 	public AttachmentText(String text){
-		this.text = text;
-	};
+        this.Attachment = text;
+	}
 
-    public String getText() {
-        return text;
+    @Override
+    public String getAttachment() {
+        return this.Attachment;
     }
-};
+
+}

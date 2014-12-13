@@ -15,9 +15,7 @@ public class BaseEntry {
      */
     public Integer remote_id;
 
-    public void setAttachment(Object attachment) {
-        this.attachment = attachment;
-    }
+
 
     /**
      *This is the title of an LocalEntry
@@ -37,7 +35,7 @@ public class BaseEntry {
      * @value
      * @since 1.0
      */
-    protected Object attachment; //no access yet
+    protected AttachmentBase attachment; //no access yet
     /**
      *This is the Attachment Typ every LocalEntry got.
      * @value
@@ -55,7 +53,7 @@ public class BaseEntry {
      * @value
      * @since 1.0
      */
-    protected Long  entry_time;
+    protected Long entry_time;
     /**
      *This Value holds the UserObject.
      * @value
@@ -93,7 +91,7 @@ public class BaseEntry {
         return title;
     }
 
-    public Object getAttachment() {
+    public AttachmentBase getAttachment() {
         return attachment;
     }
 
