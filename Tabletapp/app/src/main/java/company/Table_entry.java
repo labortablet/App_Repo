@@ -13,13 +13,17 @@ import android.widget.TableRow.LayoutParams;
 
 import com.example.test1.tabletapp.app.R;
 
+import java.lang.reflect.Array;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import imports.App_Methodes;
+import imports.AttachmentTable;
+import imports.AttachmentText;
 import imports.LocalEntry;
 
 /**
@@ -80,10 +84,14 @@ public class Table_entry extends Activity {
 
                 String title1 = text.getText().toString();
 
-//TODO: Fix table entry
-              //  projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(new LocalEntry(title1, App_Methodes.generateTimestamp(),Start.getUser(),string_array,false));
-                Project_show.setProjectExperimentEntries(projectExperimentEntries);
-                this.finish();
+//TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
+               LocalEntry table_entry =  new LocalEntry(title1,new AttachmentText(App_Methodes.twoDArray2String(string_array)),2, App_Methodes.generateTimestamp(),Start.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
+                    Start.myDb.open();
+                    Start.myDb.insertLocalEntry(table_entry);
+                    Start.myDb.close();
+                    projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(table_entry);
+                    Project_show.setProjectExperimentEntries(projectExperimentEntries);
+                    this.finish();
 
             }
             catch (Exception e )

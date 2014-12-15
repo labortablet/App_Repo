@@ -385,25 +385,8 @@ public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();}
 
-    public String[][] StringTo2DArray(String strings){
-        String[] string = strings.split(";");
-        int x = countLetter(string[0],",");
-        int y = string.length;
-        String[][] temp =new String[y][x];
-        for (int i = 0; i < y ; i++) {
-            for (int j = 0;j < x;j++) {
-                int pos = string[y].indexOf(",");
-                temp[i][j] = string[y].substring(pos);
-                string[y] = string[y].substring(pos+1,strings.length());
-            }
-        }
-        return temp;
-    }
-    private static int countLetter(String str, String letter) {
-        int count = 0;
-        for (int pos = -1; (pos = str.indexOf(letter, pos+1)) != -1; count++);
-        return count;
-    }
+
+
 }
 
 

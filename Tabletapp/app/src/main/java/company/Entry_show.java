@@ -17,12 +17,14 @@ import com.example.test1.tabletapp.app.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import imports.App_Methodes;
 import imports.AttachmentBase;
 import imports.AttachmentTable;
 import imports.AttachmentText;
@@ -95,13 +97,13 @@ public class Entry_show extends Activity {
                }
 
                 List<String> list = new ArrayList<String>();
-                //TODO:: fix this problem here wheres the string????
-                //AttachmentBase attachmentBase = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment();
-              // AttachmentBase attachmentbase = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment();
-             //   Object obj = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getAttachment();
-               //String string = obj.toString();
-                list.add( projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getAttachment().toString());
-
+                switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment_type()) {
+                    case 1:  list.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getAttachment().toString());
+                  break;
+                    case 2:
+                       Collections.addAll(list, App_Methodes.StringToArray(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getAttachment().toString()));
+                  break;
+                }
 
 expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 

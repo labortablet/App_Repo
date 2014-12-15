@@ -126,7 +126,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *@param sync The value which says if the LocalEntry already on the Server
      */
 
-    public LocalEntry(String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,Integer local_id,int Experiment_id,Long  sync_time,Long change_time) {
+    public LocalEntry(String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int local_id,int Experiment_id,Long  sync_time,Long change_time) {
         this.title = title;
         this.attachment = attachment;
         this.attachment_type = attachmentTyp;
@@ -138,6 +138,27 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
         this.sync_time = sync_time;
         this.change_time = change_time;
     }
+
+    /**
+     * Konstruktor For the Keyboard_entry
+     *@param title Title of the LocalEntry
+     *@param attachment Content of the LocalEntry
+
+     *@param entry_time Time when the entry was created
+     *@param user The name of the LocalEntry creator
+
+     *@param sync The value which says if the LocalEntry already on the Server
+     */
+
+    public LocalEntry(String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id) {
+        this.title = title;
+        this.attachment = attachment;
+        this.attachment_type = attachmentTyp;
+        this.entry_time = entry_time;
+        this.user = user;
+        this.sync = sync;
+        this.Experiment_id =Experiment_id;
+    }
     /**
      * Returns the Sync Value
      * @return    status of synced
@@ -145,24 +166,11 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
     public boolean isSync() {
         return sync;
     }
-    /**
-     * Changes the status of the sync
-     * @param sync  status of sync
-     */
 
 
 
-    /**
-     * Konstruktor For the Table_entry
-     * @param rem_id   The Remote ID
-     * @param title Title of the LocalEntry
-     *@param sync_time Sync time of the LocalEntry
-     *@param entry_time Time when the entry was created
-     *@param user The name of the LocalEntry creator
-     *@param array The array holds the Content of the Table_entry
-     *@param sync The value which says if the LocalEntry already on the Server
-     *
-     */
+
+
 /*
     public LocalEntry(Integer rem_id,  String title, Long  sync_time,Long  entry_time, User user, String[][] array, boolean sync) {
         this.remote_id = rem_id;
@@ -177,16 +185,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
 
     }*/
 
-    /**
-     * Konstruktor For the Table_entry
 
-     * @param title Title of the LocalEntry
-     *@param entry_time Time when the entry was created
-     *@param user The name of the LocalEntry creator
-     *@param array The array holds the Content of the Table_entry
-     *@param sync The value which says if the LocalEntry already on the Server
-     *
-     */
 /*
     public LocalEntry( String title,Long  entry_time, User user, String[][] array, boolean sync) {
 
