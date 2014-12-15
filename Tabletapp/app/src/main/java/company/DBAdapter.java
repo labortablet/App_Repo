@@ -216,7 +216,7 @@ public class DBAdapter {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,remoteEntry.getTitle());
         initialValues.put(Entry_Typ,remoteEntry.getAttachment_type());
-        initialValues.put(Entry_Content,remoteEntry.getAttachment().toString());
+        initialValues.put(Entry_Content,remoteEntry.getAttachment().getContent().toString());
         initialValues.put(Entry_Sync,1);
         initialValues.put(Entry_ExperimentID,remoteEntry.getExperiment_id());
         initialValues.put(Entry_UserID,remoteEntry.getUser().getUser_email());
@@ -230,7 +230,8 @@ public class DBAdapter {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,localEntry.getTitle());
         initialValues.put(Entry_Typ,localEntry.getAttachment_type());
-        initialValues.put(Entry_Content,localEntry.getAttachment().toString());
+        initialValues.put(Entry_Content,localEntry.getAttachment().getContent().toString());
+        initialValues.put(Entry_UserID,localEntry.getUser().getUser_id());
         initialValues.put(Entry_Sync,0);
         initialValues.put(Entry_ExperimentID,localEntry.getExperiment_id());
         initialValues.put(Entry_CreationDate,localEntry.getEntry_time());

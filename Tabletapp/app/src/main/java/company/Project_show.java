@@ -33,7 +33,11 @@ public class Project_show extends Activity {
     private static List<ExperimentEntry>  experimentEntries;
     private static List<ExperimentEntry>  experimentEntries1;
     private static List<ProjectExperimentEntry> projectExperimentEntries;
+
     LinkedList<Project> remoteProject_list = new LinkedList<Project>();
+    LinkedList<Experiment> remoteExperiment_list = new LinkedList<Experiment>();
+    LinkedList<LocalEntry> remoteEntry_list = new LinkedList<LocalEntry>();
+
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
@@ -63,10 +67,10 @@ Start.mService.insertInDb();
        // Toast.makeText(this,test.toString(),Toast.LENGTH_SHORT).show();
         try {
             remoteProject_list = Start.mService.getProjects();
-            @SuppressWarnings("unchecked")
-            LinkedList<Experiment> remoteExperiment_list = Start.mService.getExperiments();
-            @SuppressWarnings("unchecked")
-            LinkedList<LocalEntry> remoteEntry_list = Start.mService.getEntries();
+
+             remoteExperiment_list = Start.mService.getExperiments();
+
+             remoteEntry_list = Start.mService.getEntries();
             ArrayList<LocalEntry> entries ;
 
 

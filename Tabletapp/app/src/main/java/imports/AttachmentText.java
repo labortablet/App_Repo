@@ -5,14 +5,13 @@ package imports;
  */
 public class AttachmentText extends AttachmentBase {
 
-   String Attachment;
 	public AttachmentText(String text){
-        this.Attachment = text;
+        super(text);
 	}
 
     @Override
-    public String getAttachment() {
-        return this.Attachment;
+    public String getContent() {
+        return this.attachment;
     }
 
 }

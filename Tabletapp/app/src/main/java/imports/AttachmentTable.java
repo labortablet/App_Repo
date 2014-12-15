@@ -5,12 +5,11 @@ package imports;
  */
 public class AttachmentTable extends AttachmentBase  {
 
-   String Attachment;
 
 
     @Override
-    public String getAttachment() {
-       return this.Attachment;
+    public String getContent() {
+       return this.attachment;
     }
     /**
      * Returns the 2D Array, which holds the content of the Table
@@ -18,7 +17,7 @@ public class AttachmentTable extends AttachmentBase  {
      */
 
     public AttachmentTable(String tablestring)
-    {this.Attachment = tablestring;
+    {super(tablestring);
 
     }
 

@@ -85,7 +85,7 @@ public class Table_entry extends Activity {
                 String title1 = text.getText().toString();
 
 //TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
-               LocalEntry table_entry =  new LocalEntry(title1,new AttachmentText(App_Methodes.twoDArray2String(string_array)),2, App_Methodes.generateTimestamp(),Start.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
+               LocalEntry table_entry =  new LocalEntry(title1,new AttachmentTable(App_Methodes.twoDArray2String(string_array)),2, App_Methodes.generateTimestamp(),Start.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
                     Start.myDb.open();
                     Start.myDb.insertLocalEntry(table_entry);
                     Start.myDb.close();

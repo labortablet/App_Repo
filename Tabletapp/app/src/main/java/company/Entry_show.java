@@ -98,10 +98,12 @@ public class Entry_show extends Activity {
 
                 List<String> list = new ArrayList<String>();
                 switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment_type()) {
-                    case 1:  list.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getAttachment().toString());
+                    case 1:
+                        list.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getContent().toString());
+
                   break;
                     case 2:
-                       Collections.addAll(list, App_Methodes.StringToArray(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getAttachment().toString()));
+                     Collections.addAll(list, App_Methodes.StringToArray(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getContent().toString()));
                   break;
                 }
 

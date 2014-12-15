@@ -2,6 +2,7 @@ package company;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,8 @@ import java.util.List;
 
 import imports.AttachmentTable;
 import imports.AttachmentText;
+
+import static imports.App_Methodes.return2DArray;
 
 /**
  * @author  Grit on 02.08.2014.
@@ -109,7 +112,7 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Project_s
 
                 textView.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getTitle());
 
-                textView2.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().toString());
+                textView2.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().getContent().toString());
                 textView3.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time()*1000)));
            //     textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
                 textView4.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getUser().display("  "));
@@ -128,10 +131,39 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Project_s
                 textView.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getTitle());
                 textView2.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
                 textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getUser().display("  "));
-                String strings = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().toString();
-                String[] string = strings.split(";");
-                int x = countLetter(string[0], ",");
-                int y = string.length;
+                String[][] strings =  return2DArray(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().getContent().toString());
+                for(String[] s: strings) { // Starting Table output
+
+                                      TableRow row = new TableRow(this);
+                                      row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                                                    TableRow.LayoutParams.WRAP_CONTENT));
+
+                                          for (String string : s) {
+                                            EditText tv = new EditText(this);
+                                              tv.setInputType(0);
+
+                                            tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                                            TableRow.LayoutParams.WRAP_CONTENT));
+
+                                            tv.setPadding(5, 5, 5, 5);
+                                            tv.setText(string);
+                                            row.addView(tv);
+                                           row.setGravity(Gravity.CENTER);
+                                      }
+
+                table.addView(row);
+
+                                 } // End Table output
+
+                              break;
+
+
+
+        }
+
+
+/*
+
                 for (int i = 0; i < y; i++) {
                     TableRow row = new TableRow(this);
                     row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
@@ -147,7 +179,7 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Project_s
                         string[y] = string[y].substring(pos + 1, strings.length());
                     }
                     table.addView(row);
-                }
+                }*/
 
 
               /*  for(String[] s: strings) { // Starting Table output
@@ -173,7 +205,7 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Project_s
                     */
 
 
-        }}
+        }
 
 
 

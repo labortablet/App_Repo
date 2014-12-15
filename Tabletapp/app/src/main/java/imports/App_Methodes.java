@@ -48,6 +48,17 @@ public class App_Methodes {
     public static String[][] get_array(ArrayList text, String pattern) {
         return calc_array(text, pattern);
     }
+public static String[][] return2DArray(String string){
+        String[] strings = string.split(";");
+        String[][] stringreturn = new String[strings.length][strings[0].split(",").length];
+        for (int i=0; i < strings.length;i++) {
+            String[] strings2 = strings[i].split(",");
+            for (int j = 0 ;j <strings[0].split(",").length;j++){
+                stringreturn[i][j] = strings2[j];
+            }
+        }
+    return stringreturn;
+    }
 
 
     public static Long generateTimestamp() {
