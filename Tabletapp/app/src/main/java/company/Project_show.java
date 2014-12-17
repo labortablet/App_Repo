@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import AsyncTasks.AsyncTaskProjectExperimentEntry;
 import exceptions.SBSBaseException;
 import imports.Experiment;
 import imports.LocalEntry;
@@ -62,10 +64,10 @@ public class Project_show extends Activity {
     @Override
 
         public void onCreate(Bundle savedInstanceState) {
-//Start.mService.insertInDb(); //TODO : outcommited
+//Start.mService.insertInDb();
        // Boolean test = Start.mService.Create_DB();
        // Toast.makeText(this,test.toString(),Toast.LENGTH_SHORT).show();
-        try {
+      /*  try {
             remoteProject_list = Start.mService.getProjects();
 
              remoteExperiment_list = Start.mService.getExperiments();
@@ -120,6 +122,13 @@ public class Project_show extends Activity {
             e.printStackTrace();
         }catch (NullPointerException ignored) {
 
+        }*/
+        try {
+            projectExperimentEntries = new AsyncTaskProjectExperimentEntry().execute(Start.myDb).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
 
 

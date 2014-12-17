@@ -48,7 +48,7 @@ public class Start extends Activity {
         Start.user = user;
     }
 
-    static LocalService mService;
+    public static LocalService mService;
     static Context context;
     public static DBAdapter myDb;
     private static User user;
@@ -230,7 +230,7 @@ public class Start extends Activity {
     }
     @Override
     protected void onDestroy(){
-mService.deleteAllSynced();
+//mService.deleteAllSynced();
     }
 
 
