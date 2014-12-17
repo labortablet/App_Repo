@@ -1,10 +1,12 @@
 package company;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
@@ -17,10 +19,19 @@ import com.example.test1.tabletapp.app.R;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import AsyncTasks.StartUpAsyncTask;
+import exceptions.SBSBaseException;
+import imports.ServersideDatabaseConnectionObject;
 import imports.User;
+import scon.RemoteEntry;
+import scon.RemoteExperiment;
+import scon.RemoteProject;
+import scon.ServerDatabaseSession;
 
 /**
  * Created by Grit on 29.05.2014.
@@ -38,7 +49,7 @@ public class Start extends Activity {
     }
 
     static LocalService mService;
-static Context context;
+    static Context context;
     public static DBAdapter myDb;
     private static User user;
 
@@ -53,6 +64,9 @@ static Context context;
     boolean mServiceConnected = false;
     private LocalService mLocnServ;
     private static String[][] project = new String[10][20];
+
+
+
 
     boolean mIsBound;
 
@@ -144,26 +158,29 @@ static Context context;
                    password = text3.getText().toString();
 
                    mService.setUserAndURL(new User(email, password),Server);
-                    mService.connect(Server);
+                   int i =  mService.connect(Server);
 
 
-                  switch (0) {
+                  switch (i) {
                        case 0:
                            Intent intent = new Intent(this, Project_show.class);
                            startActivity(intent);
                             break;
                        case 1:
-                            Popup popup = new Popup();            // Popup für email
+                            Popup popup = new Popup();
                             popup.set_String(R.string.MalformedURLException);
                             popup.show(getFragmentManager(), "this");
                             break;
-
-                        case 2:
-                            Popup popup2 = new Popup();            // Popup für email
-                            popup2.set_String(R.string.SBSBaseException);
+                       case 2:
+                            Popup popup2 = new Popup();
+                            popup2.set_String(R.string.NoInternet);
                             popup2.show(getFragmentManager(), "this");
                             break;
-
+                       case 3:
+                          Popup popup3 = new Popup();
+                          popup3.set_String(R.string.SBSBaseException);
+                          popup3.show(getFragmentManager(), "this");
+                          break;
                     }
 
 
@@ -251,13 +268,12 @@ mService.deleteAllSynced();
     */
 
 
-
         byte[] byteData;
         byteData = md.digest();
 
         return Arrays.toString(byteData);
-
     }
+
 
 
 

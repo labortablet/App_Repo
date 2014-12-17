@@ -133,7 +133,7 @@ public class DBAdapter {
                     + Bracket_Separator_Right + Semicolon_Separator;
     // Context of application who uses us.
 
-    private DatabaseHelper myDBHelper;
+    private static DatabaseHelper myDBHelper;
     private SQLiteDatabase db;
     // ids for the specific rows
     //user table
@@ -174,7 +174,9 @@ public class DBAdapter {
 
     public DBAdapter(Context ctx) {
         myDBHelper = new DatabaseHelper(ctx);
+
     }
+
     // Open the database connection.
     public DBAdapter open() {
         db = myDBHelper.getWritableDatabase();
@@ -499,40 +501,15 @@ public class DBAdapter {
         return db.update(Table_Entry, newValues, where, null) != 0;
     }
 
-    public String Array2DToString(String[][] strings){
-        String finalstr ="";
-        for (String[] s : strings) {
-            String temp = "";
-            for (String string : s) {
-                temp += (string + ",");
-            }
-            finalstr += temp.substring(0, temp.length() - 1);
-            finalstr += ";";
-        }
-        return finalstr;
+    public boolean updateEntryAfterSync(Entry_id_timestamp entry_id_timestamp){
+        String where = Entry_CreationDate + " = " + entry_id_timestamp.getLast_change();
+        ContentValues newValues = new ContentValues();
+        newValues.put(Entry_Sync,1);
+        newValues.put(Entry_RemoteID,entry_id_timestamp.getId());
+        return db.update(Table_Entry, newValues, where, null) != 0;
     }
 
-    public String[][] StringTo2DArray(String strings){
-        String[] string = strings.split(";");
-        int x = countLetter(string[0],",");
-        int y = string.length;
-        String[][] temp =new String[y][x];
-        for (int i = 0; i < y ; i++) {
-            for (int j = 0;j < x;j++) {
-                int pos = string[y].indexOf(",");
-                temp[i][j] = string[y].substring(pos);
-                string[y] = string[y].substring(pos+1,strings.length());
-            }
-        }
-        return temp;
 
-    }
-
-    private static int countLetter(String str, String letter) {
-        int count = 0;
-        for (int pos = -1; (pos = str.indexOf(letter, pos+1)) != -1; count++);
-        return count;
-    }
 
     // Change an existing row to be equal to new data.
     //public boolean updateRow(long rowId, String name, int studentNum, String favColour) {
@@ -564,6 +541,16 @@ public class DBAdapter {
      */
     private static class DatabaseHelper extends SQLiteOpenHelper
     {
+        public static DatabaseHelper getInstance(Context context) {
+
+            // Use the application context, which will ensure that you
+            // don't accidentally leak an Activity's context.
+            // See this article for more information: http://bit.ly/6LRzfx
+            if (myDBHelper == null) {
+                myDBHelper = new DatabaseHelper(context.getApplicationContext());
+            }
+            return myDBHelper;
+        }
         DatabaseHelper(Context context) {
             super(context,DATABASE_NAME, null, DATABASE_VERSION);
         }

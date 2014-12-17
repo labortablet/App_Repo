@@ -1,36 +1,36 @@
 package company;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
-import android.os.Bundle;
-import android.os.DropBoxManager;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
+import AsyncTasks.AsyncTaskSyncEntry;
+import AsyncTasks.StartUpAsyncTask;
 import exceptions.SBSBaseException;
 import imports.App_Methodes;
-import imports.AttachmentBase;
 import imports.AttachmentTable;
 import imports.AttachmentText;
+import imports.CursorSDS;
 import imports.Experiment;
 import imports.LocalEntry;
 import imports.Project;
+import imports.ServersideDatabaseConnectionObject;
 import imports.User;
-import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
 import scon.RemoteExperiment;
 import scon.RemoteProject;
@@ -45,25 +45,68 @@ public class LocalService extends Service {
     private final IBinder mBinder = new LocalBinder();
     private User user;
     private String url;
-
-    public User getUser() {
-        return user;
-    }
-
+    Context ctx = Start.context ;
+    private ServersideDatabaseConnectionObject SDCO;
+    private Runnable runnable;
     private ServerDatabaseSession SDS;
     private LinkedList<RemoteProject> projects = new LinkedList<RemoteProject>();
     private LinkedList<RemoteExperiment> experiments = new LinkedList<RemoteExperiment>();
     private LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
     private  byte[] challange;
-    DBAdapter myDb = Start.myDb;
+    private DBAdapter myDb = Start.myDb;
+    private Handler handler = new Handler();
     public class LocalBinder extends Binder {
         LocalService getService() {
             // Return this instance of LocalService so clients can call public methods
             return LocalService.this;
         }
     }
-    public void onCreate(Context context)  {
+
+
+
+
+    public LocalService(){
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy =
+                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
+
+        }
+
+        openDB();
+        deleteAllSynced();
+        closeDB();
+        // myDb.deleteAllEntries();
+        //comment from here
+        //   Cursor cur = myDb.getAllProjectRows();
+        //cur.moveToFirst();
+        //if (cur.getCount() == 0)
+        //dummiData();
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+          /* do what you need to do */
+                myDb.open();
+                Cursor c = myDb.getAllSyncedEntryRows();
+                myDb.close();
+                if (c.getCount() > 0) {
+                  //  new AsyncTaskSyncEntry().execute(new CursorSDS(c, SDS, myDb)); //TODO: usable if entry sync is working.
+                }
+
+
+          /* and here comes the "trick" */
+                handler.postDelayed(this, 600000);
+            }
+        };
+    }
+
+    @Override
+    public void onCreate(){
 super.onCreate();
+
+
 
     }
 
@@ -72,24 +115,7 @@ super.onCreate();
         this.url = url;
     }
 
-    public LocalService(){
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy =
-        new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
 
-
-        }
-        openDB();
-       deleteAllSynced();
-      // myDb.deleteAllEntries();
-        //comment from here
- //   Cursor cur = myDb.getAllProjectRows();
-   //cur.moveToFirst();
-    //if (cur.getCount() == 0)
-   //dummiData();
-//to here
-}
      private void openDB() {
              myDb.open();
          }
@@ -103,7 +129,7 @@ super.onCreate();
     @Override
     public void onDestroy() {
         super.onDestroy();
-        closeDB();
+//        closeDB();
     }
     public void insertInDb(){
 
@@ -153,7 +179,7 @@ super.onCreate();
     private void closeDB() {
       myDb.close();
     }
-public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
+    public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
     switch (typ)
     {
         case 1 : myDb.insertLocalEntry(entry);
@@ -168,24 +194,10 @@ public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
 
 
     }
-      /*  try {
-            myDB = this.openOrCreateDatabase("Lablet.db", MODE_PRIVATE, null);
-            return true;
-   /* Create a Table in the Database. */
-
-
-   /* Insert data to a Table*/
-/*
-        }
-        catch (Exception e)
-        {
-            return false;
-        }*/
-
 
     // connection method For connecting with server
 
-   public int connect(String adress)  {
+   public int connect(String adress) throws ExecutionException, InterruptedException {
        URL url;
        try {
            url = new URL(adress);
@@ -193,32 +205,15 @@ public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
            e.printStackTrace();
            return 1;
        }
-       if (isNetworkAvailable()) {
+
 
            if (isOnline()) {
-         //      try
                SDS = new ServerDatabaseSession(url, user);
-               try {
-                   SDS.start_session();
-                   projects = SDS.get_projects();
-                   experiments = SDS.get_experiments();
-                   for (int i = 0;experiments.size() >= i ;i++ ){
-                   LinkedList<Entry_id_timestamp> entry_id_timestamps= SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
-                       for(int j=0; entry_id_timestamps.size() >= j;j++) {
-                           entries.add(SDS.get_entry(entry_id_timestamps.get(j)));
-                       }
-                   }
-                   return 0;
-              } catch (SBSBaseException e) {
-                   e.printStackTrace();
-                   return 2;
-               }
-           } else return 2;
-
-
-           // }else return 2;
-       } else return 2;
-   }
+               SDCO = new ServersideDatabaseConnectionObject(SDS,myDb);
+               return  new StartUpAsyncTask().execute(SDCO).get();
+                           }
+               else return 2;
+                                        }
 // Method to get all active Projects From the user
     public LinkedList<Project> getProjects() throws SBSBaseException {
       // LinkedList<Project> remoteProject_list = new LinkedList<Project>();// = SDS.get_projects();
@@ -228,7 +223,9 @@ public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
             projects1.add(new Project(project));
         }
         return projects1;*/
+        myDb.open();
       return displayProjects(myDb.getAllProjectRows());
+
     //    remoteProject_list.add(0,new Project(new RemoteProject(1,"project 1" ,"Das ist Project 1")));
       //  remoteProject_list.add(1,new Project(new RemoteProject(2,"project 2" ,"Das ist Project 2")));
       //  remoteProject_list.add(2,new Project(new RemoteProject(3,"project 3" ,"Das ist Project 3")));
@@ -328,7 +325,6 @@ public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
                             entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), true, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
                         else
                             entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), false, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
-                            Log.d("Inhalt des feldes der db",cursor.getString(DBAdapter.COL_EntryContent));
                             break;
                         case 2:
                             if (cursor.getInt(DBAdapter.COL_EntrySync) == 1)
@@ -360,6 +356,7 @@ public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
 
     @Override
     public IBinder onBind(Intent intent) {
+
         return mBinder;
     }
 
@@ -377,7 +374,9 @@ public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
         return false;
     }
 
-
+    public User getUser() {
+        return user;
+    }
 
 
 

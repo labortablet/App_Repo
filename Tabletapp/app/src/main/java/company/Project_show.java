@@ -62,7 +62,7 @@ public class Project_show extends Activity {
     @Override
 
         public void onCreate(Bundle savedInstanceState) {
-Start.mService.insertInDb();
+//Start.mService.insertInDb(); //TODO : outcommited
        // Boolean test = Start.mService.Create_DB();
        // Toast.makeText(this,test.toString(),Toast.LENGTH_SHORT).show();
         try {
