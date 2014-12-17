@@ -13,6 +13,7 @@ import org.json_pc.JSONArray;
 import org.json_pc.JSONException;
 import org.json_pc.JSONObject;
 
+import imports.AttachmentBase;
 import imports.AttachmentText;
 import imports.BaseEntry;
 import scon.Base64;
@@ -318,17 +319,17 @@ public class ServerDatabaseSession {
         return entry_references;
     }
 
-    public Entry_id_timestamp send_entry(BaseEntry a) throws SBSBaseException{
+    public Entry_id_timestamp send_entry(Integer experiment_id, Long entry_time,String title, Integer attachment_type, AttachmentBase attachment) throws SBSBaseException{
         this.check_for_session();
         //only text right now
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "send_entry");
         this.put_wrapper(request, "session_id", this.session_id);
-        this.put_wrapper(request, "title", a.getTitle());
-        this.put_wrapper(request, "date_user", a.getEntry_time().toString());
-        this.put_wrapper(request, "attachment", (a.getAttachment().getContent().toString()));
+        this.put_wrapper(request, "title", title);
+        this.put_wrapper(request, "date_user", entry_time.toString());
+        this.put_wrapper(request, "attachment", attachment.getContent().toString());
         this.put_wrapper(request, "attachment_type", "0");
-        this.put_wrapper(request, "experiment_id", a.getExperiment_id().toString());
+        this.put_wrapper(request, "experiment_id", experiment_id.toString());
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
         JSONArray entry_id_timestamp = null;
