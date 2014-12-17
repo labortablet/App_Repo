@@ -66,14 +66,7 @@ public class BaseEntry {
      * @since 1.0
      */
     protected User user;
-    public BaseEntry(Integer experiment_id, Long entry_time,String title, Integer attachment_type,AttachmentBase attachmentBase){
-        this.Experiment_id = experiment_id;
-        this.entry_time = entry_time;
-        this.title = title;
-        this.attachment_type = attachment_type;
-        this.attachment =attachmentBase;
 
-    }
 
     public Long  getChange_time() {
         return change_time;
