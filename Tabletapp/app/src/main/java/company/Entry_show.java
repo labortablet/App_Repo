@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import imports.App_Methodes;
 import imports.AttachmentBase;
 import imports.AttachmentTable;
 import imports.AttachmentText;
+import imports.NewAdapter;
 
 /**
  * @author  Grit on 19.07.2014.
@@ -65,11 +67,25 @@ public class Entry_show extends Activity {
 
         // preparing list data
 
-        prepareListData();
-        for (String aDebugList : debugList) Log.d("debug",aDebugList);
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, img, listDataDate);
+      //  prepareListData();
+    //    for (String aDebugList : debugList) Log.d("debug",aDebugList);
+    //    listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, img, listDataDate);
         // setting list adapter
-        expListView.setAdapter(listAdapter);
+        try {
+            NewAdapter mNewAdapter = new NewAdapter(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList());
+            mNewAdapter
+                    .setInflater(
+                            (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE),
+                            this);
+            expListView.setAdapter(mNewAdapter);
+        }catch (NullPointerException e)
+        {e.printStackTrace();}
+
+       // getExpandableListView().setAdapter(mNewAdapter);
+      //  expandbleLis.setOnChildClickListener(this);
+
+       // expListView.setAdapter(listAdapter);
+
 
         ActivityRegistry.register(this);
     }
@@ -160,15 +176,17 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
      * After Adding a new LocalEntry Reload the List of Entries
      */
     protected void onResume(){
-        img.clear();
-        listDataChild.clear();
-        listDataDate.clear();
-        listDataHeader.clear();
+      //  img.clear();
+    //    listDataChild.clear();
+   //     listDataDate.clear();
+  //      listDataHeader.clear();
         super.onResume();
-        projectExperimentEntries = Project_show.getProjectExperimentEntries();
-        prepareListData();
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild,img,listDataDate);
-        expListView.setAdapter(listAdapter);
+   //     projectExperimentEntries = Project_show.getProjectExperimentEntries();
+   //     prepareListData();
+   //     listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild,img,listDataDate);
+
+    //    expListView.setAdapter(listAdapter);
+
     }
 
     @Override
