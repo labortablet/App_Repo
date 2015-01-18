@@ -1379,7 +1379,11 @@
       <created>1418045587716</created>
       <updated>1418045587716</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Commit so I can merge from upstream">
+      <created>1421610932087</created>
+      <updated>1421610932087</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1486,7 +1490,8 @@
     <MESSAGE value="Status of sync:&#10; * auth working&#10; * get projects working&#10; * get experiments working&#10; * interfaces for the rest are there but logic is not working yet" />
     <MESSAGE value="Some changes to the ref_client and the get_last_entries_function.&#10;Still not working but cannot work on vega.uberspace.de rihgt now as ssh is not working." />
     <MESSAGE value="last_entry_receive function should now be working but get_entry does still return bogus data." />
-    <option name="LAST_COMMIT_MESSAGE" value="last_entry_receive function should now be working but get_entry does still return bogus data." />
+    <MESSAGE value="Commit so I can merge from upstream" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit so I can merge from upstream" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
