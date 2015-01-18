@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/back"
+        android:id="@+id/button"
+        android:onClick="buttonEventHandler"
+        android:layout_alignTop="@+id/button2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/exit"
+        android:id="@+id/button2"
+        android:onClick="buttonEventHandler"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_entry"
+        android:id="@+id/button3"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="buttonEventHandler" />
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:fillViewport="true"
+        android:padding="10dp"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+
+        android:layout_above="@+id/button"
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/textView">
+
+    <ExpandableListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ListView"
+
+        android:choiceMode="singleChoice"
+      />
+
+    </ScrollView>
+</RelativeLayout><!-- From: file:/C:/Users/Grit/Desktop/uni%20arbeit/repomercurial/main_repo/Tabletapp/app/src/main/res/layout/project_entries_show.xml -->
