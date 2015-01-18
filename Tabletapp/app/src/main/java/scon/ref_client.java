@@ -40,6 +40,15 @@ public class ref_client {
             System.out.println("Get last Entrys list");
             LinkedList<Entry_id_timestamp> remoteEntry_list = SDS.get_last_entry_references(remoteExperiment_list.getFirst().get_project_id(), 10, null);
             System.out.println("Got last Entrys list");
+            System.out.println(remoteEntry_list);
+            System.out.println("Get first Entry");
+            RemoteEntry a = SDS.get_entry(remoteEntry_list.getFirst());
+            System.out.println("Got first Entry");
+            System.out.println(a.getRemote_id());
+            System.out.println(a.getTitle());
+            System.out.println(a.getAttachment_type());
+            System.out.println(a.getAttachment());
+
         } catch (SBSBaseException e) {
 			System.out.println(e);
 		};

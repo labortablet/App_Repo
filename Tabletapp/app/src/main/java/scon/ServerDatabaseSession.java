@@ -100,6 +100,7 @@ public class ServerDatabaseSession {
         }
         //maybe we should return a JSONObject with success:failed here and add the string as a parameter
         if (response_string.startsWith("<html>")) {
+            System.out.println(response_string);
             throw new ServerSideException();
         }
         try {
@@ -146,6 +147,7 @@ public class ServerDatabaseSession {
         //check if we succeeded
         try {
             if (!result.getString("status").toLowerCase().equals("success")) {
+                System.out.println(result.getString("E"));
                 throw new NoSuccess();
             }
 
@@ -299,6 +301,8 @@ public class ServerDatabaseSession {
         this.put_wrapper(request, "action", "get_last_entry_ids");
         this.put_wrapper(request, "session_id", this.session_id);
         this.put_wrapper(request, "entry_count", entry_count.toString());
+        this.put_wrapper(request, "experiment_id", experiment_id.toString());
+
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
 
