@@ -96,6 +96,7 @@ public class ServerDatabaseSession {
         } catch (SSLHandshakeException e) {
             throw new NoValidSSLCert();
         } catch (IOException e) {
+            System.out.println(e);
             throw new NoServerConnectionException();
         }
         //maybe we should return a JSONObject with success:failed here and add the string as a parameter
@@ -147,11 +148,12 @@ public class ServerDatabaseSession {
         //check if we succeeded
         try {
             if (!result.getString("status").toLowerCase().equals("success")) {
-                System.out.println(result.getString("E"));
+                System.out.println(result);
                 throw new NoSuccess();
             }
 
         } catch (JSONException e) {
+            System.out.println(result);
             throw new ErroneousResponse();
         }
     }
@@ -355,8 +357,20 @@ public class ServerDatabaseSession {
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
         JSONArray entry_id_timestamp = null;
-        //FIXMEEEE
-        return new RemoteEntry();
+        System.out.println(result);
+        Long entry_time = result.getLong("entry_date_user");
+        Long sync_time = result.getLong("entry_date");
+        Long change_time = result.getLong("entry_current_time");
+        int experiment_id = result.getInt("experiment_id");
+        int attachment_type = result.getInt("entry_attachment_type");
+        byte[] attachment_serialized = uni2bin(result.getString("entry_attachment"));
+        String title = result.getString("entry_title");
+        String user_firstname = result.getString("user_firstname");
+        String user_lastname = result.getString("user_lastname");
+        User user = new User("sad", "sad");
+        AttachmentBase attachment = AttachmentBase.deserialize(attachment_type, attachment_serialized);
+        return new RemoteEntry(attachment, entry_time, experiment_id, sync_time, change_time, title, user)
+;
     }
 
 

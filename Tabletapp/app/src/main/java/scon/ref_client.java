@@ -43,19 +43,20 @@ public class ref_client {
             LinkedList<Entry_id_timestamp> remoteEntry_list = SDS.get_last_entry_references(remoteExperiment_list.getFirst().get_project_id(), 10, null);
             System.out.println("Got last Entrys list");
             System.out.println(remoteEntry_list);
-            System.out.println("Try sending an entry");
+            //System.out.println("Try sending an entry");
             Entry_id_timestamp new_entry_info;
             AttachmentBase attachment = new AttachmentText("Hallo");
-            new_entry_info = SDS.send_entry(remoteExperiment_list.getFirst().get_id(), new Long(0), "Ref Client Test Entry", 0, attachment);
-            System.out.println("Entry send");
-            System.out.println("Get first Entry");
-            RemoteEntry a = SDS.get_entry(remoteEntry_list.getFirst());
-            System.out.println("Got first Entry");
-            System.out.println(a.getRemote_id());
-            System.out.println(a.getTitle());
-            System.out.println(a.getAttachment_type());
-            System.out.println(a.getAttachment());
-
+            //new_entry_info = SDS.send_entry(remoteExperiment_list.getFirst().get_id(), new Long(0), "Ref Client Test Entry", 0, attachment);
+            //System.out.println("Entry send");
+            System.out.println("Getting Entries");
+            RemoteEntry a;
+            for (Entry_id_timestamp b: remoteEntry_list) {
+                a = SDS.get_entry(b);
+                System.out.println(a.getRemote_id());
+                System.out.println(a.getTitle());
+                System.out.println(a.getAttachment_type());
+                System.out.println(a.getAttachment());
+            }
         } catch (SBSBaseException e) {
 			System.out.println(e);
 		};

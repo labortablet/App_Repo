@@ -161,12 +161,12 @@ super.onCreate();
         myDb.insertRemoteExperiment(new RemoteExperiment(3, 6, "Experiment 6", "Inhalt 6"));
 
 
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,System.currentTimeMillis()/1000,1,System.currentTimeMillis()/1000,System.currentTimeMillis()/1000, "test1",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),2,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test2",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),3,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test3",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),4,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test4",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), System.currentTimeMillis()/1000,1,System.currentTimeMillis()/1000,System.currentTimeMillis()/1000, "test1",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),2,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test2",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),3,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test3",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),4,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test4",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
+        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
     }
     catch (Exception e)
     {

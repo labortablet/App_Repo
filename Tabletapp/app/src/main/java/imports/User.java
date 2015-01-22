@@ -27,10 +27,11 @@ public class User {
         this.pw_hashb = resultb;
     }
 
-public User(String email)
+    public User(String email)
 {
     this.user_email = email;
 }
+
     public User(String firstname, String lastname, String user_email, String password){
         this.lastname = lastname;
         this.firstname = firstname;

@@ -1,13 +1,16 @@
 package imports;
 
-import java.util.Objects;
-
-/**
- * Created by Hawky on 18.08.2014.
- */
 public class AttachmentBase implements AttachmentInterface {
     String attachment;
-
+    public static AttachmentBase deserialize(int attachment_type, byte[] attachment_serialized) {
+        switch (attachment_type) {
+            case 0:  return new AttachmentText(attachment_serialized);
+            /*case 1:  return new AttachmentTable(attachment_serialized);
+            case 2:  return new AttachmentImage(attachment_serialized);
+            */
+            default: return new AttachmentText(attachment_serialized);
+        }
+    }
     public Object getContent() {
         return null;
     }
