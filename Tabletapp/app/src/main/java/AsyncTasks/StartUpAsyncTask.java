@@ -2,19 +2,11 @@ package AsyncTasks;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import company.DBAdapter;
-import company.ProjectExperimentEntry;
-import company.Start;
 import exceptions.SBSBaseException;
-import imports.AttachmentText;
-import imports.LocalEntry;
 import imports.ServersideDatabaseConnectionObject;
 import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
@@ -39,26 +31,14 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
             SDS.start_session();
             projects = SDS.get_projects();
             experiments = SDS.get_experiments();
-            LinkedList<Entry_id_timestamp> remoteEntry_list = SDS.get_last_entry_references(experiments.getFirst().get_id(), 10, null);
-
-            RemoteEntry a;
-            for (Entry_id_timestamp b: remoteEntry_list) {
-                a = SDS.get_entry(b);
-                a = new RemoteEntry(new AttachmentText(a.getAttachment().getContent().toString()),a.getEntry_time(),a.getExperiment_id(), a.getSync_time(), a.getChange_time(), a.getTitle(), a.getUser());
-                entries.add(a);
-                System.out.println(a.getRemote_id());
-                System.out.println(a.getTitle());
-                System.out.println(a.getAttachment_type());
-                System.out.println(a.getAttachment());
-            }
-
-            /*
+            RemoteEntry remoteEntry;
             for (int i = 0; experiments.size() > i; i++) {
                 LinkedList<Entry_id_timestamp> entry_id_timestamps = SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
                 for (int j = 0; entry_id_timestamps.size() > j; j++) {
                     remoteEntry = SDS.get_entry(entry_id_timestamps.get(j));
                     entries.add(remoteEntry);
-                }}*/
+                }
+            }
 
             myDb.open();
             for (RemoteProject project : projects) {
@@ -70,7 +50,7 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
             }
 
             for (RemoteEntry entry : entries) {
-                myDb.insertRemoteEntry(entry);
+                myDb.insertRemoteEntry(entry, 1);
             }
             myDb.close();
             return 0;

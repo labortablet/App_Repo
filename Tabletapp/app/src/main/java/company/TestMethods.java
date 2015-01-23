@@ -2,12 +2,9 @@ package company;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import exceptions.SBSBaseException;
-import imports.AttachmentBase;
-import imports.AttachmentText;
 import imports.User;
 import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
@@ -27,7 +24,8 @@ public class TestMethods {
             //url = new URL("https://lablet.vega.uberspace.de/scon/json_bounce.cgi");
         } catch (MalformedURLException e) {
             System.exit(1);
-        };
+        }
+
         System.out.println("URL not malformed");
         //these need to be set on server as well!
         String username = "fredi@uni-siegen.de";
@@ -49,25 +47,32 @@ public class TestMethods {
             System.out.println(remoteProject_list);
             System.out.println(remoteExperiment_list);
             System.out.println("Get last Entrys list");
-            LinkedList<Entry_id_timestamp> remoteEntry_list = SDS.get_last_entry_references(remoteExperiment_list.getFirst().get_project_id(), 10, null);
+            LinkedList<Entry_id_timestamp> remoteEntry_list = SDS.get_last_entry_references(remoteExperiment_list.getFirst().get_id(), 10, null);
             System.out.println("Got last Entrys list");
             System.out.println(remoteEntry_list);
 
-      //      Entry_id_timestamp new_entry_info;
-           // AttachmentBase attachment = new AttachmentText("Hallo");
 
-          // new_entry_info = SDS.send_entry(remoteExperiment_list.getFirst().get_id(), new Long(0), "Ref Client Test Entry", 0, attachment);
+            for (int i = 0; i < remoteEntry_list.size(); i++) {
+                RemoteEntry a = SDS.get_entry(remoteEntry_list.get(i));
+                System.out.println(a.getAttachment_type());
+            }
 
-            RemoteEntry a;
+
+            //      Entry_id_timestamp new_entry_info;
+            // AttachmentBase attachment = new AttachmentText("Hallo");
+
+            // new_entry_info = SDS.send_entry(remoteExperiment_list.getFirst().get_id(), new Long(0), "Ref Client Test Entry", 0, attachment);
+
+        /*    RemoteEntry a;
             LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
             LinkedList<Entry_id_timestamp> entry_id_timestamps;
             for (int i = 0; remoteExperiment_list.size() > i; i++) {
                 entry_id_timestamps = SDS.get_last_entry_references(remoteExperiment_list.get(i).get_id(), 10, null);
                 for (int j = 0; entry_id_timestamps.size() > j; j++) {
                     a = SDS.get_entry(remoteEntry_list.get(j));
-                }}
+                }}*/
         } catch (SBSBaseException e) {
-            System.out.println(e);
-        };
-    };
-};
+
+        }
+    }
+}

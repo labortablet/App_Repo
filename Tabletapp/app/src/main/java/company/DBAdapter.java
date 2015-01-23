@@ -6,10 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 import java.util.ArrayList;
 
-import imports.AttachmentTable;
-import imports.AttachmentText;
 import imports.LocalEntry;
 import imports.User;
 import scon.Entry_id_timestamp;
@@ -22,8 +21,6 @@ public class DBAdapter {
     //	Constants & Data
     /////////////////////////////////////////////////////////////////////
 
-    // For logging:
-    private static final String TAG = "DBAdapter";
     // Separators
     public static final String Comma_Separator = " , ";
     public static final String Semicolon_Separator = " ; ";
@@ -48,6 +45,7 @@ public class DBAdapter {
     public static final String Entry_CreationDate =" Entry_CreationDate ";
     public static final String Entry_SyncDate = " Entry_SyncDate ";
     public static final String Entry_ChangeDate = " Entry_ChangeDate ";
+    public static final String[] Entry_KEYS = new String[]{Entry_ID, Entry_Titel, Entry_Typ, Entry_Content, Entry_Sync, Entry_CreationDate, Entry_ChangeDate, Entry_SyncDate, Entry_RemoteID, Entry_ExperimentID, Entry_UserID};
     /*
    Table Fields for Table _experiments
     */
@@ -58,6 +56,7 @@ public class DBAdapter {
     public static final String Experiment_UserID = " Experiment_UserID ";
     public static final String Experiment_ProjectID = " Experiment_ProjectID ";
     public static final String Experiment_RemoteID = " Experiment_RemoteID ";
+    public static final String[] Experiment_KEYS = new String[]{Experiment_ID, Experiment_Name, Experiment_Description, Experiment_Sync, Experiment_RemoteID, Experiment_ProjectID};
     /*
    Table Fields for Table _user
     */
@@ -66,6 +65,8 @@ public class DBAdapter {
     public static final String User_Password = " User_Password ";
     public static final String User_FName =" User_FName ";
     public static final String User_LName =" User_LName ";
+    //The Keys for each table
+    public static final String[] User_KEYS = new String[]{User_ID, User_EMail, User_Password, User_FName, User_LName};
     /*
    Table Fields for Table _project
     */
@@ -75,69 +76,62 @@ public class DBAdapter {
     public static final String Project_Sync = " Project_Sync ";
     public static final String Project_UserID = " Project_UserID ";
     public static final String Project_RemoteID = " Project_RemoteID ";
-    //The Keys for each table
-    public static final String[] User_KEYS = new String[] {User_ID, User_EMail, User_Password,User_FName,User_LName};
-    public static final String[] Entry_KEYS = new String[] {Entry_ID,Entry_Titel,Entry_Typ,Entry_Content,Entry_Sync,Entry_CreationDate,Entry_ChangeDate,Entry_SyncDate,Entry_RemoteID,Entry_ExperimentID,Entry_UserID};
-    public static final String[] Experiment_KEYS = new String[] {Experiment_ID,Experiment_Name,Experiment_Description,Experiment_Sync,Experiment_RemoteID,Experiment_ProjectID};
-    public static final String[] Project_KEYS = new String[] {Project_ID,Project_Name,Project_Description,Project_Sync,Project_RemoteID};
+    public static final String[] Project_KEYS = new String[]{Project_ID, Project_Name, Project_Description, Project_Sync, Project_RemoteID};
     // DB info: it's name, and the table we are using (just one).
     public static final String DATABASE_NAME = "LabletDB";
     public static final String Table_Entry = " _entry ";
-    public static final String Table_User = " _user ";
-    public static final String Table_Project = " _project ";
-    public static final String Table_Experiment = " _experiment ";
-    // Track DB version if a new version of your app changes the format.
-    public static final int DATABASE_VERSION = 1;
-    //
-    private static final String DATABASE_CREATE_USER =
-            "CREATE TABLE IF NOT EXISTS" + Table_User
-                    + Bracket_Separator_Left + User_ID + Typ_Integer + "primary key autoincrement" + Comma_Separator
-                    + User_EMail + Typ_String +"not null" + Comma_Separator
-                    + User_Password + Typ_String +"not null" + Comma_Separator
-                    + User_FName + Typ_String + Comma_Separator
-                    + User_LName + Typ_String
-                    + Bracket_Separator_Right + Semicolon_Separator;
-    //
-    private static final String DATABASE_CREATE_PROJECT =
-            "CREATE TABLE IF NOT EXISTS" + Table_Project
-                    + Bracket_Separator_Left + Project_ID + Typ_Integer + "primary key autoincrement" + Comma_Separator
-                    + Project_Name + Typ_String +"not null, "
-                    + Project_Description + Typ_Text + Comma_Separator
-                    + Project_Sync + Typ_Integer + Comma_Separator
-                    + Project_RemoteID + Typ_Integer +" UNIQUE "
-                    + Bracket_Separator_Right + Semicolon_Separator;
-    //
-    private static final String DATABASE_CREATE_EXPERIMENT =
-            "CREATE TABLE IF NOT EXISTS" + Table_Experiment
-                    + Bracket_Separator_Left + Experiment_ID + Typ_Integer +"primary key autoincrement" + Comma_Separator
-                    + Experiment_Name + Typ_String +"not null" + Comma_Separator
-                    + Experiment_Description + Typ_Text + Comma_Separator
-                    + Experiment_Sync + Typ_Integer + Comma_Separator
-                    + Experiment_RemoteID + Typ_Integer + " UNIQUE " + Comma_Separator
-                    + Experiment_ProjectID + Typ_Integer
-                    + Bracket_Separator_Right + Semicolon_Separator;
     //
     private static final String DATABASE_CREATE_Entry =
             "CREATE TABLE IF NOT EXISTS" + Table_Entry
                     + Bracket_Separator_Left + Entry_ID + Typ_Integer + "primary key autoincrement" + Comma_Separator
-                    + Entry_Titel +Typ_String + Comma_Separator
-                    + Entry_Typ + Typ_Integer +  "not null" + Comma_Separator
+                    + Entry_Titel + Typ_String + Comma_Separator
+                    + Entry_Typ + Typ_Integer + "not null" + Comma_Separator
                     + Entry_Content + Typ_Text + Comma_Separator
                     + Entry_Sync + Typ_Integer + Comma_Separator
                     + Entry_CreationDate + Typ_Number + Comma_Separator
                     + Entry_ChangeDate + Typ_Number + Comma_Separator
                     + Entry_SyncDate + Typ_Number + Comma_Separator
                     + Entry_RemoteID + Typ_Integer + " UNIQUE " + Comma_Separator
-                    + Entry_ExperimentID + Typ_Integer +Comma_Separator
+                    + Entry_ExperimentID + Typ_Integer + Comma_Separator
                     + Entry_UserID + Typ_String
                     + Bracket_Separator_Right + Semicolon_Separator;
-    // Context of application who uses us.
-
-    private static DatabaseHelper myDBHelper;
-    private SQLiteDatabase db;
+    public static final String Table_User = " _user ";
+    //
+    private static final String DATABASE_CREATE_USER =
+            "CREATE TABLE IF NOT EXISTS" + Table_User
+                    + Bracket_Separator_Left + User_ID + Typ_Integer + "primary key autoincrement" + Comma_Separator
+                    + User_EMail + Typ_String + "not null" + Comma_Separator
+                    + User_Password + Typ_String + "not null" + Comma_Separator
+                    + User_FName + Typ_String + Comma_Separator
+                    + User_LName + Typ_String
+                    + Bracket_Separator_Right + Semicolon_Separator;
+    public static final String Table_Project = " _project ";
+    //
+    private static final String DATABASE_CREATE_PROJECT =
+            "CREATE TABLE IF NOT EXISTS" + Table_Project
+                    + Bracket_Separator_Left + Project_ID + Typ_Integer + "primary key autoincrement" + Comma_Separator
+                    + Project_Name + Typ_String + "not null, "
+                    + Project_Description + Typ_Text + Comma_Separator
+                    + Project_Sync + Typ_Integer + Comma_Separator
+                    + Project_RemoteID + Typ_Integer + " UNIQUE "
+                    + Bracket_Separator_Right + Semicolon_Separator;
+    public static final String Table_Experiment = " _experiment ";
+    //
+    private static final String DATABASE_CREATE_EXPERIMENT =
+            "CREATE TABLE IF NOT EXISTS" + Table_Experiment
+                    + Bracket_Separator_Left + Experiment_ID + Typ_Integer + "primary key autoincrement" + Comma_Separator
+                    + Experiment_Name + Typ_String + "not null" + Comma_Separator
+                    + Experiment_Description + Typ_Text + Comma_Separator
+                    + Experiment_Sync + Typ_Integer + Comma_Separator
+                    + Experiment_RemoteID + Typ_Integer + " UNIQUE " + Comma_Separator
+                    + Experiment_ProjectID + Typ_Integer
+                    + Bracket_Separator_Right + Semicolon_Separator;
+    // Track DB version if a new version of your app changes the format.
+    public static final int DATABASE_VERSION = 1;
     // ids for the specific rows
     //user table
     public final static int COL_UserID = 0;
+    // Context of application who uses us.
     public final static int COL_UserEmail = 1;
     public final static int COL_UserPass = 2;
     public final static int COL_UserFName = 3;
@@ -161,13 +155,16 @@ public class DBAdapter {
     public final static int COL_ExperimentSync = 3;
     public final static int COL_ExperimentRemoteID = 4;
     public final static int COL_ExperimentProjectID = 5;
-
     // project table
     public final static int COL_ProjectID = 0;
     public final static int COL_ProjectName = 1;
     public final static int COL_ProjectDescription = 2;
     public final static int COL_ProjectSync = 3;
     public final static int COL_ProjectRemoteID = 4;
+    // For logging:
+    private static final String TAG = "DBAdapter";
+    private static DatabaseHelper myDBHelper;
+    private SQLiteDatabase db;
     /////////////////////////////////////////////////////////////////////
     //	Public methods:
     /////////////////////////////////////////////////////////////////////
@@ -214,10 +211,11 @@ public class DBAdapter {
         initialValues.put(Experiment_RemoteID,remoteExperiment.get_id());
         return db.insert(Table_Experiment,null,initialValues);
     }
-    public long insertRemoteEntry(RemoteEntry remoteEntry){
+
+    public long insertRemoteEntry(RemoteEntry remoteEntry, int typ) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,remoteEntry.getTitle());
-        initialValues.put(Entry_Typ,remoteEntry.getAttachment_type());
+        initialValues.put(Entry_Typ, typ);
         initialValues.put(Entry_Content,remoteEntry.getAttachment().getContent().toString());
         initialValues.put(Entry_Sync,1);
         initialValues.put(Entry_ExperimentID,remoteEntry.getExperiment_id());
@@ -226,6 +224,21 @@ public class DBAdapter {
         initialValues.put(Entry_CreationDate,remoteEntry.getEntry_time());
         initialValues.put(Entry_SyncDate,remoteEntry.getSync_time());
         initialValues.put(Entry_ChangeDate,remoteEntry.getChange_time());
+        return db.insert(Table_Entry, null, initialValues);
+    }
+
+    public long insertRemoteEntry(String title, int typ, String entry_Content, int experiment_id, String user_name, int remote_id, Long entrytime, Long synctime, Long changetime) {
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(Entry_Titel, title);
+        initialValues.put(Entry_Typ, typ);
+        initialValues.put(Entry_Content, entry_Content);
+        initialValues.put(Entry_Sync, 1);
+        initialValues.put(Entry_ExperimentID, experiment_id);
+        initialValues.put(Entry_UserID, user_name);
+        initialValues.put(Entry_RemoteID, remote_id);
+        initialValues.put(Entry_CreationDate, entrytime);
+        initialValues.put(Entry_SyncDate, synctime);
+        initialValues.put(Entry_ChangeDate, changetime);
         return db.insert(Table_Entry,null,initialValues);
     }
     public long insertLocalEntry(LocalEntry localEntry){
@@ -541,6 +554,10 @@ public class DBAdapter {
      */
     private static class DatabaseHelper extends SQLiteOpenHelper
     {
+        DatabaseHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+
         public static DatabaseHelper getInstance(Context context) {
 
             // Use the application context, which will ensure that you
@@ -550,9 +567,6 @@ public class DBAdapter {
                 myDBHelper = new DatabaseHelper(context.getApplicationContext());
             }
             return myDBHelper;
-        }
-        DatabaseHelper(Context context) {
-            super(context,DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override

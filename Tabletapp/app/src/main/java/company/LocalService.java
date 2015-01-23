@@ -1,10 +1,8 @@
 package company;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
+
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -12,21 +10,16 @@ import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.StrictMode;
-import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
-import AsyncTasks.AsyncTaskSyncEntry;
 import AsyncTasks.StartUpAsyncTask;
 import exceptions.SBSBaseException;
-import imports.App_Methodes;
 import imports.AttachmentTable;
 import imports.AttachmentText;
-import imports.CursorSDS;
 import imports.Experiment;
 import imports.LocalEntry;
 import imports.Project;
@@ -45,28 +38,19 @@ public class LocalService extends Service {
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
     private User user;
-    private String url;
-    Context ctx = Start.context ;
+
+
     private ServersideDatabaseConnectionObject SDCO;
-    private Runnable runnable;
+
     private ServerDatabaseSession SDS;
     private LinkedList<RemoteProject> projects = new LinkedList<RemoteProject>();
     private LinkedList<RemoteExperiment> experiments = new LinkedList<RemoteExperiment>();
     private LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
-    private  byte[] challange;
+
     private DBAdapter myDb = Start.myDb;
-    private Handler handler = new Handler();
-    public class LocalBinder extends Binder {
-        LocalService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return LocalService.this;
-        }
-    }
 
 
-
-
-    public LocalService(){
+    public LocalService() {
        /* if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy =
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -83,41 +67,25 @@ public class LocalService extends Service {
         //if (cur.getCount() == 0)
         //dummiData();
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-          /* do what you need to do */
-                myDb.open();
-                Cursor c = myDb.getAllSyncedEntryRows();
-                myDb.close();
-                if (c.getCount() > 0) {
-                  //  new AsyncTaskSyncEntry().execute(new CursorSDS(c, SDS, myDb)); //TODO: usable if entry sync is working.
-                }
 
-
-          /* and here comes the "trick" */
-                handler.postDelayed(this, 600000);
-            }
-        };
     }
 
     @Override
-    public void onCreate(){
-super.onCreate();
-
+    public void onCreate() {
+        super.onCreate();
 
 
     }
 
-    public void setUserAndURL(User user,String url) {
+    public void setUserAndURL(User user, String server) {
         this.user = user;
-        this.url = url;
+
     }
 
+    private void openDB() {
+        myDb.open();
+    }
 
-     private void openDB() {
-             myDb.open();
-         }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // We want this service to continue running until it is explicitly
@@ -130,23 +98,9 @@ super.onCreate();
         super.onDestroy();
 //        closeDB();
     }
-    public void insertInDb(){
 
-      try {
-          for (RemoteProject project : projects) {
-              myDb.insertRemoteProject(project);
-          }
 
-          for (RemoteExperiment experiment : experiments) {
-              myDb.insertRemoteExperiment(experiment);
-          }
-
-          for (RemoteEntry entry : entries) {
-              myDb.insertRemoteEntry(entry);
-          }
-      }catch (Exception e)
-      {e.printStackTrace();}
-    }
+    /*
     private void dummiData(){
      try{
         user = new User("Hans@dampf.net","passwd","Hans","Dampf");
@@ -169,24 +123,18 @@ super.onCreate();
         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
         myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
     }
+
     catch (Exception e)
     {
         e.printStackTrace();
     }
     }
+    */
 
     private void closeDB() {
-      myDb.close();
+        myDb.close();
     }
-    public void insertInDbKeyboardEntry(LocalEntry entry,int typ){
-    switch (typ)
-    {
-        case 1 : myDb.insertLocalEntry(entry);
-                 break;
-
-    }
-}
-    public void deleteAllSynced(){
+    public void deleteAllSynced() {
         this.myDb.deleteAllSyncedProjects();
         this.myDb.deleteAllSyncedExperiments();
         this.myDb.deleteAllSyncedEntries();
@@ -194,28 +142,28 @@ super.onCreate();
 
     }
 
+    public int connect(String adress) throws ExecutionException, InterruptedException {
+        URL url;
+        try {
+            url = new URL(adress);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return 1;
+        }
+
+
+        if (isOnline()) {
+            SDS = new ServerDatabaseSession(url, user);
+            SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
+            return new StartUpAsyncTask().execute(SDCO).get();
+        } else return 2;
+    }
+
     // connection method For connecting with server
 
-   public int connect(String adress) throws ExecutionException, InterruptedException {
-       URL url;
-       try {
-           url = new URL(adress);
-       } catch (MalformedURLException e) {
-           e.printStackTrace();
-           return 1;
-       }
-
-
-           if (isOnline()) {
-               SDS = new ServerDatabaseSession(url, user);
-               SDCO = new ServersideDatabaseConnectionObject(SDS,myDb);
-               return  new StartUpAsyncTask().execute(SDCO).get();
-                           }
-               else return 2;
-                                        }
-// Method to get all active Projects From the user
+    // Method to get all active Projects From the user
     public LinkedList<Project> getProjects() throws SBSBaseException {
-      // LinkedList<Project> remoteProject_list = new LinkedList<Project>();// = SDS.get_projects();
+        // LinkedList<Project> remoteProject_list = new LinkedList<Project>();// = SDS.get_projects();
         LinkedList<Project> projects1 = new LinkedList<Project>();
 
     /*    for (RemoteProject project : projects) {
@@ -223,35 +171,35 @@ super.onCreate();
         }
         return projects1;*/
         myDb.open();
-      return displayProjects(myDb.getAllProjectRows());
+        return displayProjects(myDb.getAllProjectRows());
 
-    //    remoteProject_list.add(0,new Project(new RemoteProject(1,"project 1" ,"Das ist Project 1")));
-      //  remoteProject_list.add(1,new Project(new RemoteProject(2,"project 2" ,"Das ist Project 2")));
-      //  remoteProject_list.add(2,new Project(new RemoteProject(3,"project 3" ,"Das ist Project 3")));
-      //  return remoteProject_list;
+        //    remoteProject_list.add(0,new Project(new RemoteProject(1,"project 1" ,"Das ist Project 1")));
+        //  remoteProject_list.add(1,new Project(new RemoteProject(2,"project 2" ,"Das ist Project 2")));
+        //  remoteProject_list.add(2,new Project(new RemoteProject(3,"project 3" ,"Das ist Project 3")));
+        //  return remoteProject_list;
     }
 
     private LinkedList<Project> displayProjects(Cursor cursor) {
-       try {
+        try {
 
-           LinkedList<Project> remoteProjects = new LinkedList<Project>();
-           // populate the message from the cursor
+            LinkedList<Project> remoteProjects = new LinkedList<Project>();
+            // populate the message from the cursor
 
-           // Reset cursor to start, checking to see if there's data:
-           if (cursor.moveToFirst()) {
-               do {
-                   // Process the data:
-                   remoteProjects.add(new Project(cursor.getInt(DBAdapter.COL_ProjectID), cursor.getInt(DBAdapter.COL_ProjectRemoteID), cursor.getString(DBAdapter.COL_ProjectName), cursor.getString(DBAdapter.COL_ProjectDescription)));
+            // Reset cursor to start, checking to see if there's data:
+            if (cursor.moveToFirst()) {
+                do {
+                    // Process the data:
+                    remoteProjects.add(new Project(cursor.getInt(DBAdapter.COL_ProjectID), cursor.getInt(DBAdapter.COL_ProjectRemoteID), cursor.getString(DBAdapter.COL_ProjectName), cursor.getString(DBAdapter.COL_ProjectDescription)));
 
-               } while (cursor.moveToNext());
-           }
-           // Close the cursor to avoid a resource leak.
-           cursor.close();
-           return  remoteProjects;
-       }catch (Exception e){
-           e.printStackTrace();
-           return null;
-       }
+                } while (cursor.moveToNext());
+            }
+            // Close the cursor to avoid a resource leak.
+            cursor.close();
+            return remoteProjects;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
 
@@ -280,20 +228,22 @@ super.onCreate();
             if (cursor.moveToFirst()) {
                 do {
                     // Process the data:
-                    experiments.add(new Experiment(cursor.getInt(DBAdapter.COL_ExperimentID), cursor.getInt(DBAdapter.COL_ExperimentRemoteID),cursor.getInt(DBAdapter.COL_ExperimentProjectID), cursor.getString(DBAdapter.COL_ExperimentName), cursor.getString(DBAdapter.COL_ExperimentDescription)));
+                    experiments.add(new Experiment(cursor.getInt(DBAdapter.COL_ExperimentID), cursor.getInt(DBAdapter.COL_ExperimentRemoteID), cursor.getInt(DBAdapter.COL_ExperimentProjectID), cursor.getString(DBAdapter.COL_ExperimentName), cursor.getString(DBAdapter.COL_ExperimentDescription)));
 
                 } while (cursor.moveToNext());
             }
             // Close the cursor to avoid a resource leak.
             cursor.close();
-            return  experiments;
-        }catch (Exception e){
+            return experiments;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }}
+        }
+    }
+
     // Method to get all active Entries From the user
     public LinkedList<LocalEntry> getEntries() throws SBSBaseException {
-       return displayEntries(myDb.getAllEntryRows());
+        return displayEntries(myDb.getAllEntryRows());
     }
 
     private LinkedList<LocalEntry> displayEntries(Cursor cursor) {
@@ -310,9 +260,9 @@ super.onCreate();
                     switch (cursor.getInt(DBAdapter.COL_EntryTyp)) {
                         case 1:
                             if (cursor.getInt(DBAdapter.COL_EntrySync) == 1)
-                            entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), true, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
-                        else
-                            entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), false, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
+                                entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), true, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
+                            else
+                                entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), false, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
                             break;
                         case 2:
                             if (cursor.getInt(DBAdapter.COL_EntrySync) == 1)
@@ -326,16 +276,14 @@ super.onCreate();
             }
             // Close the cursor to avoid a resource leak.
             cursor.close();
-            return  entries;
-        }catch (Exception e){
+            return entries;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }}
+        }
+    }
 
-
-
-
-    public LinkedList getLastEntries(int projectID,int experimentID,int entryID,int NumbersToCall){
+    public LinkedList getLastEntries(int projectID, int experimentID, int entryID, int NumbersToCall) {
         LinkedList<RemoteEntry> remoteEntries_list = new LinkedList<RemoteEntry>();
 
         //TODO: ADD Get last entry function here
@@ -348,12 +296,14 @@ super.onCreate();
         return mBinder;
     }
 
-    /** method for clients */
+    /**
+     * method for clients
+     */
     public Boolean isOnline() {
         try {
             Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
             int returnVal = p1.waitFor();
-            boolean reachable = (returnVal==0);
+            boolean reachable = (returnVal == 0);
             return reachable;
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -366,14 +316,19 @@ super.onCreate();
         return user;
     }
 
-
-
     private Boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();}
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
 
+    public class LocalBinder extends Binder {
+        LocalService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return LocalService.this;
+        }
+    }
 
 
 }
