@@ -67,11 +67,11 @@ public class Entry_show extends Activity {
 
         // preparing list data
 
-      //  prepareListData();
-    //    for (String aDebugList : debugList) Log.d("debug",aDebugList);
-    //    listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, img, listDataDate);
+       prepareListData();
+        for (String aDebugList : debugList) Log.d("debug",aDebugList);
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, img, listDataDate);
         // setting list adapter
-        try {
+     /*  try {
             NewAdapter mNewAdapter = new NewAdapter(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList());
             mNewAdapter
                     .setInflater(
@@ -79,12 +79,12 @@ public class Entry_show extends Activity {
                             this);
             expListView.setAdapter(mNewAdapter);
         }catch (NullPointerException e)
-        {e.printStackTrace();}
+        {e.printStackTrace();}*/
 
-       // getExpandableListView().setAdapter(mNewAdapter);
-      //  expandbleLis.setOnChildClickListener(this);
+        //  getExpandableListView().setAdapter(mNewAdapter);
+    //    expandbleLis.setOnChildClickListener(this);
 
-       // expListView.setAdapter(listAdapter);
+        expListView.setAdapter(listAdapter);
 
 
         ActivityRegistry.register(this);

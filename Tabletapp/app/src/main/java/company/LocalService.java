@@ -13,6 +13,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
+import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -292,18 +293,7 @@ super.onCreate();
         }}
     // Method to get all active Entries From the user
     public LinkedList<LocalEntry> getEntries() throws SBSBaseException {
-        //TODO : add entry call function here!
-     /*   LinkedList<RemoteEntry> remoteEntries_list = new LinkedList<RemoteEntry>();
-
-        remoteEntries_list.add(0,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),1,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test1",user));
-        remoteEntries_list.add(1,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),2,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test2",user));
-        remoteEntries_list.add(2,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),3,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test3",user));
-        remoteEntries_list.add(3,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),4,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test4",user));
-        remoteEntries_list.add(4,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
-        remoteEntries_list.add(5,new RemoteEntry(new AttachmentText("test") ,1,App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
-
-        return remoteEntries_list;*/
-        return displayEntries(myDb.getAllEntryRows());
+       return displayEntries(myDb.getAllEntryRows());
     }
 
     private LinkedList<LocalEntry> displayEntries(Cursor cursor) {

@@ -2,6 +2,7 @@ package AsyncTasks;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
                     for (int k = 0; k < projectExperimentEntries.get(j).getExperimentEntry().size(); k++) {
                         if (projectExperimentEntries.get(j).getExperimentEntry().get(k).getExperiments().get_id().equals(remoteEntry_list.get(i).getExperiment_id())) {
                             projectExperimentEntries.get(j).getExperimentEntry().get(k).getEntriesList().add(remoteEntry_list.get(i));
-
+                            Log.d("Entry" + k,remoteEntry_list.get(i).getTitle());
                             break;
 
                         }

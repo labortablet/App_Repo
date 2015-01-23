@@ -13,6 +13,8 @@ import company.DBAdapter;
 import company.ProjectExperimentEntry;
 import company.Start;
 import exceptions.SBSBaseException;
+import imports.AttachmentText;
+import imports.LocalEntry;
 import imports.ServersideDatabaseConnectionObject;
 import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
@@ -37,14 +39,27 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
             SDS.start_session();
             projects = SDS.get_projects();
             experiments = SDS.get_experiments();
-            //TODO: ADD Get Entries here!
-       /*     for (int i = 0; experiments.size() >= i; i++) {
-                LinkedList<Entry_id_timestamp> entry_id_timestamps = SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
-                for (int j = 0; entry_id_timestamps.size() >= j; j++) {
-                    entries.add(SDS.get_entry(entry_id_timestamps.get(j)));
-                }
+            LinkedList<Entry_id_timestamp> remoteEntry_list = SDS.get_last_entry_references(experiments.getFirst().get_id(), 10, null);
 
-            }*/
+            RemoteEntry a;
+            for (Entry_id_timestamp b: remoteEntry_list) {
+                a = SDS.get_entry(b);
+                a = new RemoteEntry(new AttachmentText(a.getAttachment().getContent().toString()),a.getEntry_time(),a.getExperiment_id(), a.getSync_time(), a.getChange_time(), a.getTitle(), a.getUser());
+                entries.add(a);
+                System.out.println(a.getRemote_id());
+                System.out.println(a.getTitle());
+                System.out.println(a.getAttachment_type());
+                System.out.println(a.getAttachment());
+            }
+
+            /*
+            for (int i = 0; experiments.size() > i; i++) {
+                LinkedList<Entry_id_timestamp> entry_id_timestamps = SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
+                for (int j = 0; entry_id_timestamps.size() > j; j++) {
+                    remoteEntry = SDS.get_entry(entry_id_timestamps.get(j));
+                    entries.add(remoteEntry);
+                }}*/
+
             myDb.open();
             for (RemoteProject project : projects) {
                 myDb.insertRemoteProject(project);
@@ -59,14 +74,15 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
             }
             myDb.close();
             return 0;
-        } catch (SBSBaseException e) {
+
+    } catch (SBSBaseException e) {
             e.printStackTrace();
            return 3;
-        }
+        }}
 
 
-    }
-@Override
+
+        @Override
     protected void onPostExecute(Integer result) {
     super.onPostExecute(result);
 

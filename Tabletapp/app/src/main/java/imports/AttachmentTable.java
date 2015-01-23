@@ -17,7 +17,9 @@ public class AttachmentTable extends AttachmentBase  {
      */
 
     public AttachmentTable(String tablestring)
-    {super(tablestring);
+    {
+
+       super(tablestring);
 
     }
 
