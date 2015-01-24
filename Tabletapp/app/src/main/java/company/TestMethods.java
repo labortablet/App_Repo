@@ -50,11 +50,20 @@ public class TestMethods {
             LinkedList<Entry_id_timestamp> remoteEntry_list = SDS.get_last_entry_references(remoteExperiment_list.getFirst().get_id(), 10, null);
             System.out.println("Got last Entrys list");
             System.out.println(remoteEntry_list);
-
+            RemoteEntry remoteEntry;
+            LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
+            for (int i = 0; remoteExperiment_list.size() > i; i++) {
+                LinkedList<Entry_id_timestamp> entry_id_timestamps = SDS.get_last_entry_references(remoteExperiment_list.get(i).get_id(), 10, null);
+                for (int j = 0; entry_id_timestamps.size() > j; j++) {
+                    remoteEntry = SDS.get_entry(entry_id_timestamps.get(j));
+                    entries.add(remoteEntry);
+                    System.out.println(remoteEntry.getTitle());
+                }
+            }
 
             for (int i = 0; i < remoteEntry_list.size(); i++) {
-                RemoteEntry a = SDS.get_entry(remoteEntry_list.get(i));
-                System.out.println(a.getAttachment_type());
+             //   RemoteEntry a = SDS.get_entry(remoteEntry_list.get(i));
+            //    System.out.println(a.getTitle());
             }
 
 

@@ -369,6 +369,7 @@ public class ServerDatabaseSession {
         String user_lastname = result.getString("user_lastname");
         User user = new User("sad", "sad");
         AttachmentBase attachment = AttachmentBase.deserialize(attachment_type, attachment_serialized);
+        System.out.println(attachment.getContent().toString());
         return new RemoteEntry(attachment, entry_time, experiment_id, sync_time, change_time, title, user)
 ;
     }

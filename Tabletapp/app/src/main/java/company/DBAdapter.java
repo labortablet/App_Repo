@@ -217,6 +217,7 @@ public class DBAdapter {
         initialValues.put(Entry_Titel,remoteEntry.getTitle());
         initialValues.put(Entry_Typ, typ);
         initialValues.put(Entry_Content,remoteEntry.getAttachment().getContent().toString());
+        Log.d("Attachment",remoteEntry.getAttachment().getContent().toString());
         initialValues.put(Entry_Sync,1);
         initialValues.put(Entry_ExperimentID,remoteEntry.getExperiment_id());
         initialValues.put(Entry_UserID,remoteEntry.getUser().getUser_email());
