@@ -325,6 +325,13 @@ public class ServerDatabaseSession {
         return entry_references;
     }
 
+    public boolean check_auth() throws SBSBaseException{
+        this.check_for_session();
+        JSONObject result = send_action_after_auth_and_get_result("check_auth");
+        this.check_for_success(result);
+        return result.getBoolean("auth");
+    };
+
     public Entry_id_timestamp send_entry(Integer experiment_id, Long entry_time,String title, Integer attachment_type, AttachmentBase attachment) throws SBSBaseException{
         this.check_for_session();
         //only text right now
@@ -338,13 +345,16 @@ public class ServerDatabaseSession {
         this.put_wrapper(request, "experiment_id", experiment_id.toString());
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
-        JSONArray entry_id_timestamp = null;
+        Long entry_current_time;
+        Integer entry_id;
         try {
-            entry_id_timestamp = result.getJSONArray("entry_id_timestamp");
+            entry_current_time = result.getLong("entry_current_time");
+            entry_id = result.getInt("entry_id");
         } catch (JSONException e) {
+            System.out.println(result);
             throw new SBSBaseException();
         }
-        return new Entry_id_timestamp(entry_id_timestamp.getInt(0), entry_id_timestamp.getLong(1));
+        return new Entry_id_timestamp(entry_id, entry_current_time);
     }
 
     public RemoteEntry get_entry(Entry_id_timestamp a) throws SBSBaseException{
