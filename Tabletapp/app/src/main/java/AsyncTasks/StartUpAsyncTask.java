@@ -54,8 +54,8 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
 
             for (int i = 0; i <entries.size();i++)
             {
-                Log.d("Titel",entries.get(i).getTitle());
-                myDb.insertRemoteEntry(entries.get(i).getTitle(), entries.get(i).getAttachment().getTypeNumber(), entries.get(i).getAttachment().getContent().toString(), entries.get(i).getExperiment_id(), entries.get(i).getUser().getUser_email(), i, entries.get(i).getEntry_time(), entries.get(i).getSync_time(), entries.get(i).getChange_time());
+               // Log.d("Titel",entries.get(i).getTitle());
+                myDb.insertRemoteEntry(entries.get(i).getTitle(), entries.get(i).getAttachment().getTypeNumber(), entries.get(i).getAttachment().getContent().toString(), entries.get(i).getExperiment_id(), entries.get(i).getUser().getUser_email(),  entries.get(i).getEntry_time(), entries.get(i).getSync_time(), entries.get(i).getChange_time());
             }
        //     for (RemoteEntry entry : entries) {
        //     myDb.insertRemoteEntry(entry.getTitle(),entry.getAttachment().getTypeNumber(), entry.getAttachment().getContent().toString(),entry.getExperiment_id(), entry.getUser().getUser_email(),entry.getRemote_id(), entry.getEntry_time(), entry.getSync_time(), entry.getChange_time());
