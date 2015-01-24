@@ -11,6 +11,7 @@ public class AttachmentBase implements AttachmentInterface {
             default: return new AttachmentText(attachment_serialized);
         }
     }
+    
     public Object getContent() {
         return null;
     }
@@ -18,8 +19,13 @@ public class AttachmentBase implements AttachmentInterface {
     {
         this.attachment = string;
     }
+    public AttachmentBase(byte[] string)
+    {
+        this.attachment = String.valueOf(string);
+    }
 public AttachmentBase (AttachmentBase a)
 {this.attachment = a.attachment; }
+    public int getTypeNumber(){return 0;};
 }
 
 

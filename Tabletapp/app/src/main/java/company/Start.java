@@ -230,6 +230,7 @@ public class Start extends Activity {
     }
     @Override
     protected void onDestroy(){
+        super.onDestroy();
 //mService.deleteAllSynced();
     }
 
