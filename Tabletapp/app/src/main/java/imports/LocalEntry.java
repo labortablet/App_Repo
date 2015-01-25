@@ -66,19 +66,6 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
 
      *@param sync The value which says if the LocalEntry already on the Server
      */
-
-    public LocalEntry(String title, AttachmentBase attachment,Long  entry_time, User user, boolean sync,Integer local_id,int Experiment_id,Long  sync_time,Long change_time) {
-        this.title = title;
-        this.attachment = attachment;
-        this.entry_time = entry_time;
-        this.user = user;
-        this.local_id = local_id;
-        this.sync = sync;
-        this.Experiment_id =Experiment_id;
-        this.sync_time = sync_time;
-        this.change_time = change_time;
-    }
-
     public LocalEntry(int local_id, User user, int Experiment_id, String title, AttachmentBase attachment, boolean sync, Long entry_time, Long sync_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
