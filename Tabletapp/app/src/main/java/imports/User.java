@@ -8,7 +8,7 @@ public class User {
     private byte[] pw_hashb;
     private static Boolean lastname_first = false;
 
-    //this methode can be used if one has the unhashed password
+    //this method can be used if one has the unhashed password
     public void setPw(String password){
         byte[] resultb = null;
         String result = null;

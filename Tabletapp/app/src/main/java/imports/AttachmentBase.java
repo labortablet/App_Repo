@@ -18,9 +18,7 @@ public abstract class AttachmentBase {
 
     public static int getTypeNumber() {
         return -1;
-    }
-
-    ;
+    };
 
     public abstract String serialize();
 
