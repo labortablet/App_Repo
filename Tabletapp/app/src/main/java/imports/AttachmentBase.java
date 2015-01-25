@@ -16,7 +16,7 @@ public abstract class AttachmentBase {
 
     public abstract Object getContent(); //FIXME der return Wert hier solle nicht Object sein!!!
 
-    public static int getTypeNumber() {
+    public int getTypeNumber() {
         return -1;
     };
 

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 import company.DBAdapter;
 import exceptions.SBSBaseException;
+import imports.AttachmentBase;
 import imports.ServersideDatabaseConnectionObject;
 import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
@@ -39,7 +40,7 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
                     remoteEntry = SDS.get_entry(entry_id_timestamps.get(j));
                     Log.d("Attachmentconent1", remoteEntry.getAttachment().getContent().toString());
                     entries.add(remoteEntry);
-                  //  Log.d("Attachmentcontent2", entries.get(j).getAttachment().getContent().toString());
+                   Log.d("Attachmentcontent2", entries.get(j).getAttachment().getContent().toString());
                 }
             }
 
@@ -55,6 +56,7 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
             for (int i = 0; i <entries.size();i++)
             {
                // Log.d("Titel",entries.get(i).getTitle());
+                entries.get(i).getAttachment();
                 myDb.insertRemoteEntry(entries.get(i).getTitle(), entries.get(i).getAttachment().getTypeNumber(), entries.get(i).getAttachment().getContent().toString(), entries.get(i).getExperiment_id(), entries.get(i).getUser().getUser_email(),  entries.get(i).getEntry_time(), entries.get(i).getSync_time(), entries.get(i).getChange_time());
             }
        //     for (RemoteEntry entry : entries) {
