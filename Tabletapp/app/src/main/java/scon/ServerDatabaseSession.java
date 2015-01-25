@@ -373,7 +373,7 @@ public class ServerDatabaseSession {
         Long change_time = result.getLong("entry_current_time");
         int experiment_id = result.getInt("experiment_id");
         int attachment_type = result.getInt("entry_attachment_type");
-        byte[] attachment_serialized = uni2bin(result.getString("entry_attachment"));
+        String attachment_serialized = result.getString("entry_attachment");
         String title = result.getString("entry_title");
         String user_firstname = result.getString("user_firstname");
         String user_lastname = result.getString("user_lastname");

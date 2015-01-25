@@ -244,7 +244,7 @@ public class DBAdapter {
     public long insertLocalEntry(LocalEntry localEntry){
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,localEntry.getTitle());
-        initialValues.put(Entry_Typ,localEntry.getAttachment_type());
+        initialValues.put(Entry_Typ,localEntry.getAttachment().getTypeNumber());
         initialValues.put(Entry_Content,localEntry.getAttachment().getContent().toString());
         initialValues.put(Entry_UserID,localEntry.getUser().getUser_id());
         initialValues.put(Entry_Sync,0);
@@ -502,7 +502,7 @@ public class DBAdapter {
         String where = Entry_RemoteID + " = " + obj.getRemote_id();
         ContentValues newValues = new ContentValues();
         newValues.put(Entry_Titel,obj.getTitle());
-        newValues.put(Entry_Typ,obj.getAttachment_type());
+        newValues.put(Entry_Typ,obj.getAttachment().getTypeNumber());
                 newValues.put(Entry_Content,obj.getAttachment().toString());
         newValues.put(Entry_Sync,1);
         newValues.put(Entry_CreationDate,obj.getEntry_time());

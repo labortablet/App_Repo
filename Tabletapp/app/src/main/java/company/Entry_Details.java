@@ -98,7 +98,7 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Project_s
 
         super.onCreate(savedInstanceState);
         ActivityRegistry.register(this);
-        switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment_type()) {
+        switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().getTypeNumber()) {
             case 1: // For Keyboard LocalEntry
                 if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
                     setContentView(R.layout.entry_keyboarddetails_synctrue); // Setting Layout

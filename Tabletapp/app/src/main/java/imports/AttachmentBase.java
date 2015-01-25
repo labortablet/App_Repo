@@ -1,26 +1,26 @@
 package imports;
 
-public class AttachmentBase implements AttachmentInterface {
-    String attachment;
-    public static AttachmentBase deserialize(int attachment_type, byte[] attachment_serialized) {
+public abstract class AttachmentBase{
+    public static AttachmentBase deserialize(int attachment_type, String attachment_serialized) {
         switch (attachment_type) {
-            case 0:  return new AttachmentText(attachment_serialized);
-            /*case 1:  return new AttachmentTable(attachment_serialized);
-            case 2:  return new AttachmentImage(attachment_serialized);
+            case 1:
+                return new AttachmentText(attachment_serialized);
+            case 2:  return new AttachmentTable(attachment_serialized);
+            /*case 3:  return new AttachmentImage(attachment_serialized);
             */
-            default: return new AttachmentText(attachment_serialized);
+            default:
+                return new AttachmentText(attachment_serialized);
         }
     }
-    public Object getContent() {
-        return null;
-    }
-    public AttachmentBase(String string)
-    {
-        this.attachment = string;
-    }
-public AttachmentBase (AttachmentBase a)
-{this.attachment = a.attachment; }
+
+    public abstract Object getContent(); //FIXME der return Wert hier solle nicht Object sein!!!
+
+    public static int getTypeNumber(){return -1;};
+
+    public abstract String serialize();
+
 }
+
 
 
 

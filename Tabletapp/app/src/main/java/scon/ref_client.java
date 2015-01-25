@@ -53,12 +53,13 @@ public class ref_client {
             System.out.println("Entry send");
             System.out.println("Getting Entries");
             RemoteEntry a;
+            AttachmentBase c;
             for (Entry_id_timestamp b: remoteEntry_list) {
                 a = SDS.get_entry(b);
                 System.out.println(a.getRemote_id());
                 System.out.println(a.getTitle());
-                System.out.println(a.getAttachment_type());
-                System.out.println(a.getAttachment());
+                c = a.getAttachment();
+                System.out.println(c.getContent());
             }
         } catch (SBSBaseException e) {
 			System.out.println(e);

@@ -113,7 +113,7 @@ public class Entry_show extends Activity {
                }
 
                 List<String> list = new ArrayList<String>();
-                switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment_type()) {
+                switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getTypeNumber()) {
                     case 1:
                         list.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getContent().toString());
 

@@ -57,7 +57,7 @@ public class Keyboard_entry extends Activity {
                         !(title.getText().toString().trim().isEmpty())) {
                    if (!unique_Test(title.getText().toString())) {
                         try {
-                            LocalEntry edit = new LocalEntry(title.getText().toString(), new AttachmentText(content.getText().toString().trim()),1, App_Methodes.generateTimestamp(), Start.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
+                            LocalEntry edit = new LocalEntry(title.getText().toString(), new AttachmentText(content.getText().toString().trim()), App_Methodes.generateTimestamp(), Start.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
                             Start.myDb.open();
                             Start.myDb.insertLocalEntry(edit);
                             Start.myDb.close();

@@ -54,7 +54,7 @@ public class TestMethods {
 
             for (int i = 0; i < remoteEntry_list.size(); i++) {
                 RemoteEntry a = SDS.get_entry(remoteEntry_list.get(i));
-                System.out.println(a.getAttachment_type());
+                System.out.println(a.getAttachment().getTypeNumber());
             }
 
 

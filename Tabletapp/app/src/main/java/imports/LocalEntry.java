@@ -30,29 +30,6 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      * @since 1.0
      */
 
-    /**
-     * Konstruktor For the converting the Remote to Local entry
-     *@param exp_id  the Exp ID
-     *@param title Title of the LocalEntry
-     *@param attachment Content of the LocalEntry
-
-     *@param entry_time Time when the entry was created
-     *@param user The name of the LocalEntry creator
-
-     *@param sync The value which says if the LocalEntry already on the Server
-     */
-
-    public LocalEntry(Integer exp_id, String title, String attachment, Long  entry_time, User user, boolean sync) {
-        this.Experiment_id = exp_id;
-        this.title = title;
-        this.attachment = new AttachmentText(attachment);
-        this.attachment_type = 1;
-
-        this.entry_time = entry_time;
-        this.user = user;
-        this.sync = sync;
-    }
-
     public LocalEntry(RemoteEntry a,boolean sync) {
         super(a);
     this.sync = sync;
@@ -75,7 +52,6 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
     public LocalEntry(String title, String attachment,Long  entry_time, User user, boolean sync) {
         this.title = title;
         this.attachment = new AttachmentText(attachment);
-        this.attachment_type = 1;
         this.entry_time = entry_time;
         this.user = user;
         this.sync = sync;
@@ -91,10 +67,9 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *@param sync The value which says if the LocalEntry already on the Server
      */
 
-    public LocalEntry(String title, AttachmentText attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,Integer local_id,int Experiment_id,Long  sync_time,Long change_time) {
+    public LocalEntry(String title, AttachmentBase attachment,Long  entry_time, User user, boolean sync,Integer local_id,int Experiment_id,Long  sync_time,Long change_time) {
         this.title = title;
         this.attachment = attachment;
-        this.attachment_type = attachmentTyp;
         this.entry_time = entry_time;
         this.user = user;
         this.local_id = local_id;
@@ -103,10 +78,24 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
         this.sync_time = sync_time;
         this.change_time = change_time;
     }
-    public LocalEntry(String title, AttachmentText attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id) {
+
+    public LocalEntry(int local_id, User user, int Experiment_id, String title, AttachmentBase attachment, boolean sync, Long entry_time, Long sync_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
-        this.attachment_type = attachmentTyp;
+        this.entry_time = entry_time;
+        this.user = user;
+        this.local_id = local_id;
+        this.sync = sync;
+        this.Experiment_id =Experiment_id;
+        this.sync_time = sync_time;
+        this.change_time = change_time;
+    }
+
+
+
+    public LocalEntry(String title, AttachmentBase attachment,Long  entry_time, User user, boolean sync,int Experiment_id) {
+        this.title = title;
+        this.attachment = attachment;
         this.entry_time = entry_time;
         this.user = user;
         this.local_id = local_id;
@@ -126,10 +115,9 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *@param sync The value which says if the LocalEntry already on the Server
      */
 
-    public LocalEntry(String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int local_id,int Experiment_id,Long  sync_time,Long change_time) {
+    public LocalEntry(String title, AttachmentBase attachment,Long  entry_time, User user, boolean sync,int local_id,int Experiment_id,Long  sync_time,Long change_time) {
         this.title = title;
         this.attachment = attachment;
-        this.attachment_type = attachmentTyp;
         this.entry_time = entry_time;
         this.user = user;
         this.local_id = local_id;
@@ -150,15 +138,6 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *@param sync The value which says if the LocalEntry already on the Server
      */
 
-    public LocalEntry(String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id) {
-        this.title = title;
-        this.attachment = attachment;
-        this.attachment_type = attachmentTyp;
-        this.entry_time = entry_time;
-        this.user = user;
-        this.sync = sync;
-        this.Experiment_id =Experiment_id;
-    }
     /**
      * Returns the Sync Value
      * @return    status of synced

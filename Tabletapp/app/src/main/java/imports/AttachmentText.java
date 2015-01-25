@@ -1,21 +1,21 @@
 package imports;
 
+
 public class AttachmentText extends AttachmentBase {
+    private String TextContent;
+
+    public String serialize(){
+        return TextContent;
+    };
 
 	public AttachmentText(String text){
-        super(text);
+        this.TextContent = text;
 	}
 
-    public static int getTypeNumber(){return 0;};
+    public static int getTypeNumber(){return 1;};
 
-    //das hier ist etwas merkwürdig, warum macht AttachmentBase den bitte Strings?
-    public AttachmentText(byte[] serialized){
-        super(serialized.toString());
-    }
-
-    @Override
     public String getContent() {
-        return this.attachment;
+        return this.TextContent;
     }
 
 }

@@ -1,18 +1,9 @@
 package scon;
 
-
-
-import java.sql.Timestamp;
-import java.util.Calendar;
-
 import imports.AttachmentBase;
-import imports.AttachmentText;
 import imports.BaseEntry;
 import imports.User;
 
-/**
- * Created by Grit on 07.09.2014.
- */
 public class RemoteEntry extends BaseEntry {
 
 

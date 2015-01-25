@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 import AsyncTasks.StartUpAsyncTask;
 import exceptions.SBSBaseException;
+import imports.AttachmentBase;
 import imports.AttachmentTable;
 import imports.AttachmentText;
 import imports.Experiment;
@@ -257,21 +258,16 @@ public class LocalService extends Service {
             if (cursor.moveToFirst()) {
                 do {
                     // Process the data:
-                    switch (cursor.getInt(DBAdapter.COL_EntryTyp)) {
-                        case 1:
-                            if (cursor.getInt(DBAdapter.COL_EntrySync) == 1)
-                                entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), true, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
-                            else
-                                entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), false, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
-                            break;
-                        case 2:
-                            if (cursor.getInt(DBAdapter.COL_EntrySync) == 1)
-                                entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), true, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
-                            else
-                                entries.add(new LocalEntry(cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getLong(DBAdapter.COL_EntryCreationDate), new User(cursor.getString(DBAdapter.COL_EntryUserID)), false, cursor.getInt(DBAdapter.COL_EntryID), cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntrySync), cursor.getLong(DBAdapter.COL_EntryChangeDate)));
-                            break;
-                    }
-
+                        entries.add(
+                                new LocalEntry(cursor.getInt(DBAdapter.COL_EntryID),
+                                new User(cursor.getString(DBAdapter.COL_EntryUserID)),
+                                cursor.getInt(DBAdapter.COL_EntryExperimentID),
+                                cursor.getString(DBAdapter.COL_EntryTitle),
+                                AttachmentBase.deserialize(cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getString(DBAdapter.COL_EntryContent)),
+                                cursor.getInt(DBAdapter.COL_EntrySync) == 1,
+                                cursor.getLong(DBAdapter.COL_EntryCreationDate),
+                                cursor.getLong(DBAdapter.COL_EntrySync),
+                                cursor.getLong(DBAdapter.COL_EntryChangeDate)));
                 } while (cursor.moveToNext());
             }
             // Close the cursor to avoid a resource leak.

@@ -37,12 +37,6 @@ public class BaseEntry {
      */
     protected AttachmentBase attachment; //no access yet
     /**
-     *This is the Attachment Typ every LocalEntry got.
-     * @value
-     * @since 1.0
-     */
-    protected int attachment_type = 0; //no access yet
-    /**
      *This is the sync_time a entry only got if it's synced with the Server, this means that it is the time when the server received the LocalEntry.
      * @value
      * @since 1.0
@@ -94,10 +88,6 @@ public class BaseEntry {
 
     public AttachmentBase getAttachment() {
         return attachment;
-    }
-
-    public int getAttachment_type() {
-        return attachment_type;
     }
 
     public User getUser() {

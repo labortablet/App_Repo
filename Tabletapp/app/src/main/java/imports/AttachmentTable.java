@@ -1,27 +1,17 @@
 package imports;
 
-/**
- * Created by Hawky on 18.08.2014.
- */
-public class AttachmentTable extends AttachmentBase  {
-
-
-
-    @Override
-    public String getContent() {
-       return this.attachment;
+public class AttachmentTable extends AttachmentText{
+    public AttachmentTable(String text){
+        super(text);
     }
+
+    public static int getTypeNumber(){return 2;};
+
     /**
      * Returns the 2D Array, which holds the content of the Table
      * @return   table_array
      */
 
-    public AttachmentTable(String tablestring)
-    {
-
-       super(tablestring);
-
-    }
 
 
 /*
