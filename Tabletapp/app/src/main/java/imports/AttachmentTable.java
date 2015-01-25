@@ -6,7 +6,7 @@ public class AttachmentTable extends AttachmentText{
         super(text);
     }
 
-    public static int getTypeNumber(){return 2;};
+    public int getTypeNumber(){return 2;};
 
     /**
      * Returns the 2D Array, which holds the content of the Table

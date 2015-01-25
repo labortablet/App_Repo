@@ -11,7 +11,7 @@ public class AttachmentText extends AttachmentBase {
 	public AttachmentText(String text){
         this.TextContent = text;
 	}
-    public static int getTypeNumber(){return 1;};
+    public int getTypeNumber(){return 1;};
     public String getContent() {
         return this.TextContent;
     }
