@@ -66,4 +66,4 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:onClick="buttonEventHandler" />
-</RelativeLayout><!-- From: file:/C:/Users/Grit/Desktop/uni%20arbeit/repomercurial/main_repo/Tabletapp/app/src/main/res/layout/entry_show.xml -->
+</RelativeLayout><!-- From: file:/C:/Users/Hawky/AndroidStudioProjects/main_repo/Tabletapp/app/src/main/res/layout/entry_show.xml -->

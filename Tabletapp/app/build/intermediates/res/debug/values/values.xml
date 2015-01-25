@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/Grit/Desktop/uni%20arbeit/repomercurial/main_repo/Tabletapp/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Hawky/AndroidStudioProjects/main_repo/Tabletapp/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <color name="row_background">#ffffff</color>
     <color name="table_background">#999999</color>
     <color name="text_black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <!-- From: file:/C:/Users/Grit/Desktop/uni%20arbeit/repomercurial/main_repo/Tabletapp/app/src/main/res/values/dimens.xml -->
+    <!-- From: file:/C:/Users/Hawky/AndroidStudioProjects/main_repo/Tabletapp/app/src/main/res/values/dimens.xml -->
     <eat-comment/>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <!-- From: file:/C:/Users/Grit/Desktop/uni%20arbeit/repomercurial/main_repo/Tabletapp/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Hawky/AndroidStudioProjects/main_repo/Tabletapp/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="LocalService">LocalService</string>
     <string name="MalformedURLException">MalformedURLException</string>
@@ -63,7 +63,7 @@
     <string name="title_activity_Experiment_show">Experimente</string>
     <string name="title_activity_project_show">project_show</string>
     <string name="title_activity_table_wizard">TableWizard</string>
-    <!-- From: file:/C:/Users/Grit/Desktop/uni%20arbeit/repomercurial/main_repo/Tabletapp/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/Hawky/AndroidStudioProjects/main_repo/Tabletapp/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="android:Theme.Light">
         <!-- Customize your theme here. -->

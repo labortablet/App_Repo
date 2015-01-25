@@ -89,4 +89,4 @@
         android:layout_toRightOf="@+id/button3"
         android:gravity="center"
         android:layout_toLeftOf="@+id/button" />
-</RelativeLayout><!-- From: file:/C:/Users/Grit/Desktop/uni%20arbeit/repomercurial/main_repo/Tabletapp/app/src/main/res/layout/new_entry_desition.xml -->
+</RelativeLayout><!-- From: file:/C:/Users/Hawky/AndroidStudioProjects/main_repo/Tabletapp/app/src/main/res/layout/new_entry_desition.xml -->
