@@ -19,23 +19,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e0d35c34-29de-4248-91ef-0240d22f1827" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/intermediates/model_data.bin" afterPath="$PROJECT_DIR$/build/intermediates/model_data.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/AsyncTasks/AsyncTaskProjectExperimentEntry.java" afterPath="$PROJECT_DIR$/app/src/main/java/AsyncTasks/AsyncTaskProjectExperimentEntry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/imports/AttachmentBase.java" afterPath="$PROJECT_DIR$/app/src/main/java/imports/AttachmentBase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/imports/AttachmentTable.java" afterPath="$PROJECT_DIR$/app/src/main/java/imports/AttachmentTable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/imports/AttachmentText.java" afterPath="$PROJECT_DIR$/app/src/main/java/imports/AttachmentText.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/imports/BaseEntry.java" afterPath="$PROJECT_DIR$/app/src/main/java/imports/BaseEntry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/DBAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/DBAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/Entry_Details.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/Entry_Details.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/Entry_show.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/Entry_show.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/Keyboard_entry.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/Keyboard_entry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/imports/LocalEntry.java" afterPath="$PROJECT_DIR$/app/src/main/java/imports/LocalEntry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/LocalService.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/LocalService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/scon/RemoteEntry.java" afterPath="$PROJECT_DIR$/app/src/main/java/scon/RemoteEntry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/scon/ServerDatabaseSession.java" afterPath="$PROJECT_DIR$/app/src/main/java/scon/ServerDatabaseSession.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/Table_entry.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/Table_entry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/company/TestMethods.java" afterPath="$PROJECT_DIR$/app/src/main/java/company/TestMethods.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/scon/ref_client.java" afterPath="$PROJECT_DIR$/app/src/main/java/scon/ref_client.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Tabletapp.iws" />
@@ -62,7 +45,7 @@
       <file leaf-file-name="ServerDatabaseSession.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/ServerDatabaseSession.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.94766355" vertical-offset="5358" max-vertical-offset="6171">
+            <state vertical-scroll-proportion="0.95660377" vertical-offset="5358" max-vertical-offset="6171">
               <caret line="375" column="75" selection-start-line="375" selection-start-column="75" selection-end-line="375" selection-end-column="75" />
               <folding />
             </state>
@@ -1722,7 +1705,11 @@
       <created>1422116732130</created>
       <updated>1422116732130</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fixed improper encoding resulting in wrong content of AttchmentText objects.&#10;&#10;Changed multiple locations in the code to use proper OOP">
+      <created>1422192079814</created>
+      <updated>1422192079814</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1747,19 +1734,19 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1010" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33138174" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33138174" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39770114" sideWeight="0.150978" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32552692" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32552692" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988507" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.42613637" sideWeight="0.84902203" order="14" side_tool="false" content_ui="tabs" />
@@ -1829,7 +1816,8 @@
     <MESSAGE value="Status of sync:&#10; * auth working&#10; * get projects working&#10; * get experiments working&#10; * interfaces for the rest are there but logic is not working yet" />
     <MESSAGE value="Multiple changes.&#10;&#10;Getting entries works now but with sme limitations due to our classes&#10;&#10;Also added some stuff to our polymorphism solution for AttachmentBase.&#10;Maybe we should not use an interface but an abstract class but this needs to be discussed." />
     <MESSAGE value="You can now send an receive entries.&#10;Also added a check function to see if a session is authed or not." />
-    <option name="LAST_COMMIT_MESSAGE" value="You can now send an receive entries.&#10;Also added a check function to see if a session is authed or not." />
+    <MESSAGE value="Fixed improper encoding resulting in wrong content of AttchmentText objects.&#10;&#10;Changed multiple locations in the code to use proper OOP" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed improper encoding resulting in wrong content of AttchmentText objects.&#10;&#10;Changed multiple locations in the code to use proper OOP" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2248,7 +2236,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/scon/ServerDatabaseSession.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.94766355" vertical-offset="5358" max-vertical-offset="6171">
+        <state vertical-scroll-proportion="0.95660377" vertical-offset="5358" max-vertical-offset="6171">
           <caret line="375" column="75" selection-start-line="375" selection-start-column="75" selection-end-line="375" selection-end-column="75" />
           <folding />
         </state>
