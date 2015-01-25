@@ -217,6 +217,7 @@ public class DBAdapter {
         initialValues.put(Entry_Titel,remoteEntry.getTitle());
         initialValues.put(Entry_Typ, typ);
         initialValues.put(Entry_Content,remoteEntry.getAttachment().getContent().toString());
+        Log.d("Attachment",remoteEntry.getAttachment().getContent().toString());
         initialValues.put(Entry_Sync,1);
         initialValues.put(Entry_ExperimentID,remoteEntry.getExperiment_id());
         initialValues.put(Entry_UserID,remoteEntry.getUser().getUser_email());
@@ -227,7 +228,7 @@ public class DBAdapter {
         return db.insert(Table_Entry, null, initialValues);
     }
 
-    public long insertRemoteEntry(String title, int typ, String entry_Content, int experiment_id, String user_name, int remote_id, Long entrytime, Long synctime, Long changetime) {
+    public long insertRemoteEntry(String title, int typ, String entry_Content, int experiment_id, String user_name, Long entrytime, Long synctime, Long changetime) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel, title);
         initialValues.put(Entry_Typ, typ);
@@ -235,7 +236,7 @@ public class DBAdapter {
         initialValues.put(Entry_Sync, 1);
         initialValues.put(Entry_ExperimentID, experiment_id);
         initialValues.put(Entry_UserID, user_name);
-        initialValues.put(Entry_RemoteID, remote_id);
+     //   initialValues.put(Entry_RemoteID, remote_id);
         initialValues.put(Entry_CreationDate, entrytime);
         initialValues.put(Entry_SyncDate, synctime);
         initialValues.put(Entry_ChangeDate, changetime);
