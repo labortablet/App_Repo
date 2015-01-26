@@ -15,6 +15,7 @@ import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -51,6 +52,7 @@ public class LocalService extends Service {
     private LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
     static DBAdapter myDb = Start.myDb;
     TimerTask timerTask;
+    private static List<ProjectExperimentEntry> projectExperimentEntries;
 
     public LocalService() {
 
@@ -341,11 +343,13 @@ if (cursor.getCount() >0){
                 do {
                     // Process the data:
                     try {
-                        Entry_id_timestamp new_entry_info = SDS.send_entry(cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
+                        int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
+                        Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
                         AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
-                        Log.d("Attachment",attachmentBase.getContent().toString());
-                        Log.d("Entry_ID_Timestamp",new_entry_info.getId().toString() + new_entry_info.getLast_change().toString());
                         myDb.updateEntryAfterSync(new_entry_info,cursor.getLong(DBAdapter.COL_EntryCreationDate));
+                     //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
+                       // projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntriesList().get(projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntryIDByCreationTimestamp(cursor.getLong(DBAdapter.COL_EntryCreationDate))).setSync(true);
+                       // Project_show.setProjectExperimentEntries(projectExperimentEntries);
                     } catch (SBSBaseException e) {
                         e.printStackTrace();
                     }
@@ -353,7 +357,6 @@ if (cursor.getCount() >0){
                 } while (cursor.moveToNext());
             }
             }
-            Log.d("TimerStopped", String.valueOf(System.currentTimeMillis()));
             myDb.close();
         }
 

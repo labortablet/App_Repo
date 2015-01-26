@@ -541,6 +541,14 @@ public class DBAdapter {
        // newValues.put(Entry_RemoteID,entry_id_timestamp.getId());
         return db.update(Table_Entry, newValues, where, null) != 0;
     }
+    public int getProjectIDByExperimentID(int experiment_id)
+    {
+        String where = Experiment_RemoteID + " = " + experiment_id;
+        Cursor c = 	db.query(true, Table_Experiment, Experiment_KEYS,
+                where, null, null, null, null, null);
+      c.moveToFirst();
+       return c.getInt(DBAdapter.COL_ExperimentProjectID);
+    }
 
 
 

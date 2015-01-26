@@ -133,10 +133,9 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
         return sync;
     }
 
-
-
-
-
+    public void setSync(boolean sync) {
+        this.sync = sync;
+    }
 /*
     public LocalEntry(Integer rem_id,  String title, Long  sync_time,Long  entry_time, User user, String[][] array, boolean sync) {
         this.remote_id = rem_id;

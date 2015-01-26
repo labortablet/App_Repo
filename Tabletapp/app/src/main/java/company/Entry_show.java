@@ -176,16 +176,16 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
      * After Adding a new LocalEntry Reload the List of Entries
      */
     protected void onResume(){
-      //  img.clear();
-    //    listDataChild.clear();
-   //     listDataDate.clear();
-  //      listDataHeader.clear();
-        super.onResume();
-   //     projectExperimentEntries = Project_show.getProjectExperimentEntries();
-   //     prepareListData();
-   //     listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild,img,listDataDate);
 
-    //    expListView.setAdapter(listAdapter);
+        super.onResume();
+        img.clear();
+        listDataChild.clear();
+        listDataDate.clear();
+        listDataHeader.clear();
+        projectExperimentEntries = Project_show.getProjectExperimentEntries();
+        prepareListData();
+       listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild,img,listDataDate);
+       expListView.setAdapter(listAdapter);
 
     }
 
