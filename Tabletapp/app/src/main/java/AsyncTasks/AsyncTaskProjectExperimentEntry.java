@@ -60,7 +60,6 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
             }
 
             for (int i = 0; i < remoteEntry_list.size(); i++) {
-                int ID = 0;
                 for (int j = 0; j < projectExperimentEntries.size(); j++) {
                     for (int k = 0; k < projectExperimentEntries.get(j).getExperimentEntry().size(); k++) {
                         if (projectExperimentEntries.get(j).getExperimentEntry().get(k).getExperiments().get_id().equals(remoteEntry_list.get(i).getExperiment_id())) {

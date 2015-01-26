@@ -471,7 +471,7 @@ public class DBAdapter {
     // Methods for getting all unsynced entries
     public Cursor getAllUnsyncedEntries(){
         String where = Entry_Sync + " != 1";
-        Cursor c = 	db.query(true, Table_Entry, Experiment_KEYS,
+        Cursor c = 	db.query(true, Table_Entry, Entry_KEYS,
                 where, null, null, null, null, null);
         if (c != null) {
             c.moveToFirst();
@@ -533,11 +533,12 @@ public class DBAdapter {
         return db.update(Table_Entry, newValues, where, null) != 0;
     }
 
-    public boolean updateEntryAfterSync(Entry_id_timestamp entry_id_timestamp){
-        String where = Entry_CreationDate + " = " + entry_id_timestamp.getLast_change();
+    public boolean updateEntryAfterSync(Entry_id_timestamp entry_id_timestamp,Long entry_Time){
+        String where = Entry_CreationDate + " = " + entry_Time;
         ContentValues newValues = new ContentValues();
         newValues.put(Entry_Sync,1);
-        newValues.put(Entry_RemoteID,entry_id_timestamp.getId());
+        newValues.put(Entry_ChangeDate,entry_id_timestamp.getLast_change());
+       // newValues.put(Entry_RemoteID,entry_id_timestamp.getId());
         return db.update(Table_Entry, newValues, where, null) != 0;
     }
 

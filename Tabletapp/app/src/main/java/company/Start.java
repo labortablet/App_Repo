@@ -221,8 +221,9 @@ public class Start extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
+        mService.deleteAllSynced();
         // Unbind from the service
-        if (mBound) {
+            if (mBound) {
             unbindService(mConnection);
             mBound = false;
         }
@@ -231,7 +232,6 @@ public class Start extends Activity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-//mService.deleteAllSynced();
     }
 
 

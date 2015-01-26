@@ -10,10 +10,13 @@ import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 import AsyncTasks.StartUpAsyncTask;
@@ -26,6 +29,7 @@ import imports.LocalEntry;
 import imports.Project;
 import imports.ServersideDatabaseConnectionObject;
 import imports.User;
+import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
 import scon.RemoteExperiment;
 import scon.RemoteProject;
@@ -39,28 +43,25 @@ public class LocalService extends Service {
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
     private User user;
-
-
+    public static Timer myTimer = new Timer();
     private ServersideDatabaseConnectionObject SDCO;
-
-    private ServerDatabaseSession SDS;
+    static ServerDatabaseSession SDS;
     private LinkedList<RemoteProject> projects = new LinkedList<RemoteProject>();
     private LinkedList<RemoteExperiment> experiments = new LinkedList<RemoteExperiment>();
     private LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
-
-    private DBAdapter myDb = Start.myDb;
-
+    static DBAdapter myDb = Start.myDb;
+    TimerTask timerTask;
 
     public LocalService() {
+
+
        /* if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy =
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }*/
 
-        openDB();
-        deleteAllSynced();
-        closeDB();
+
         // myDb.deleteAllEntries();
         //comment from here
         //   Cursor cur = myDb.getAllProjectRows();
@@ -74,8 +75,7 @@ public class LocalService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-
+deleteAllSynced();
     }
 
     public void setUserAndURL(User user, String server) {
@@ -135,11 +135,13 @@ public class LocalService extends Service {
     private void closeDB() {
         myDb.close();
     }
-    public void deleteAllSynced() {
-        this.myDb.deleteAllSyncedProjects();
-        this.myDb.deleteAllSyncedExperiments();
-        this.myDb.deleteAllSyncedEntries();
 
+    public void deleteAllSynced() {
+        this.openDB();
+        myDb.deleteAllSyncedProjects();
+        myDb.deleteAllSyncedExperiments();
+        myDb.deleteAllSyncedEntries();
+        this.closeDB();
 
     }
 
@@ -156,7 +158,9 @@ public class LocalService extends Service {
         if (isOnline()) {
             SDS = new ServerDatabaseSession(url, user);
             SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
-            return new StartUpAsyncTask().execute(SDCO).get();
+            int i = new StartUpAsyncTask().execute(SDCO).get();
+            myTimer.scheduleAtFixedRate(new MyTask(),60000,1200000);
+            return i;
         } else return 2;
     }
 
@@ -258,16 +262,16 @@ public class LocalService extends Service {
             if (cursor.moveToFirst()) {
                 do {
                     // Process the data:
-                        entries.add(
-                                new LocalEntry(cursor.getInt(DBAdapter.COL_EntryID),
-                                new User(cursor.getString(DBAdapter.COL_EntryUserID)),
-                                cursor.getInt(DBAdapter.COL_EntryExperimentID),
-                                cursor.getString(DBAdapter.COL_EntryTitle),
-                                AttachmentBase.deserialize(cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getString(DBAdapter.COL_EntryContent)),
-                                cursor.getInt(DBAdapter.COL_EntrySync) == 1,
-                                cursor.getLong(DBAdapter.COL_EntryCreationDate),
-                                cursor.getLong(DBAdapter.COL_EntrySync),
-                                cursor.getLong(DBAdapter.COL_EntryChangeDate)));
+                    entries.add(
+                            new LocalEntry(cursor.getInt(DBAdapter.COL_EntryID),
+                                    new User(cursor.getString(DBAdapter.COL_EntryUserID)),
+                                    cursor.getInt(DBAdapter.COL_EntryExperimentID),
+                                    cursor.getString(DBAdapter.COL_EntryTitle),
+                                    AttachmentBase.deserialize(cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getString(DBAdapter.COL_EntryContent)),
+                                    cursor.getInt(DBAdapter.COL_EntrySync) == 1,
+                                    cursor.getLong(DBAdapter.COL_EntryCreationDate),
+                                    cursor.getLong(DBAdapter.COL_EntrySync),
+                                    cursor.getLong(DBAdapter.COL_EntryChangeDate)));
                 } while (cursor.moveToNext());
             }
             // Close the cursor to avoid a resource leak.
@@ -326,8 +330,42 @@ public class LocalService extends Service {
         }
     }
 
+    private static class MyTask extends TimerTask {
 
+        public void run() {
+            myDb.open();
+            Cursor cursor = myDb.getAllUnsyncedEntries();
+            Log.d("TimerStarted", String.valueOf(System.currentTimeMillis()));
+if (cursor.getCount() >0){
+            if (cursor.moveToFirst()) {
+                do {
+                    // Process the data:
+                    try {
+                        Entry_id_timestamp new_entry_info = SDS.send_entry(cursor.getInt(DBAdapter.COL_EntryExperimentID), cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
+                        AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
+                        Log.d("Attachment",attachmentBase.getContent().toString());
+                        Log.d("Entry_ID_Timestamp",new_entry_info.getId().toString() + new_entry_info.getLast_change().toString());
+                        myDb.updateEntryAfterSync(new_entry_info,cursor.getLong(DBAdapter.COL_EntryCreationDate));
+                    } catch (SBSBaseException e) {
+                        e.printStackTrace();
+                    }
+
+                } while (cursor.moveToNext());
+            }
+            }
+            Log.d("TimerStopped", String.valueOf(System.currentTimeMillis()));
+            myDb.close();
+            this.cancel();
+        }
+
+    }
 }
+
+
+
+
+
+
 
 
 /*
