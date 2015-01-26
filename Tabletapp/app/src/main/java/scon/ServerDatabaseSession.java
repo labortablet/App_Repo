@@ -167,6 +167,15 @@ public class ServerDatabaseSession {
         return obj;
     };
 
+    private JSONObject put_wrapper(JSONObject obj, String name, Number value) {
+        try {
+            obj.put(name, value);
+        } catch (JSONException e) {
+            //should be impossible as we add a valid parameter to the json
+        }
+        return obj;
+    };
+
     private JSONObject send_action_after_auth_and_get_result(String action) throws SBSBaseException {
         this.check_for_session();
         JSONObject request = new JSONObject();
@@ -339,10 +348,10 @@ public class ServerDatabaseSession {
         this.put_wrapper(request, "action", "send_entry");
         this.put_wrapper(request, "session_id", this.session_id);
         this.put_wrapper(request, "title", title);
-        this.put_wrapper(request, "date_user", entry_time.toString());
-        this.put_wrapper(request, "attachment", attachment.getContent().toString());
-        this.put_wrapper(request, "attachment_type", "0");
-        this.put_wrapper(request, "experiment_id", experiment_id.toString());
+        this.put_wrapper(request, "date_user", entry_time);
+        this.put_wrapper(request, "attachment", attachment.serialize());
+        this.put_wrapper(request, "attachment_type", attachment.getTypeNumber());
+        this.put_wrapper(request, "experiment_id", experiment_id);
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
         Long entry_current_time;
@@ -362,8 +371,8 @@ public class ServerDatabaseSession {
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_entry");
         this.put_wrapper(request, "session_id", this.session_id);
-        this.put_wrapper(request, "entry_id", a.getId().toString());
-        this.put_wrapper(request, "entry_change_time", a.getLast_change().toString());
+        this.put_wrapper(request, "entry_id", a.getId());
+        this.put_wrapper(request, "entry_change_time", a.getLast_change());
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
         JSONArray entry_id_timestamp = null;
@@ -380,8 +389,7 @@ public class ServerDatabaseSession {
         User user = new User("sad", "sad");
         AttachmentBase attachment = AttachmentBase.deserialize(attachment_type, attachment_serialized);
         System.out.println(attachment.getContent().toString());
-        return new RemoteEntry(attachment, entry_time, experiment_id, sync_time, change_time, title, user)
-;
+        return new RemoteEntry(attachment, entry_time, experiment_id, sync_time, change_time, title, user);
     }
 
 
