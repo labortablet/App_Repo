@@ -355,7 +355,6 @@ if (cursor.getCount() >0){
             }
             Log.d("TimerStopped", String.valueOf(System.currentTimeMillis()));
             myDb.close();
-            this.cancel();
         }
 
     }
