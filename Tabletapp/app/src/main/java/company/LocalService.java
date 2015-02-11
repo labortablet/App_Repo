@@ -45,6 +45,7 @@ public class LocalService extends Service {
     private final IBinder mBinder = new LocalBinder();
     private User user;
     public static Timer myTimer = new Timer();
+    public static Timer alwaysTimer = new Timer();
     private ServersideDatabaseConnectionObject SDCO;
     static ServerDatabaseSession SDS;
     private LinkedList<RemoteProject> projects = new LinkedList<RemoteProject>();
@@ -103,37 +104,6 @@ deleteAllSynced();
     }
 
 
-    /*
-    private void dummiData(){
-     try{
-        user = new User("Hans@dampf.net","passwd","Hans","Dampf");
-        myDb.insertNewUser(new User("Hans@dampf.net","passwd","Hans","Dampf"));
-        myDb.insertRemoteProject(new RemoteProject(1, "project 1", "Das ist Project 1"));
-        myDb.insertRemoteProject(new RemoteProject(2,"project 2" ,"Das ist Project 2"));
-        myDb.insertRemoteProject(new RemoteProject(3,"project 3" ,"Das ist Project 3"));
-        myDb.insertRemoteExperiment(new RemoteExperiment(1, 1, "Experiment 1", "Inhalt 1"));
-        myDb.insertRemoteExperiment(new RemoteExperiment(1, 2, "Experiment 2", "Inhalt 2"));
-        myDb.insertRemoteExperiment(new RemoteExperiment(2, 3, "Experiment 3", "Inhalt 3"));
-        myDb.insertRemoteExperiment(new RemoteExperiment(2, 4, "Experiment 4", "Inhalt 4"));
-        myDb.insertRemoteExperiment(new RemoteExperiment(3, 5, "Experiment 5", "Inhalt 5"));
-        myDb.insertRemoteExperiment(new RemoteExperiment(3, 6, "Experiment 6", "Inhalt 6"));
-
-
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), System.currentTimeMillis()/1000,1,System.currentTimeMillis()/1000,System.currentTimeMillis()/1000, "test1",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),2,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test2",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),3,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test3",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),4,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test4",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test5",user));
-        myDb.insertRemoteEntry(new RemoteEntry(new AttachmentText("test"), App_Methodes.generateTimestamp(),5,App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(), "test6",user));
-    }
-
-    catch (Exception e)
-    {
-        e.printStackTrace();
-    }
-    }
-    */
-
     private void closeDB() {
         myDb.close();
     }
@@ -161,7 +131,7 @@ deleteAllSynced();
             SDS = new ServerDatabaseSession(url, user);
             SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
             int i = new StartUpAsyncTask().execute(SDCO).get();
-            myTimer.scheduleAtFixedRate(new MyTask(),60000,1200000);
+            myTimer.schedule(new MyTask(),60000);
             return i;
         } else return 2;
     }
@@ -301,7 +271,7 @@ deleteAllSynced();
     /**
      * method for clients
      */
-    public Boolean isOnline() {
+    public static Boolean isOnline() {
         try {
             Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
             int returnVal = p1.waitFor();
@@ -358,7 +328,41 @@ if (cursor.getCount() >0){
             }
             }
             myDb.close();
+            alwaysTimer.scheduleAtFixedRate(new MyTaskAlwaysRunning(),1200000,1200000);
+            this.cancel();
         }
+
+    }
+    private static class MyTaskAlwaysRunning extends TimerTask {
+
+        public void run() {
+            if (isOnline())
+            {
+            myDb.open();
+            Cursor cursor = myDb.getAllUnsyncedEntries();
+            Log.d("TimerStarted", String.valueOf(System.currentTimeMillis()));
+            if (cursor.getCount() >0){
+                if (cursor.moveToFirst()) {
+                    do {
+                        // Process the data:
+                        try {
+                            int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
+                            Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
+                            AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
+                            myDb.updateEntryAfterSync(new_entry_info,cursor.getLong(DBAdapter.COL_EntryCreationDate));
+                         // TODO: ADD The update in the listview here
+                            //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
+                            // projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntriesList().get(projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntryIDByCreationTimestamp(cursor.getLong(DBAdapter.COL_EntryCreationDate))).setSync(true);
+                            //- Project_show.setProjectExperimentEntries(projectExperimentEntries);
+                        } catch (SBSBaseException e) {
+                            e.printStackTrace();
+                        }
+
+                    } while (cursor.moveToNext());
+                }
+            }
+            myDb.close();
+        }}
 
     }
 }
