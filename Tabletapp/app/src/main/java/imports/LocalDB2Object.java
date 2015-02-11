@@ -4,11 +4,28 @@
 
 package imports;
 
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.WeakHashMap;
 
 import exceptions.NoInternetAvailable;
 
 public class LocalDB2Object {
+    //Hashmaps so we can cache the objects and can update them easily.
+    //also, the same entry will only exist as a unique object and will therefore be
+    //updated correctly!
+    private HashMap<Integer, SoftReference<User>> user_local_id2user_object = new HashMap<Integer, SoftReference<User>>();
+    private HashMap<Integer, SoftReference<Project>> project_local_id2project_object = new HashMap<Integer, SoftReference<Project>>();
+    private HashMap<Integer, SoftReference<Experiment>> experiment_local_id2experiment_object = new HashMap<Integer, SoftReference<Experiment>>();
+    private HashMap<Integer, SoftReference<LocalEntry>> entry_local_id2entry_object = new HashMap<Integer, SoftReference<LocalEntry>>();
+
+    private WeakHashMap<User, WeakReference<LinkedList<Project>>> project_list_cache = new WeakHashMap<User, WeakReference<LinkedList<Project>>>();
+    private WeakHashMap<User, WeakHashMap<Project, WeakReference<LinkedList<Experiment>>>> experiment_list_cache = new WeakHashMap<User, WeakHashMap<Project, WeakReference<LinkedList<Experiment>>>>();
+    private WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<LocalEntry>>>> entry_list_cache = new WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<LocalEntry>>>>();
+
+
     //Singleton Pattern
     private static LocalDB2Object instance;
     private LocalDB2Object () {}
