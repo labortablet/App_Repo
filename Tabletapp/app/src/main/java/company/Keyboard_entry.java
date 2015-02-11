@@ -53,8 +53,7 @@ public class Keyboard_entry extends Activity {
                 break;
 
             case R.id.button3:
-                if (
-                        !(title.getText().toString().trim().isEmpty())) {
+                if (!(title.getText().toString().trim().isEmpty())) {
                    if (!unique_Test(title.getText().toString())) {
                         try {
                             LocalEntry edit = new LocalEntry(title.getText().toString(), new AttachmentText(content.getText().toString().trim()), App_Methodes.generateTimestamp(), Start.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());

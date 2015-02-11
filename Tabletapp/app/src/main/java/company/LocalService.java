@@ -349,7 +349,7 @@ if (cursor.getCount() >0){
                         myDb.updateEntryAfterSync(new_entry_info,cursor.getLong(DBAdapter.COL_EntryCreationDate));
                      //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
                        // projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntriesList().get(projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntryIDByCreationTimestamp(cursor.getLong(DBAdapter.COL_EntryCreationDate))).setSync(true);
-                       // Project_show.setProjectExperimentEntries(projectExperimentEntries);
+                       //- Project_show.setProjectExperimentEntries(projectExperimentEntries);
                     } catch (SBSBaseException e) {
                         e.printStackTrace();
                     }

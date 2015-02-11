@@ -3,6 +3,7 @@ package company;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +33,7 @@ import imports.LocalEntry;
 public class Table_entry extends Activity {
 
     private TableLayout table;
-    private EditText text;
+     EditText text;
     private View textview;
     private  int cols;
     private int rows;
@@ -54,7 +55,7 @@ public class Table_entry extends Activity {
                 this.finish();
                 break;
             case R.id.button3:
-
+                Log.d("Button 3","Button finish gedrückt");
 
           for(int i = 0;i < rows;i++ )
                 {
@@ -81,21 +82,20 @@ public class Table_entry extends Activity {
                 try {
 
 
-
-                String title1 = text.getText().toString();
-
 //TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
-               LocalEntry table_entry =  new LocalEntry(title1,new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(),Start.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
+
+                    LocalEntry table_entry =  new LocalEntry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(),Start.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
                     Start.myDb.open();
                     Start.myDb.insertLocalEntry(table_entry);
                     Start.myDb.close();
                     projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(table_entry);
                     Project_show.setProjectExperimentEntries(projectExperimentEntries);
                     this.finish();
-
             }
             catch (Exception e )
-            {}
+            {
+                e.printStackTrace();
+            }
             }
                 else
                 {
@@ -139,8 +139,8 @@ public class Table_entry extends Activity {
 
         table.removeAllViews();
         rows = Integer.parseInt(i.getStringExtra("row"));
-
         cols = Integer.parseInt(i.getStringExtra("column"));
+
         textView_array = new EditText[rows][cols];
         string_array = new String[rows][cols];
         BuildTable(rows, cols);
@@ -227,17 +227,6 @@ public class Table_entry extends Activity {
         return unique;
     }
 
-    public static String getCurrentTimeStamp(){
-        try {
 
-            SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentTimeStamp = myFormat.format(new Date()); // Getting the actual date
 
-            return currentTimeStamp;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return null;
-        }
-    }
 }
