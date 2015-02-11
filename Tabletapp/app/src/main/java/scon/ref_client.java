@@ -10,7 +10,10 @@ import imports.AttachmentText;
 import imports.User;
 
 public class ref_client {
-	public static void main(String[] args) {
+    public static void main(String[] args){
+        ref_client.main();
+    }
+	public static void main() {
 		System.out.println("Starting Test!");
 		URL url = null;
 		try {
