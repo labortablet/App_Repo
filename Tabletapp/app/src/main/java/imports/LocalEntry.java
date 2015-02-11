@@ -73,11 +73,11 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
         this.attachment = attachment;
         this.entry_time = entry_time;
         this.user = user;
-        this.local_id = local_id;
+        this.local_id = null;
         this.sync = sync;
         this.Experiment_id =Experiment_id;
-        this.sync_time = sync_time;
-        this.change_time = change_time;
+        this.sync_time = null;
+        this.change_time = null;
     }
 
     /**
