@@ -2,9 +2,6 @@ package imports;
 
 import android.os.Environment;
 
-/**
- * Created by Grit on 23.06.2014.
- */
 public final class Includes {
     private  static String APP_NAME ="Tabletapp";
     private  static String PATH =  Environment.getDataDirectory().getAbsolutePath();

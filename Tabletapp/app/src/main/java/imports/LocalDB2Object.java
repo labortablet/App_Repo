@@ -9,6 +9,65 @@ import java.util.LinkedList;
 import exceptions.NoInternetAvailable;
 
 public class LocalDB2Object {
+    //Singleton Pattern
+    private static LocalDB2Object instance;
+    private LocalDB2Object () {}
+
+    public static synchronized LocalDB2Object getInstance () {
+        if (LocalDB2Object.instance == null) {
+            LocalDB2Object.instance = new LocalDB2Object();
+        }
+        return LocalDB2Object.instance;
+    }
+
+    //Define Sqlite Statements for later use in Prepared Statements
+    private static final String DATABASE_updateFooString = "SELECT * FROM TEST WHERE id = ?";
+    private static final String DATABASE_CREATE_Entries =
+            "CREATE TABLE IF NOT EXISTS entries(" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "remote_id INTEGER UNIQUE," +
+                    "experiment_id INTEGER NOT NULL," +
+                    "user_id INTEGER NOT NULL," +
+                    "title STRING NOT NULL," +
+                    "date_creation INTEGER NOT NULL," +
+                    "date_user INTEGER NOT NULL," +
+                    "date_current INTEGER," +
+                    "attachment_ref STRING NOT NULL," +
+                    "attachment_type INTEGER NOT NULL" +
+            ");";
+
+
+    private static final String DATABASE_CREATE_USER =
+            "CREATE TABLE IF NOT EXISTS users(" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "remote_id INTEGER UNIQUE," +
+                    "lastname STRING," +
+                    "firstname STRING," +
+                    "login STRING," +
+                    "hashed_pw STRING" +
+            ");";
+
+    private static final String DATABASE_CREATE_EXPERIMENT =
+            "CREATE TABLE IF NOT EXISTS experiments(" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "remote_id INTEGER," +
+                    "user_id INTEGER NOT NULL," +
+                    "name STRING NOT NULL," +
+                    "description STRING," +
+                    "date_creation INTEGER" +
+
+            ");";
+
+    private static final String DATABASE_CREATE_PROJECT =
+            "CREATE TABLE IF NOT EXISTS projects(" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "remote_id INTEGER," +
+                    "user_id INTEGER NOT NULL," +
+                    "name STRING NOT NULL," +
+                    "description STRING," +
+                    "date_creation INTEGER" +
+            ");";
+
 
     User register_user(String login, String password){
         return null;
