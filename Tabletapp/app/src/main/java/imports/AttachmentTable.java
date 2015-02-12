@@ -6,6 +6,7 @@ public class AttachmentTable extends AttachmentText{
         super(text);
     }
 
+    @Override
     public int getTypeNumber(){return 2;};
 
     /**
