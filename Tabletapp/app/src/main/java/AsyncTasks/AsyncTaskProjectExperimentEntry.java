@@ -27,7 +27,7 @@ import scon.ServerDatabaseSession;
 /**
  * Created by Grit on 17.12.2014.
  */
-public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer, ArrayList<ProjectExperimentEntry>> {
+public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer, ArrayList<ProjectExperimentEntry>> { // object to get,Status,Object to return
     @Override
 
     protected ArrayList<ProjectExperimentEntry> doInBackground(DBAdapter... params) {

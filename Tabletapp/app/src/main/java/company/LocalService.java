@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,6 +15,8 @@ import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
@@ -51,9 +54,11 @@ public class LocalService extends Service {
     private LinkedList<RemoteProject> projects = new LinkedList<RemoteProject>();
     private LinkedList<RemoteExperiment> experiments = new LinkedList<RemoteExperiment>();
     private LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
+    static HashMap<Integer,Integer> projectHashMap; // Remote ID, Tree ID
+    static HashMap<Integer,Integer> experimentHashMap; // Remote ID,Tree ID
     static DBAdapter myDb = Start.myDb;
     TimerTask timerTask;
-    private static List<ProjectExperimentEntry> projectExperimentEntries;
+     static List<ProjectExperimentEntry> projectExperimentEntries;
 
     public LocalService() {
 
@@ -78,7 +83,7 @@ public class LocalService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-deleteAllSynced();
+        deleteAllSynced();
     }
 
     public void setUserAndURL(User user, String server) {
@@ -131,7 +136,8 @@ deleteAllSynced();
             SDS = new ServerDatabaseSession(url, user);
             SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
             int i = new StartUpAsyncTask().execute(SDCO).get();
-            myTimer.schedule(new MyTask(),60000);
+
+            myTimer.schedule(new MyTask(), 60000);
             return i;
         } else return 2;
     }
@@ -308,40 +314,21 @@ deleteAllSynced();
             myDb.open();
             Cursor cursor = myDb.getAllUnsyncedEntries();
             Log.d("TimerStarted", String.valueOf(System.currentTimeMillis()));
-if (cursor.getCount() >0){
-            if (cursor.moveToFirst()) {
-                do {
-                    // Process the data:
-                    try {
-                        int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
-                        Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
-                        AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
-                        myDb.updateEntryAfterSync(new_entry_info,cursor.getLong(DBAdapter.COL_EntryCreationDate));
-                     //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
-                       // projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntriesList().get(projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntryIDByCreationTimestamp(cursor.getLong(DBAdapter.COL_EntryCreationDate))).setSync(true);
-                       //- Project_show.setProjectExperimentEntries(projectExperimentEntries);
-                    } catch (SBSBaseException e) {
-                        e.printStackTrace();
-                    }
+            //TODO This is for getting the hashmap for Experiments and Projects
+            /*
+            projectExperimentEntries = Project_show.getProjectExperimentEntries();
 
-                } while (cursor.moveToNext());
-            }
-            }
-            myDb.close();
-            alwaysTimer.scheduleAtFixedRate(new MyTaskAlwaysRunning(),1200000,1200000);
-            this.cancel();
-        }
+            try {
+                new AsyncTaskProjectExperimentHashtable().execute(projectExperimentEntries).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }*/
 
-    }
-    private static class MyTaskAlwaysRunning extends TimerTask {
+            if (cursor.getCount() > 0) {
 
-        public void run() {
-            if (isOnline())
-            {
-            myDb.open();
-            Cursor cursor = myDb.getAllUnsyncedEntries();
-            Log.d("TimerStarted", String.valueOf(System.currentTimeMillis()));
-            if (cursor.getCount() >0){
+
                 if (cursor.moveToFirst()) {
                     do {
                         // Process the data:
@@ -349,8 +336,7 @@ if (cursor.getCount() >0){
                             int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
                             Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
                             AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
-                            myDb.updateEntryAfterSync(new_entry_info,cursor.getLong(DBAdapter.COL_EntryCreationDate));
-                         // TODO: ADD The update in the listview here
+                            myDb.updateEntryAfterSync(new_entry_info, cursor.getLong(DBAdapter.COL_EntryCreationDate));
                             //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
                             // projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntriesList().get(projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntryIDByCreationTimestamp(cursor.getLong(DBAdapter.COL_EntryCreationDate))).setSync(true);
                             //- Project_show.setProjectExperimentEntries(projectExperimentEntries);
@@ -361,17 +347,69 @@ if (cursor.getCount() >0){
                     } while (cursor.moveToNext());
                 }
             }
+
             myDb.close();
-        }}
+            alwaysTimer.scheduleAtFixedRate(new MyTaskAlwaysRunning(), 1200000, 1200000);
+            this.cancel();
+        }
 
     }
+
+    private static class MyTaskAlwaysRunning extends TimerTask {
+
+        public void run() {
+            if (isOnline()) {
+                myDb.open();
+                Cursor cursor = myDb.getAllUnsyncedEntries();
+                Log.d("TimerStarted", String.valueOf(System.currentTimeMillis()));
+                if (cursor.getCount() > 0) {
+                    if (cursor.moveToFirst()) {
+                        do {
+                            // Process the data:
+                            try {
+                                int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
+                                Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
+                                AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
+                                myDb.updateEntryAfterSync(new_entry_info, cursor.getLong(DBAdapter.COL_EntryCreationDate));
+                                // TODO: ADD The update in the listview here
+                                //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
+                                // projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntriesList().get(projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntryIDByCreationTimestamp(cursor.getLong(DBAdapter.COL_EntryCreationDate))).setSync(true);
+                                //- Project_show.setProjectExperimentEntries(projectExperimentEntries);
+                            } catch (SBSBaseException e) {
+                                e.printStackTrace();
+                            }
+
+                        } while (cursor.moveToNext());
+                    }
+                }
+                myDb.close();
+            }
+        }
+
+    }
+
+
+    private static class AsyncTaskProjectExperimentHashtable extends AsyncTask<List<ProjectExperimentEntry>,Integer,Boolean>{
+
+
+        @Override
+        protected Boolean doInBackground(List<ProjectExperimentEntry>... params) {
+            projectHashMap = new HashMap<Integer, Integer>();
+            experimentHashMap = new HashMap<Integer, Integer>();
+            for (int i = 0;i < projectExperimentEntries.size();i++)
+            {
+                projectHashMap.put(projectExperimentEntries.get(i).getProject().get_id(),i);
+                for (int j = 0;projectExperimentEntries.get(i).getExperimentEntry().size() > j; j++)
+                {
+                    experimentHashMap.put(projectExperimentEntries.get(i).getExperimentEntry().get(j).getExperiments().get_id(),j);
+
+                }
+
+            }
+            return null;
+        }
+    }
 }
-
-
-
-
-
-
 
 
 /*
