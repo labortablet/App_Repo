@@ -6,7 +6,6 @@ import java.util.LinkedList;
 
 import exceptions.SBSBaseException;
 import imports.AttachmentBase;
-import imports.AttachmentText;
 import imports.AttachmentTable;
 import imports.User;
 
@@ -53,7 +52,7 @@ public class ref_client {
             System.out.println("Try sending an entry");
             Entry_id_timestamp new_entry_info;
             AttachmentBase attachment = new AttachmentTable("Hallo");
-            new_entry_info = SDS.send_entry(remoteExperiment_list.getFirst().get_id(), new Long(10), "Ref Client Test Entry", 0, attachment);
+            new_entry_info = SDS.send_entry(remoteExperiment_list.getFirst().get_id(), new Long(22), "Ref Client Test Entry Table", attachment);
             System.out.println("Entry send");
             System.out.println("Getting Entries");
             RemoteEntry a;

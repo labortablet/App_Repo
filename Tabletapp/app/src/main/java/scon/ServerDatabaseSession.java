@@ -341,7 +341,7 @@ public class ServerDatabaseSession {
         return result.getBoolean("auth");
     };
 
-    public Entry_id_timestamp send_entry(Integer experiment_id, Long entry_time,String title, Integer attachment_type, AttachmentBase attachment) throws SBSBaseException{
+    public Entry_id_timestamp send_entry(Integer experiment_id, Long entry_time, String title, AttachmentBase attachment) throws SBSBaseException{
         this.check_for_session();
         //only text right now
         JSONObject request = new JSONObject();
@@ -352,6 +352,7 @@ public class ServerDatabaseSession {
         this.put_wrapper(request, "attachment", attachment.serialize());
         this.put_wrapper(request, "attachment_type", attachment.getTypeNumber());
         this.put_wrapper(request, "experiment_id", experiment_id);
+        System.out.println(request);
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
         Long entry_current_time;

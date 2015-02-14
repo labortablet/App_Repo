@@ -9,13 +9,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import AsyncTasks.StartUpAsyncTask;
 import exceptions.SBSBaseException;
 import imports.AttachmentBase;
-import imports.AttachmentTable;
 import imports.AttachmentText;
 import imports.Experiment;
 import imports.LocalEntry;
@@ -334,7 +331,7 @@ public class LocalService extends Service {
                         // Process the data:
                         try {
                             int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
-                            Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
+                            Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
                             AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
                             myDb.updateEntryAfterSync(new_entry_info, cursor.getLong(DBAdapter.COL_EntryCreationDate));
                             //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
@@ -368,7 +365,7 @@ public class LocalService extends Service {
                             // Process the data:
                             try {
                                 int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
-                                Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), cursor.getInt(DBAdapter.COL_EntryTyp), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
+                                Entry_id_timestamp new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
                                 AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
                                 myDb.updateEntryAfterSync(new_entry_info, cursor.getLong(DBAdapter.COL_EntryCreationDate));
                                 // TODO: ADD The update in the listview here
