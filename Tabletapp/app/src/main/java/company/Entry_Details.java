@@ -2,7 +2,6 @@ package company;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,8 +15,7 @@ import com.example.test1.tabletapp.app.R;
 
 import java.util.List;
 
-import imports.AttachmentTable;
-import imports.AttachmentText;
+import imports.ProjectExperimentEntry;
 
 import static imports.App_Methodes.return2DArray;
 

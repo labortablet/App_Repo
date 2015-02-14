@@ -2,7 +2,6 @@ package company;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,25 +10,21 @@ import android.widget.EditText;
 
 import com.example.test1.tabletapp.app.R;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
 
 import imports.App_Methodes;
-import imports.AttachmentBase;
 import imports.AttachmentText;
 import imports.LocalEntry;
-import imports.Lablet_Functions;
+
+import imports.ProjectExperimentEntry;
 
 /**
  * Created by Grit on 03.06.2014.
  */
 public class Keyboard_entry extends Activity {
-    //    TextView text = (TextView) findViewById(R.id.textView);
     EditText content; // inhalt des entries
     private Integer project_Selected = Project_show.getProject_Selected();
     private Integer experiment_Selected = Project_show.getExperiment_Selected();
-    private Lablet_Functions lablet = new Lablet_Functions();
    private static LocalService loc = Start.mService;
     EditText title; // titel des entries
     private static List<ProjectExperimentEntry> projectExperimentEntries = Project_show.getProjectExperimentEntries();

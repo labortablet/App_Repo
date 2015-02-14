@@ -106,11 +106,8 @@ public class Start extends Activity {
         setContentView(R.layout.start_show);
         //doBindService();
         ActivityRegistry.register(this);
-
-
       // Intent wtdservice = new Intent(this, LocalService.class);
       // startService(wtdservice);
-
 
     } // Standart Android Methoden für apps
 
@@ -256,40 +253,6 @@ public class Start extends Activity {
 
 
 
-    private String sha265(String password) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(password.getBytes());
-
-        //convert the byte to hex format method
-
-    /*    StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < byteData.length; i++) {
-            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-        }
-    */
-
-
-        byte[] byteData;
-        byteData = md.digest();
-
-        return Arrays.toString(byteData);
-    }
-
-
-
-
-
-/*
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
-    }
-*/
 
 
 

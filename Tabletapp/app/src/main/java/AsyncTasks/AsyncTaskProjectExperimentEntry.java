@@ -5,24 +5,16 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 import company.DBAdapter;
 import company.ExperimentEntry;
-import company.ProjectExperimentEntry;
-import company.Start;
-import exceptions.SBSBaseException;
+import imports.ProjectExperimentEntry;
 import imports.AttachmentBase;
-import imports.AttachmentTable;
-import imports.AttachmentText;
 import imports.Experiment;
 import imports.LocalEntry;
 import imports.Project;
 import imports.User;
-import scon.RemoteProject;
-import scon.ServerDatabaseSession;
 
 /**
  * Created by Grit on 17.12.2014.

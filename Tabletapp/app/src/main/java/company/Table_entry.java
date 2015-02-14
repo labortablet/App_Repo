@@ -14,18 +14,13 @@ import android.widget.TableRow.LayoutParams;
 
 import com.example.test1.tabletapp.app.R;
 
-import java.lang.reflect.Array;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import imports.App_Methodes;
 import imports.AttachmentTable;
-import imports.AttachmentText;
 import imports.LocalEntry;
+import imports.ProjectExperimentEntry;
 
 /**
  * Created by Grit on 03.08.2014.
@@ -33,15 +28,13 @@ import imports.LocalEntry;
 public class Table_entry extends Activity {
 
     private TableLayout table;
-     EditText text;
-    private View textview;
+    EditText text;
     private  int cols;
     private int rows;
     private String[][] string_array;
     private EditText[][] textView_array;
     private Integer project_Selected = Project_show.getProject_Selected();
     private Integer experiment_Selected = Project_show.getExperiment_Selected();
-    private Calendar calendar;
     private static List<ProjectExperimentEntry> projectExperimentEntries = Project_show.getProjectExperimentEntries();
     public void buttonEventHandler(View v) {  // butten events
 
@@ -64,7 +57,6 @@ public class Table_entry extends Activity {
                         try {
 
                             EditText temp = textView_array[i][j];
-                        //    Integer jj =textView_array.length;
                             if(!(temp.getText().toString().isEmpty()))
                             string_array[i][j] = temp.getText().toString();
                         }
@@ -73,9 +65,6 @@ public class Table_entry extends Activity {
                     }
 
                 }
-
-
-
                 if ( !(text.getText().toString().isEmpty()))
             {
                 if(!unique_Test(text.getText().toString())){
@@ -166,18 +155,9 @@ public class Table_entry extends Activity {
                 tv.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
                         LayoutParams.WRAP_CONTENT));
 
-      //      tv.addTextChangedListener(watcher);
-
                 tv.setPadding(5, 5, 5, 5);
-
-                tv.setText("R " + i + ". C" + j);
-           //     watcher.onTextChanged(tv.getText(), i, j, 0);
-         //       watcher.afterTextChanged(tv.getText());
-
+                tv.setText("R " + i + ". C" + j); // TODO Delete this to get empty textfields in the table
                 tv.isInEditMode();
-               // tv.setOnEditorActionListener();
-
-
                 row.addView(tv);
 
 
@@ -212,7 +192,6 @@ public class Table_entry extends Activity {
     private boolean unique_Test(String string) {
         boolean unique = false;
 
-
         for (int i = 0;  i < projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().size(); i++) {
             if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getTitle().equals(string))
 
@@ -222,7 +201,6 @@ public class Table_entry extends Activity {
             }
             else
                 unique = false;
-
         }
         return unique;
     }

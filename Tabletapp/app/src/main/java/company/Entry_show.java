@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,13 +22,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 
 import imports.App_Methodes;
-import imports.AttachmentBase;
-import imports.AttachmentTable;
-import imports.AttachmentText;
-import imports.NewAdapter;
+import imports.ProjectExperimentEntry;
 
 /**
  * @author  Grit on 19.07.2014.
