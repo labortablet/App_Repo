@@ -1,11 +1,5 @@
 package imports;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-
-/**
- * Created by Grit on 07.09.2014.
- */
 public class BaseEntry {
 
     /**

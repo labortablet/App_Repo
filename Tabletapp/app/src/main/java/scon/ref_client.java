@@ -54,9 +54,13 @@ public class ref_client {
             Entry_id_timestamp new_entry_info;
             AttachmentBase attachment = new AttachmentText("Test Text Entry");
             new_entry_info = SDS.send_entry(remoteExperiment_list.getFirst().get_id(), new Long(10), "Ref Client Test Entry Text", attachment);
+            System.out.println(new_entry_info.getId());
+            System.out.println(new_entry_info.getLast_change());
             System.out.println("Try sending an table entry");
             attachment = new AttachmentTable("Test Table Entry");
             new_entry_info = SDS.send_entry(remoteExperiment_list.getFirst().get_id(), new Long(20), "Ref Client Test Entry Table", attachment);
+            System.out.println(new_entry_info.getId());
+            System.out.println(new_entry_info.getLast_change());
             System.out.println("Entries send");
             System.out.println("Getting Entries");
             RemoteEntry a;

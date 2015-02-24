@@ -17,8 +17,9 @@ public class RemoteEntry extends BaseEntry {
        this.user = a.user;
        this.change_time=a.change_time;
     }
-    public RemoteEntry(AttachmentBase attachment, Long entry_time, int Experiment_id, Long sync_time, Long change_time, String title, User user)
+    public RemoteEntry(int remote_id, AttachmentBase attachment, Long entry_time, int Experiment_id, Long sync_time, Long change_time, String title, User user)
     {
+        this.remote_id = remote_id;
         this.attachment = attachment;
         this.entry_time =entry_time;
         this.Experiment_id =Experiment_id;

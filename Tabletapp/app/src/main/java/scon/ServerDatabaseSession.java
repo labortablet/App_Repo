@@ -153,6 +153,7 @@ public class ServerDatabaseSession {
             }
 
         } catch (JSONException e) {
+            System.out.println("JSon ecveption");
             System.out.println(result);
             throw new ErroneousResponse();
         }
@@ -275,6 +276,7 @@ public class ServerDatabaseSession {
         try {
             experiment_json_array = result.getJSONArray("experiments");
         } catch (JSONException e) {
+            System.out.println("jSON exception");
             System.out.println(result);
             System.out.println(e);
             throw new SBSBaseException();
@@ -294,6 +296,7 @@ public class ServerDatabaseSession {
                 description = experiment_json.getString(3);
                 remoteExperiment_list.add(new RemoteExperiment(project_id, id, name, description));
             } catch (JSONException e) {
+                System.out.println("JSON exception!");
                 System.out.println(e);
                 //some project did not decode correctly
                 throw new SBSBaseException();
@@ -352,7 +355,6 @@ public class ServerDatabaseSession {
         this.put_wrapper(request, "attachment", attachment.serialize());
         this.put_wrapper(request, "attachment_type", attachment.getTypeNumber());
         this.put_wrapper(request, "experiment_id", experiment_id);
-        System.out.println(request);
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
         Long entry_current_time;
@@ -361,6 +363,7 @@ public class ServerDatabaseSession {
             entry_current_time = result.getLong("entry_current_time");
             entry_id = result.getInt("entry_id");
         } catch (JSONException e) {
+            System.out.println("JSOn exception!");
             System.out.println(result);
             throw new SBSBaseException();
         }
@@ -376,8 +379,6 @@ public class ServerDatabaseSession {
         this.put_wrapper(request, "entry_change_time", a.getLast_change());
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
-        JSONArray entry_id_timestamp = null;
-        System.out.println(result);
         Long entry_time = result.getLong("entry_date_user");
         Long sync_time = result.getLong("entry_date");
         Long change_time = result.getLong("entry_current_time");
@@ -389,8 +390,7 @@ public class ServerDatabaseSession {
         String user_lastname = result.getString("user_lastname");
         User user = new User("sad", "sad");
         AttachmentBase attachment = AttachmentBase.deserialize(attachment_type, attachment_serialized);
-        System.out.println(attachment.getContent().toString());
-        return new RemoteEntry(attachment, entry_time, experiment_id, sync_time, change_time, title, user);
+        return new RemoteEntry(a.getId(), attachment, entry_time, experiment_id, sync_time, change_time, title, user);
     }
 
 
