@@ -45,8 +45,7 @@
         android:ems="10"
         android:id="@+id/editText2"
         android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"
-        android:text="fredi@uni-siegen.de" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,8 +63,7 @@
         android:ems="10"
         android:id="@+id/editText3"
         android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true"
-        android:text="test" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"

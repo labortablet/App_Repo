@@ -156,7 +156,7 @@ public class Table_entry extends Activity {
                         LayoutParams.WRAP_CONTENT));
 
                 tv.setPadding(5, 5, 5, 5);
-                tv.setText("R " + i + ". C" + j); // TODO Delete this to get empty textfields in the table
+              //  tv.setText("R " + i + ". C" + j); // TODO Delete this to get empty textfields in the table
                 tv.isInEditMode();
                 row.addView(tv);
 
