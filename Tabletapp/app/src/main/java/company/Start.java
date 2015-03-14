@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 
 import com.example.test1.tabletapp.app.R;
 
@@ -140,7 +141,8 @@ public class Start extends Activity {
                 text = (EditText) findViewById(R.id.editText);
                 text2 = (EditText) findViewById(R.id.editText2);
                 text3 = (EditText) findViewById(R.id.editText3);
-
+                text2.setText("fredi@uni-siegen.de");
+                text3.setText("test");
 
 
 
@@ -149,7 +151,8 @@ public class Start extends Activity {
 
 
                 if (validate(text2.getText().toString())) { // abfrage der korrektheit der email
-
+                    text2.setText("fredi@uni-siegen.de");
+                    text3.setText("test");
                    Server = text.getText().toString();
                    email = text2.getText().toString();
                    password = text3.getText().toString();
@@ -160,8 +163,11 @@ public class Start extends Activity {
 
                   switch (i) {
                        case 0:
-                           Intent intent = new Intent(this, Project_show.class);
+
+                           Intent intent = new Intent(this, SmplExpandable.class);
+                        //   Intent intent = new Intent(this, Project_show.class);
                            startActivity(intent);
+
                             break;
                        case 1:
                             Popup popup = new Popup();
