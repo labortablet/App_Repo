@@ -12,6 +12,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.WeakHashMap;
 import java.util.concurrent.ExecutionException;
 
 import AsyncTasks.StartUpAsyncTask;
@@ -54,7 +57,10 @@ public class LocalService extends Service {
     static HashMap<Integer,Integer> experimentHashMap; // Remote ID,Tree ID
     static DBAdapter myDb = Start.myDb;
     static List<ProjectExperimentEntry> projectExperimentEntries;
-
+    private HashMap<Integer, User> user_local_id2user_object = new HashMap<Integer, User>();
+    private HashMap<Integer, Project> project_local_id2project_object = new HashMap<Integer, Project>();
+    private HashMap<Integer, Experiment> experiment_local_id2experiment_object = new HashMap<Integer, Experiment>();
+    private HashMap<Integer, LocalEntry> entry_local_id2entry_object = new HashMap<Integer, LocalEntry>();
     public LocalService() {
 
 // Notice: this is for using a http conn in the gui or service without async task or timer task just for testing not for release
@@ -280,4 +286,48 @@ if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
             return null;
         }
     }
+
+    private class DownloadFilesTask extends AsyncTask<Void, Integer, Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Cursor c = myDb.getAllProjectRows();
+            if (c.moveToFirst()) {
+                do {
+                    // Process the data:
+                project_local_id2project_object.put(c.getInt(DBAdapter.COL_ProjectRemoteID),new Project(c.getInt(DBAdapter.COL_ProjectRemoteID),c.getInt(DBAdapter.COL_EntryRemoteID),c.getString(DBAdapter.COL_ProjectName),c.getString(DBAdapter.COL_ProjectDescription)));
+                } while (c.moveToNext());
+            }
+            c = myDb.getAllExperimentRows();
+            if (c.moveToFirst()) {
+                do {
+                    // Process the data:
+                    experiment_local_id2experiment_object.put(c.getInt(DBAdapter.COL_ExperimentID),new Experiment(c.getInt(DBAdapter.COL_ExperimentID),c.getInt(DBAdapter.COL_ExperimentRemoteID),c.getInt(DBAdapter.COL_ExperimentProjectID),c.getString(DBAdapter.COL_ExperimentName),c.getString(DBAdapter.COL_ExperimentDescription)));
+                } while (c.moveToNext());
+            }
+            c = myDb.getAllEntryRows();
+            if (c.moveToFirst()) {
+                do {
+                    // Process the data:
+                  entry_local_id2entry_object.put(c.getInt(DBAdapter.COL_EntryID),new LocalEntry(c.getInt(DBAdapter.COL_EntryID),new User(c.getString(DBAdapter.COL_EntryUserID),c.getString(DBAdapter.COL_EntryUserID)),c.getInt(DBAdapter.COL_EntryExperimentID),c.getString(DBAdapter.COL_EntryTitle),new AttachmentText(c.getString(DBAdapter.COL_EntryContent)),true,c.getLong(DBAdapter.COL_EntryCreationDate),c.getLong(DBAdapter.COL_EntrySyncDate),c.getLong(DBAdapter.COL_EntryChangeDate)));
+                } while (c.moveToNext());
+            }
+
+            // Close the cursor to avoid a resource leak.
+            c.close();
+
+
+            return null;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+           // setProgressPercent(progress[0]);
+        }
+
+        protected void onPostExecute(Long result) {
+         //   showDialog("Downloaded " + result + " bytes");
+        }
+    }
+
 }

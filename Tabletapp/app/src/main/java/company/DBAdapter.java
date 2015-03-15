@@ -411,6 +411,8 @@ public class DBAdapter {
         }
         return c;
     }
+
+    //TODO : add a sql query for getting the projects of the specificant user
     public Cursor getAllExperimentRows() {
         String where = null;
         Cursor c = 	db.query(true, Table_Experiment, Experiment_KEYS,
