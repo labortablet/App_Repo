@@ -87,7 +87,7 @@ public class New_Entry_Select extends Activity{
     private void start_NewActionKeyboard(){
 
         Intent intent;
-        intent = new Intent(this, Keyboard_entry.class);
+        intent = new Intent(this, Gui_NewKeyboardEntry.class);
         startActivity(intent);
 
 
