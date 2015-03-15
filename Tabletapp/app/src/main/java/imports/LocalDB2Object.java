@@ -19,11 +19,11 @@ public class LocalDB2Object {
     private HashMap<Integer, SoftReference<User>> user_local_id2user_object = new HashMap<Integer, SoftReference<User>>();
     private HashMap<Integer, SoftReference<Project>> project_local_id2project_object = new HashMap<Integer, SoftReference<Project>>();
     private HashMap<Integer, SoftReference<Experiment>> experiment_local_id2experiment_object = new HashMap<Integer, SoftReference<Experiment>>();
-    private HashMap<Integer, SoftReference<LocalEntry>> entry_local_id2entry_object = new HashMap<Integer, SoftReference<LocalEntry>>();
+    private HashMap<Integer, SoftReference<Entry>> entry_local_id2entry_object = new HashMap<Integer, SoftReference<Entry>>();
 
     private WeakHashMap<User, WeakReference<LinkedList<Project>>> project_list_cache = new WeakHashMap<User, WeakReference<LinkedList<Project>>>();
     private WeakHashMap<User, WeakHashMap<Project, WeakReference<LinkedList<Experiment>>>> experiment_list_cache = new WeakHashMap<User, WeakHashMap<Project, WeakReference<LinkedList<Experiment>>>>();
-    private WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<LocalEntry>>>> entry_list_cache = new WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<LocalEntry>>>>();
+    private WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<Entry>>>> entry_list_cache = new WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<Entry>>>>();
 
 
     //Singleton Pattern
@@ -99,7 +99,7 @@ public class LocalDB2Object {
     };
 
     //FIXME Local Entry??? We should either call them all Local or all without a prefix
-    LocalEntry new_Entry(User user, Experiment experiment, String title, AttachmentBase attachment){
+    Entry new_Entry(User user, Experiment experiment, String title, AttachmentBase attachment){
         return null;
     };
 
@@ -155,11 +155,11 @@ public class LocalDB2Object {
         return null;
     };
 
-    LinkedList<LocalEntry> get_entries(User user, Experiment experiment, int number){
+    LinkedList<Entry> get_entries(User user, Experiment experiment, int number){
         return null;
     };
 
-    LinkedList<LocalEntry> get_entries(User user, Experiment experiment, int number, boolean force_sync) throws NoInternetAvailable{
+    LinkedList<Entry> get_entries(User user, Experiment experiment, int number, boolean force_sync) throws NoInternetAvailable{
         return null;
     };
 

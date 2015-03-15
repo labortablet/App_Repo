@@ -2,8 +2,6 @@ package imports;
 
 import java.util.List;
 
-import company.ExperimentEntry;
-
 
 /**
  * Created by Grit on 24.07.2014.

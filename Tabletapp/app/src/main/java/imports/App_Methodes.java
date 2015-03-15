@@ -1,11 +1,5 @@
 package imports;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import company.Start;
-
 /**
  * Created by Grit on 19.06.2014.
  */

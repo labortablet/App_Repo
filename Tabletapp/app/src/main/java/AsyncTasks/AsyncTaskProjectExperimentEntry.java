@@ -7,12 +7,12 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import company.DBAdapter;
-import company.ExperimentEntry;
+import imports.DBAdapter;
+import imports.Entry;
+import imports.ExperimentEntry;
 import imports.ProjectExperimentEntry;
 import imports.AttachmentBase;
 import imports.Experiment;
-import imports.LocalEntry;
 import imports.Project;
 import imports.User;
 
@@ -29,9 +29,9 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
             myDb.open();
             LinkedList<Project> remoteProject_list = displayProjects(myDb.getAllProjectRows());
             LinkedList<Experiment> remoteExperiment_list = displayExperiments(myDb.getAllExperimentRows());
-            LinkedList<LocalEntry> remoteEntry_list = displayEntries(myDb.getAllEntryRows());
+            LinkedList<Entry> remoteEntry_list = displayEntries(myDb.getAllEntryRows());
             myDb.close();
-            ArrayList<LocalEntry> entries;
+            ArrayList<Entry> entries;
 
 
             for (int i = 0; i < remoteProject_list.size(); i++) {
@@ -44,7 +44,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
                 for (int j = 0; j < remoteProject_list.size(); j++) {
 
                     if (projectExperimentEntries.get(j).getProject().get_id().equals(remoteExperiment_list.get(i).get_project_id())) {
-                        entries = new ArrayList<LocalEntry>();
+                        entries = new ArrayList<Entry>();
                         projectExperimentEntries.get(j).getExperimentEntry().add(new ExperimentEntry(remoteExperiment_list.get(i), entries));
                         break;
                     }
@@ -129,11 +129,11 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
         }
     }
 
-    private LinkedList<LocalEntry> displayEntries(Cursor cursor) {
+    private LinkedList<Entry> displayEntries(Cursor cursor) {
         try {
 
-            LinkedList<LocalEntry> entries;
-            entries = new LinkedList<LocalEntry>();
+            LinkedList<Entry> entries;
+            entries = new LinkedList<Entry>();
             // populate the message from the cursor
 
             // Reset cursor to start, checking to see if there's data:
@@ -141,7 +141,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
                 do {
                     // Process the data:
                     entries.add(
-                            new LocalEntry(cursor.getInt(DBAdapter.COL_EntryID),
+                            new Entry(cursor.getInt(DBAdapter.COL_EntryID),
                                     new User(cursor.getString(DBAdapter.COL_EntryUserID)),
                                     cursor.getInt(DBAdapter.COL_EntryExperimentID),
                                     cursor.getString(DBAdapter.COL_EntryTitle),

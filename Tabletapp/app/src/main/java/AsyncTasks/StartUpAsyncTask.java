@@ -6,9 +6,8 @@ import android.util.Log;
 
 import java.util.LinkedList;
 
-import company.DBAdapter;
+import imports.DBAdapter;
 import exceptions.SBSBaseException;
-import imports.AttachmentBase;
 import imports.ServersideDatabaseConnectionObject;
 import scon.Entry_id_timestamp;
 import scon.RemoteEntry;

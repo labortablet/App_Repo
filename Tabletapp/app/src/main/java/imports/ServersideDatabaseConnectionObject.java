@@ -1,8 +1,5 @@
 package imports;
 
-import android.content.Context;
-
-import company.DBAdapter;
 import scon.ServerDatabaseSession;
 
 /**

@@ -2,7 +2,6 @@ package imports;
 
 import android.database.Cursor;
 
-import company.DBAdapter;
 import scon.ServerDatabaseSession;
 
 /**

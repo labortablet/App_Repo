@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,13 +22,13 @@ import com.example.test1.tabletapp.app.R;
 public class NewAdapter extends BaseExpandableListAdapter {
     public ArrayList<String> groupItem,tempChild;
 
-    public List<LocalEntry> localEntries;
+    public List<Entry> localEntries;
     public LayoutInflater minflater;
     public Activity activity;
 
-    public NewAdapter(List<LocalEntry> localEntries ) {
+    public NewAdapter(List<Entry> localEntries ) {
         this.localEntries = localEntries;
-        for (LocalEntry localEntry : localEntries) groupItem.add(localEntry.getTitle());
+        for (Entry entry : localEntries) groupItem.add(entry.getTitle());
     }
 
     public void setInflater(LayoutInflater mInflater, Activity act) {
