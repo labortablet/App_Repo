@@ -19,6 +19,7 @@ import java.util.List;
 
 import imports.App_Methodes;
 import imports.AttachmentTable;
+import imports.Entry;
 import imports.LocalEntry;
 import imports.ProjectExperimentEntry;
 
@@ -73,7 +74,7 @@ public class Table_entry extends Activity {
 
 //TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
 
-                    LocalEntry table_entry =  new LocalEntry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(),Start.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
+                    Entry table_entry =  new Entry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(),Start.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
                     Start.myDb.open();
                     Start.myDb.insertLocalEntry(table_entry);
                     Start.myDb.close();

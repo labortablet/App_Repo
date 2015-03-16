@@ -158,19 +158,19 @@ public class Project_show extends Activity {
     }
     private void startNew_action() {
         Intent intent;
-        intent = new Intent(this, Entry_show.class);
+        intent = new Intent(this, Gui_DisplayEntryDetails.class);
         startActivity(intent);
     }
     private void startNew_action1(String name,String description){
         Intent intent;
-        intent = new Intent(this, Experiment_Details.class);
+        intent = new Intent(this, Gui_DisplayExperimentDetails.class);
         intent.putExtra("name",name);
         intent.putExtra("description", description);
         startActivity(intent);
     }
     private void startNew_action2(String name,String description){
         Intent intent;
-        intent = new Intent(this, Project_Details.class);
+        intent = new Intent(this, Gui_DisplayProjectDetails.class);
         intent.putExtra("name",name);
         intent.putExtra("description", description);
         startActivity(intent);

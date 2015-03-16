@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import imports.LocalEntry;
 import imports.User;
+import imports.Entry;
 import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
 import scon.RemoteExperiment;
@@ -260,7 +261,7 @@ public class DBAdapter {
         initialValues.put(Entry_ChangeDate, changetime);
         return db.insert(Table_Entry,null,initialValues);
     }
-    public Long insertLocalEntry(LocalEntry localEntry){
+    public Long insertLocalEntry(Entry localEntry){
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,localEntry.getTitle());
         initialValues.put(Entry_Typ,localEntry.getAttachment().getTypeNumber());
