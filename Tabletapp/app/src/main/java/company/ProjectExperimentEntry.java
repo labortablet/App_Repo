@@ -2,7 +2,7 @@ package company;
 
 import java.util.List;
 
-import imports.Project;
+import datastructures.Project;
 
 /**
  * Created by Grit on 24.07.2014.

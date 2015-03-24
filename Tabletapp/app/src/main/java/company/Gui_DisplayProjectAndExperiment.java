@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 import AsyncTasks.AsyncTaskProjectExperimentEntry;
 import imports.ActivityRegistry;
 import imports.ExpandableListAdapter;
-import imports.ProjectExperimentEntry;
+import datastructures.ProjectExperimentEntry;
 
 public class Gui_DisplayProjectAndExperiment extends Activity {
 

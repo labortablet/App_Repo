@@ -1,4 +1,4 @@
-package imports;
+package datastructures;
 import scon.RemoteExperiment;
 
 

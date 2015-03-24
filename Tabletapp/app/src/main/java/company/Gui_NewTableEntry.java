@@ -18,10 +18,10 @@ import java.util.List;
 
 import imports.ActivityRegistry;
 import imports.App_Methodes;
-import imports.AttachmentTable;
-import imports.Entry;
+import datastructures.AttachmentTable;
+import datastructures.Entry;
 import imports.Popup;
-import imports.ProjectExperimentEntry;
+import datastructures.ProjectExperimentEntry;
 
 /**
  * Created by Grit on 03.08.2014.

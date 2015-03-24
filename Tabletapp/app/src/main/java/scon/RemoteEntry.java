@@ -1,8 +1,8 @@
 package scon;
 
-import imports.AttachmentBase;
-import imports.BaseEntry;
-import imports.User;
+import datastructures.AttachmentBase;
+import datastructures.BaseEntry;
+import datastructures.User;
 
 public class RemoteEntry extends BaseEntry {
 

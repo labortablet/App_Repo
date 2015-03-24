@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import imports.DBAdapter;
-import imports.Entry;
-import imports.ExperimentEntry;
-import imports.ProjectExperimentEntry;
-import imports.AttachmentBase;
-import imports.Experiment;
-import imports.Project;
-import imports.User;
+import datastructures.Entry;
+import datastructures.ExperimentEntry;
+import datastructures.ProjectExperimentEntry;
+import datastructures.AttachmentBase;
+import datastructures.Experiment;
+import datastructures.Project;
+import datastructures.User;
 
 /**
  * Created by Grit on 17.12.2014.

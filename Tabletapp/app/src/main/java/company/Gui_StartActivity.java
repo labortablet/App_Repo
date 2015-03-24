@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import imports.ActivityRegistry;
 import imports.DBAdapter;
 import imports.Popup;
-import imports.User;
+import datastructures.User;
 
 /**
  * Created by Grit on 29.05.2014.

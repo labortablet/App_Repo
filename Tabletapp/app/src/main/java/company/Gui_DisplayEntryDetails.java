@@ -16,7 +16,7 @@ import com.example.test1.tabletapp.app.R;
 import java.util.List;
 
 import imports.ActivityRegistry;
-import imports.ProjectExperimentEntry;
+import datastructures.ProjectExperimentEntry;
 
 import static imports.App_Methodes.return2DArray;
 

@@ -14,11 +14,11 @@ import java.util.List;
 
 import imports.ActivityRegistry;
 import imports.App_Methodes;
-import imports.AttachmentText;
-import imports.Entry;
+import datastructures.AttachmentText;
+import datastructures.Entry;
 
 import imports.Popup;
-import imports.ProjectExperimentEntry;
+import datastructures.ProjectExperimentEntry;
 
 /**
  * Created by Grit on 03.06.2014.

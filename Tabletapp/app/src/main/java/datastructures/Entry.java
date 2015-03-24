@@ -1,4 +1,4 @@
-package imports;
+package datastructures;
 
 /*
 *
@@ -10,7 +10,7 @@ package imports;
 
 import scon.RemoteEntry;
 
-public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
+public class Entry extends RemoteEntry implements Comparable<Entry> {
     /**
      *This is the Local ID an LocalEntry can gets From the tab.
      * @value
@@ -28,11 +28,11 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      * @since 1.0
      */
 
-    public LocalEntry(RemoteEntry a,boolean sync) {
+    public Entry(RemoteEntry a, boolean sync) {
         super(a);
     this.sync = sync;
     }
-    public LocalEntry(RemoteEntry a) {
+    public Entry(RemoteEntry a) {
         super(a);
 
     }
@@ -47,7 +47,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
      *@param sync The value which says if the LocalEntry already on the Server
      */
 
-    public LocalEntry(String title, String attachment,Long  entry_time, User user, boolean sync) {
+    public Entry(String title, String attachment, Long entry_time, User user, boolean sync) {
         this.title = title;
         this.attachment = new AttachmentText(attachment);
         this.entry_time = entry_time;
@@ -55,7 +55,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
         this.sync = sync;
     }
 
-    public LocalEntry(int local_id, User user, int Experiment_id, String title, AttachmentBase attachment, boolean sync, Long entry_time, Long sync_time, Long change_time) {
+    public Entry(int local_id, User user, int Experiment_id, String title, AttachmentBase attachment, boolean sync, Long entry_time, Long sync_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
         this.entry_time = entry_time;
@@ -66,7 +66,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
         this.sync_time = sync_time;
         this.change_time = change_time;
     }
-    public LocalEntry(String title, AttachmentBase attachment,Long entry_time, User user, boolean sync,int Experiment_id) {
+    public Entry(String title, AttachmentBase attachment, Long entry_time, User user, boolean sync, int Experiment_id) {
         this.title = title;
         this.attachment = attachment;
         this.entry_time = entry_time;
@@ -144,7 +144,7 @@ public class LocalEntry extends RemoteEntry implements Comparable<LocalEntry> {
     }*/
 
     @Override
-    public int compareTo(LocalEntry other_entry) {
+    public int compareTo(Entry other_entry) {
         return this.entry_time.compareTo(other_entry.getEntry_time());
     }
 

@@ -26,7 +26,7 @@ import java.util.List;
 import imports.ActivityRegistry;
 import imports.App_Methodes;
 import imports.ExpandableListAdapter;
-import imports.ProjectExperimentEntry;
+import datastructures.ProjectExperimentEntry;
 
 /**
  * @author  Grit on 19.07.2014.

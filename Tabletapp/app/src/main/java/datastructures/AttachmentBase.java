@@ -1,4 +1,4 @@
-package imports;
+package datastructures;
 
 public abstract class AttachmentBase {
     public static AttachmentBase deserialize(int attachment_type, String attachment_serialized) {

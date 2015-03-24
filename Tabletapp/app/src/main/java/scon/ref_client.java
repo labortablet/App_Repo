@@ -5,10 +5,10 @@ import java.net.URL;
 import java.util.LinkedList;
 
 import exceptions.SBSBaseException;
-import imports.AttachmentBase;
-import imports.AttachmentTable;
-import imports.AttachmentText;
-import imports.User;
+import datastructures.AttachmentBase;
+import datastructures.AttachmentTable;
+import datastructures.AttachmentText;
+import datastructures.User;
 
 public class ref_client {
     public static void main(String[] args){

@@ -1,4 +1,4 @@
-package imports;
+package datastructures;
 
 import java.util.Dictionary;
 import java.util.Hashtable;

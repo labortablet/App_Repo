@@ -9,6 +9,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import datastructures.Entry;
+import datastructures.User;
 import scon.Entry_id_timestamp;
 import scon.RemoteEntry;
 import scon.RemoteExperiment;

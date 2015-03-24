@@ -1,4 +1,4 @@
-package imports;
+package datastructures;
 
 
 public class AttachmentText extends AttachmentBase {

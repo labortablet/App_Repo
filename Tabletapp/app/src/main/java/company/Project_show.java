@@ -13,15 +13,11 @@ import com.example.test1.tabletapp.app.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import AsyncTasks.AsyncTaskProjectExperimentEntry;
-import imports.Experiment;
-import imports.LocalEntry;
-import imports.Project;
-import imports.ProjectExperimentEntry;
+import datastructures.ProjectExperimentEntry;
 
 public class Project_show extends Activity {
 

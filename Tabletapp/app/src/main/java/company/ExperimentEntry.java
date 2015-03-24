@@ -2,8 +2,8 @@ package company;
 
 import java.util.List;
 
-import imports.LocalEntry;
-import imports.Experiment;
+import datastructures.LocalEntry;
+import datastructures.Experiment;
 
 /**
  * Created by Grit on 24.07.2014.

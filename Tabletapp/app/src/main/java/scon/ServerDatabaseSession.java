@@ -13,21 +13,16 @@ import org.json_pc.JSONArray;
 import org.json_pc.JSONException;
 import org.json_pc.JSONObject;
 
-import imports.AttachmentBase;
-import imports.AttachmentText;
-import imports.BaseEntry;
-import scon.Base64;
+import datastructures.AttachmentBase;
 
-import imports.User;
-import scon.Entry_id_timestamp;
+import datastructures.User;
+
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.LinkedList;
 import java.util.Scanner;

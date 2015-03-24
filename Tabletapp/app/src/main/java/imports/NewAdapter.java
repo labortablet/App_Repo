@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
+import datastructures.Entry;
+
 @SuppressWarnings("unchecked")
 public class NewAdapter extends BaseExpandableListAdapter {
     public ArrayList<String> groupItem,tempChild;
@@ -109,7 +111,7 @@ public class NewAdapter extends BaseExpandableListAdapter {
         ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
         text.setText(localEntries.get(groupPosition).getTitle());
         text2.setText(localEntries.get(groupPosition).getEntry_time().toString());
-        if(localEntries.get(groupPosition).sync)
+        if(localEntries.get(groupPosition).isSync())
         image.setImageResource(R.drawable.richtig);
         else
         image.setImageResource(R.drawable.falsch);

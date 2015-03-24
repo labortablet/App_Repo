@@ -1,5 +1,7 @@
 package imports;
 
+import datastructures.AttachmentBase;
+
 /**
  * Created by Grit on 23.12.2014.
  */

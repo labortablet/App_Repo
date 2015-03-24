@@ -1,4 +1,4 @@
-package imports;
+package datastructures;
 import java.security.MessageDigest;
 
 public class User {

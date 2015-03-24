@@ -1,4 +1,4 @@
-package imports;
+package datastructures;
 
 /**
  * Created by Hawky on 18.08.2014.

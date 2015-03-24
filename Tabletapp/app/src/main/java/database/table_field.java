@@ -23,7 +23,7 @@ public class table_field {
         this.type = type;
         this.type = type.toUpperCase();
         if(!this.type.matches("INTEGER|STRING|TEXT|NUMBER")){
-            throw new IllegalArgumentException("Wrong type for sqlite type");
+            throw new IllegalArgumentException("Wrong sqlite type");
         }
         this.extra_options = extra_options;
     }

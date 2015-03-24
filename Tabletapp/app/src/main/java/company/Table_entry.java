@@ -14,14 +14,12 @@ import android.widget.TableRow.LayoutParams;
 
 import com.example.test1.tabletapp.app.R;
 
-import java.util.Calendar;
 import java.util.List;
 
 import imports.App_Methodes;
-import imports.AttachmentTable;
-import imports.Entry;
-import imports.LocalEntry;
-import imports.ProjectExperimentEntry;
+import datastructures.AttachmentTable;
+import datastructures.Entry;
+import datastructures.ProjectExperimentEntry;
 
 /**
  * Created by Grit on 03.08.2014.

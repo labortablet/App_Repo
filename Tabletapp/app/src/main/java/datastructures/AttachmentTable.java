@@ -1,4 +1,4 @@
-package imports;
+package datastructures;
 
 //FIXME this should really be its won class handling its own problems and not use AttachmentText
 public class AttachmentTable extends AttachmentText{
