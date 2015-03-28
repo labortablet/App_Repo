@@ -37,7 +37,7 @@ import datastructures.Project;
 import datastructures.ProjectExperimentEntry;
 import imports.ServersideDatabaseConnectionObject;
 import datastructures.User;
-import scon.Entry_id_timestamp;
+import datastructures.Entry_Remote_Identifier;
 import scon.ServerDatabaseSession;
 
 
@@ -336,7 +336,7 @@ public class LocalService extends Service {
                         // Process the data:
                         try {
                             int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
-                            Entry_id_timestamp new_entry_info;
+                            Entry_Remote_Identifier new_entry_info;
 
                             if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
                             new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
@@ -377,7 +377,7 @@ public class LocalService extends Service {
                             // Process the data:
                             try {
                                 int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
-                                Entry_id_timestamp new_entry_info;
+                                Entry_Remote_Identifier new_entry_info;
 if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
                                 new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
                             else
@@ -413,7 +413,7 @@ if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
             experimentHashMap = new HashMap<Integer, Integer>();
             for (int i = 0;i < projectExperimentEntries.size();i++)
             {
-                projectHashMap.put(projectExperimentEntries.get(i).getProject().get_id(),i);
+                projectHashMap.put(projectExperimentEntries.get(i).getProject().get_remote_id(),i);
                 for (int j = 0;projectExperimentEntries.get(i).getExperimentEntry().size() > j; j++)
                 {
                     experimentHashMap.put(projectExperimentEntries.get(i).getExperimentEntry().get(j).getExperiments().get_id(),j);

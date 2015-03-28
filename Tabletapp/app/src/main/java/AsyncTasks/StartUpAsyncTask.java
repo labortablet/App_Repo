@@ -6,13 +6,14 @@ import android.util.Log;
 
 import java.util.LinkedList;
 
+import datastructures.Entry;
+import datastructures.Experiment;
+import datastructures.Project;
 import imports.DBAdapter;
 import exceptions.SBSBaseException;
 import imports.ServersideDatabaseConnectionObject;
-import scon.Entry_id_timestamp;
-import scon.RemoteEntry;
-import scon.RemoteExperiment;
-import scon.RemoteProject;
+import datastructures.Entry_Remote_Identifier;
+import datastructures.RemoteEntry;
 import scon.ServerDatabaseSession;
 
 /**
@@ -25,18 +26,18 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
         ServersideDatabaseConnectionObject SDCO = params[0];
         DBAdapter myDb = SDCO.getMyDB();
         ServerDatabaseSession SDS = SDCO.getSDS();
-        LinkedList<RemoteProject> projects;
-        LinkedList<RemoteExperiment> experiments;
-        LinkedList<RemoteEntry> entries = new LinkedList<RemoteEntry>();
+        LinkedList<Project> projects;
+        LinkedList<Experiment> experiments;
+        LinkedList<Entry> entries = new LinkedList<Entry>();
         try {
             SDS.start_session();
             projects = SDS.get_projects();
             experiments = SDS.get_experiments();
-            RemoteEntry remoteEntry;
+            Entry remoteEntry;
             for (int i = 0; experiments.size() > i; i++) {
-                LinkedList<Entry_id_timestamp> entry_id_timestamps = SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
-                for (int j = 0; entry_id_timestamps.size() > j; j++) {
-                    remoteEntry = SDS.get_entry(entry_id_timestamps.get(j));
+                LinkedList<Entry_Remote_Identifier> entry_remoteIdentifiers = SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
+                for (int j = 0; entry_remoteIdentifiers.size() > j; j++) {
+                    remoteEntry = SDS.get_entry(entry_remoteIdentifiers.get(j));
                     Log.d("Attachmentconent1", remoteEntry.getAttachment().getContent().toString());
                     entries.add(remoteEntry);
                    Log.d("Attachmentcontent2", entries.get(j).getAttachment().getContent().toString());
@@ -44,11 +45,11 @@ public class StartUpAsyncTask extends AsyncTask<ServersideDatabaseConnectionObje
             }
 
             myDb.open();
-            for (RemoteProject project : projects) {
+            for (Project project : projects) {
                 myDb.insertRemoteProject(project);
             }
 
-            for (RemoteExperiment experiment : experiments) {
+            for (Experiment experiment : experiments) {
                 myDb.insertRemoteExperiment(experiment);
             }
 

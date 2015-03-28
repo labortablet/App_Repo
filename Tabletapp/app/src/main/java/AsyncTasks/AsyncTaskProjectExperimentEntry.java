@@ -43,7 +43,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
 
                 for (int j = 0; j < remoteProject_list.size(); j++) {
 
-                    if (projectExperimentEntries.get(j).getProject().get_id().equals(remoteExperiment_list.get(i).get_project_id())) {
+                    if (projectExperimentEntries.get(j).getProject().get_remote_id().equals(remoteExperiment_list.get(i).get_project_id())) {
                         entries = new ArrayList<Entry>();
                         projectExperimentEntries.get(j).getExperimentEntry().add(new ExperimentEntry(remoteExperiment_list.get(i), entries));
                         break;

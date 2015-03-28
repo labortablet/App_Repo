@@ -15,6 +15,11 @@ import org.json_pc.JSONObject;
 
 import datastructures.AttachmentBase;
 
+import datastructures.Entry;
+import datastructures.Entry_Remote_Identifier;
+import datastructures.Experiment;
+import datastructures.Project;
+import datastructures.RemoteEntry;
 import datastructures.User;
 
 import java.io.BufferedOutputStream;
@@ -222,7 +227,7 @@ public class ServerDatabaseSession {
         this.auth_session(response);
     };
 
-    public LinkedList<RemoteProject> get_projects() throws SBSBaseException {
+    public LinkedList<Project> get_projects() throws SBSBaseException {
         this.check_for_session();
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_projects");
@@ -237,7 +242,7 @@ public class ServerDatabaseSession {
             throw new SBSBaseException();
         }
 
-        LinkedList<RemoteProject> remoteProject_list = new LinkedList<RemoteProject>();
+        LinkedList<Project> remoteProject_list = new LinkedList<Project>();
         for (int i = 0; i < project_json_array.length(); i++) {
             JSONArray project_json = null;
             Integer id = null;
@@ -248,7 +253,8 @@ public class ServerDatabaseSession {
                 id = project_json.getInt(0);
                 name = project_json.getString(1);
                 description = project_json.getString(2);
-                remoteProject_list.add(new RemoteProject(id, name, description));
+                //FIXME need to change scon as we only will have parameters
+                //remoteProject_list.add(new Project(new long, id, name, description, null));
             } catch (JSONException e) {
                 //some project did not decode correctly
                 throw new SBSBaseException();
@@ -259,7 +265,7 @@ public class ServerDatabaseSession {
     }
 
 
-    public LinkedList<RemoteExperiment> get_experiments() throws SBSBaseException {
+    public LinkedList<Experiment> get_experiments() throws SBSBaseException {
         this.check_for_session();
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_experiments");
@@ -276,7 +282,7 @@ public class ServerDatabaseSession {
             System.out.println(e);
             throw new SBSBaseException();
         }
-        LinkedList<RemoteExperiment> remoteExperiment_list = new LinkedList<RemoteExperiment>();
+        LinkedList<Experiment> remoteExperiment_list = new LinkedList<Experiment>();
         for (int i = 0; i < experiment_json_array.length(); i++) {
             JSONArray experiment_json = null;
             Integer project_id = null;
@@ -289,7 +295,7 @@ public class ServerDatabaseSession {
                 id = experiment_json.getInt(1);
                 name = experiment_json.getString(2);
                 description = experiment_json.getString(3);
-                remoteExperiment_list.add(new RemoteExperiment(project_id, id, name, description));
+                remoteExperiment_list.add(new Experiment(project_id, id, name, description));
             } catch (JSONException e) {
                 System.out.println("JSON exception!");
                 System.out.println(e);
@@ -301,7 +307,7 @@ public class ServerDatabaseSession {
         return remoteExperiment_list;
     }
 
-    public LinkedList<Entry_id_timestamp> get_last_entry_references(Integer experiment_id, Integer entry_count, LinkedList<Entry_id_timestamp> excluded) throws SBSBaseException {
+    public LinkedList<Entry_Remote_Identifier> get_last_entry_references(Integer experiment_id, Integer entry_count, LinkedList<Entry_Remote_Identifier> excluded) throws SBSBaseException {
         //excluded is ignored right now but in the future, you will be able
         //to list entries you do not like to be shown so you only will
         //see entries which you do not know.
@@ -321,13 +327,13 @@ public class ServerDatabaseSession {
         } catch (JSONException e) {
             throw new SBSBaseException();
         }
-        LinkedList<Entry_id_timestamp> entry_references = new LinkedList<Entry_id_timestamp>();
+        LinkedList<Entry_Remote_Identifier> entry_references = new LinkedList<Entry_Remote_Identifier>();
 
         for (int i = 0; i < entry_id_timestamps.length(); i++) {
             JSONArray id_timestamp = entry_id_timestamps.getJSONArray(i);
             Integer id = id_timestamp.getInt(0);
             Long timestamp = id_timestamp.getLong(1);
-            entry_references.add(new Entry_id_timestamp(id, timestamp));
+            entry_references.add(new Entry_Remote_Identifier(id, timestamp));
         }
         return entry_references;
     }
@@ -339,7 +345,7 @@ public class ServerDatabaseSession {
         return result.getBoolean("auth");
     };
 
-    public Entry_id_timestamp send_entry(Integer experiment_id, Long entry_time, String title, AttachmentBase attachment) throws SBSBaseException{
+    public Entry_Remote_Identifier send_entry(Integer experiment_id, Long entry_time, String title, AttachmentBase attachment) throws SBSBaseException{
         this.check_for_session();
         //only text right now
         JSONObject request = new JSONObject();
@@ -362,10 +368,10 @@ public class ServerDatabaseSession {
             System.out.println(result);
             throw new SBSBaseException();
         }
-        return new Entry_id_timestamp(entry_id, entry_current_time);
+        return new Entry_Remote_Identifier(entry_id, entry_current_time);
     }
 
-    public RemoteEntry get_entry(Entry_id_timestamp a) throws SBSBaseException{
+    public Entry get_entry(Entry_Remote_Identifier a) throws SBSBaseException{
         this.check_for_session();
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_entry");
@@ -385,7 +391,7 @@ public class ServerDatabaseSession {
         String user_lastname = result.getString("user_lastname");
         User user = new User("sad", "sad");
         AttachmentBase attachment = AttachmentBase.deserialize(attachment_type, attachment_serialized);
-        return new RemoteEntry(a.getId(), attachment, entry_time, experiment_id, sync_time, change_time, title, user);
+        return new Entry(a.getId(), attachment, entry_time, experiment_id, sync_time, change_time, title, user);
     }
 
 

@@ -1,41 +1,44 @@
 package datastructures;
-import scon.RemoteExperiment;
 
 
-public class Experiment extends RemoteExperiment {
-    //private SortedSet<Entry> entrys = new TreeSet(); //we need to add an comparator here
-private int local_id;
-    public Experiment(Integer project_id, String name) {
-        super(project_id, null, name, null);
+public class Experiment{
+    protected Integer project_id;
+    protected Integer id;
+    protected String name;
+    protected String description;
+    protected Long date_creation;
+
+    public Experiment(int id, Integer project_id, String name) {
+        this.id = id;
+        this.project_id = project_id;
+        this.name = name;
     };
 
-    public Experiment(RemoteExperiment a){
-        super(a);
-    }
-public Experiment(){
-   super();
-
-}
-    public Experiment(Integer local_id, Integer id, Integer project_id, String name, String description) {
+    public Experiment(Integer id, Integer project_id, String name, String description, Long date_creation) {
         this.project_id = project_id;
         this.id = id;
         this.name = name;
         this.description = description;
-        this.local_id = local_id;
-    };
 
-    public void set_id(Integer new_id){
-        this.id = new_id;
     };
 
     public void set_description(String new_description){
         this.description = new_description;
     };
 
-    public void update_by_remote(RemoteExperiment a){
-        this.id = a.get_id();
-        this.project_id = a.get_project_id();
-        this.description = a.get_description();
-        this.name = a.get_name();
+    public Integer get_id() {
+        return this.id;
+    };
+
+    public Integer get_project_id() {
+        return this.project_id;
+    };
+
+    public String get_name() {
+        return this.name;
+    };
+
+    public String get_description() {
+        return this.description;
     };
 }

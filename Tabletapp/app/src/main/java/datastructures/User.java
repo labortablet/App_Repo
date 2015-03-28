@@ -1,4 +1,5 @@
 package datastructures;
+import java.net.URL;
 import java.security.MessageDigest;
 
 public class User {
@@ -7,9 +8,12 @@ public class User {
     private String user_email;
     private byte[] pw_hashb;
     private static Boolean lastname_first = false;
+    private URL server;
+    private long id;
 
     //this method can be used if one has the unhashed password
-    public void setPw(String password){
+
+    public static byte[] hashedPW(String password){
         byte[] resultb = null;
         String result = null;
         MessageDigest sha256 = null;
@@ -24,7 +28,11 @@ public class User {
         }catch (java.io.UnsupportedEncodingException e) {
             throw new RuntimeException("UTF-8 encoding not available, this should really not happen");
         }
-        this.pw_hashb = resultb;
+        return resultb;
+    }
+
+    public void setPw(String password){
+        this.pw_hashb = hashedPW(password);
     }
 
     public User(String email)
@@ -32,17 +40,16 @@ public class User {
     this.user_email = email;
 }
 
-    public User(String firstname, String lastname, String user_email, String password){
+    public User(String firstname, String lastname){
         this.lastname = lastname;
         this.firstname = firstname;
-        this.user_email = user_email;
-        this.setPw(password);
-
-
     }
-    public User(String user_email, String password){
+
+    public User(String user_email, String password, URL server, long id){
         this.user_email = user_email;
         this.setPw(password);
+        this.server = server;
+        this.id = id;
     }
 
     public String display(String separator){

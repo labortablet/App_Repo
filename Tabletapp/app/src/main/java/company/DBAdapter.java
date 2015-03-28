@@ -9,12 +9,12 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import datastructures.Experiment;
+import datastructures.Project;
 import datastructures.User;
 import datastructures.Entry;
-import scon.Entry_id_timestamp;
-import scon.RemoteEntry;
-import scon.RemoteExperiment;
-import scon.RemoteProject;
+import datastructures.Entry_Remote_Identifier;
+import datastructures.RemoteEntry;
 
 public class DBAdapter {
     /////////////////////////////////////////////////////////////////////
@@ -193,13 +193,13 @@ public class DBAdapter {
         initialValues.put(User_LName,user.getLastname());
         return db.insert(Table_User, null, initialValues);
     }
-    public long insertRemoteProject(RemoteProject remoteProject){
+    public long insertRemoteProject(Project remoteProject){
         // Create row's data:
         ContentValues initialValues = new ContentValues();
         initialValues.put(Project_Name,remoteProject.get_name());
         initialValues.put(Project_Description,remoteProject.get_description());
         initialValues.put(Project_Sync,1);
-        initialValues.put(Project_RemoteID,remoteProject.get_id());
+        initialValues.put(Project_RemoteID,remoteProject.get_remote_id());
         return db.insert(Table_Project,null,initialValues);
     }
     public Long insertRemoteProject(String project_Name,String project_Description,int project_Id){
@@ -211,7 +211,7 @@ public class DBAdapter {
         initialValues.put(Project_RemoteID,project_Id);
         return db.insert(Table_Project,null,initialValues);
     }
-    public long insertRemoteExperiment(RemoteExperiment remoteExperiment){
+    public long insertRemoteExperiment(Experiment remoteExperiment){
         ContentValues initialValues = new ContentValues();
         initialValues.put(Experiment_Name,remoteExperiment.get_name());
         initialValues.put(Experiment_Description,remoteExperiment.get_description());
@@ -230,7 +230,7 @@ public class DBAdapter {
         return db.insert(Table_Experiment,null,initialValues);
     }
 
-    public Long insertRemoteEntry(RemoteEntry remoteEntry) {
+    public Long insertRemoteEntry(Entry remoteEntry) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,remoteEntry.getTitle());
         initialValues.put(Entry_Typ, remoteEntry.getAttachment().getTypeNumber());
@@ -239,7 +239,6 @@ public class DBAdapter {
         initialValues.put(Entry_Sync,1);
         initialValues.put(Entry_ExperimentID,remoteEntry.getExperiment_id());
         initialValues.put(Entry_UserID,remoteEntry.getUser().getUser_email());
-        initialValues.put(Entry_RemoteID,remoteEntry.getRemote_id());
         initialValues.put(Entry_CreationDate,remoteEntry.getEntry_time());
         initialValues.put(Entry_SyncDate,remoteEntry.getSync_time());
         initialValues.put(Entry_ChangeDate,remoteEntry.getChange_time());
@@ -483,8 +482,8 @@ public class DBAdapter {
     }
 
     //method for getting the actual Entries only the Entry_id_timestamp info's
-    public void getAllEntryForCompare(ArrayList<Entry_id_timestamp> arrayList)   {
-        for (Entry_id_timestamp anArrayList : arrayList) {
+    public void getAllEntryForCompare(ArrayList<Entry_Remote_Identifier> arrayList)   {
+        for (Entry_Remote_Identifier anArrayList : arrayList) {
             String where = Entry_RemoteID + " = " + anArrayList.getId();
             Cursor c = 	db.query(true, Table_Entry, Entry_KEYS,
                     where, null, null, null, null, null);
@@ -519,7 +518,7 @@ public class DBAdapter {
     }
 
     // Needs a Remote entry and the User-email
-    public boolean updateEntry(RemoteEntry obj,String userEmail){
+    public boolean updateEntry(Entry obj,String userEmail){
         String where = Entry_RemoteID + " = " + obj.getRemote_id();
         ContentValues newValues = new ContentValues();
         newValues.put(Entry_Titel,obj.getTitle());
@@ -535,11 +534,11 @@ public class DBAdapter {
         return db.update(Table_Entry, newValues, where, null) != 0;
     }
 
-    public boolean updateEntryAfterSync(Entry_id_timestamp entry_id_timestamp,Long entry_Time){
+    public boolean updateEntryAfterSync(Entry_Remote_Identifier entry_remoteIdentifier,Long entry_Time){
         String where = Entry_CreationDate + " = " + entry_Time;
         ContentValues newValues = new ContentValues();
         newValues.put(Entry_Sync,1);
-        newValues.put(Entry_ChangeDate,entry_id_timestamp.getLast_change());
+        newValues.put(Entry_ChangeDate, entry_remoteIdentifier.getLast_change());
        // newValues.put(Entry_RemoteID,entry_id_timestamp.getId());
         return db.update(Table_Entry, newValues, where, null) != 0;
     }

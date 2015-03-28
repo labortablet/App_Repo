@@ -2,7 +2,7 @@ package company;
 
 import java.util.List;
 
-import datastructures.LocalEntry;
+import datastructures.Entry;
 import datastructures.Experiment;
 
 /**
@@ -10,8 +10,8 @@ import datastructures.Experiment;
  */
 public class ExperimentEntry {
     private Experiment experiments;
-    private List<LocalEntry> entriesList;
-    public ExperimentEntry(Experiment experiment, List<LocalEntry> entries)
+    private List<Entry> entriesList;
+    public ExperimentEntry(Experiment experiment, List<Entry> entries)
 
     {
         experiments = experiment;
@@ -24,7 +24,7 @@ public class ExperimentEntry {
         return experiments;
     }
 
-    public List<LocalEntry> getEntriesList() {
+    public List<Entry> getEntriesList() {
         return entriesList;
     }
     public int getEntryIDByCreationTimestamp(Long timestamp)
