@@ -18,20 +18,31 @@ import datastructures.Entry_Remote_Identifier;
 public class object_level_db {
     private low_level_adapter db_helper;
     private SQLiteDatabase db;
+    private boolean opened = false;
+
+    private void check_open(){
+        if(!this.opened){
+            //trow exception so we know we haven't opened the interface yet!
+        }
+    }
 
     public object_level_db(Context ctx) {
         this.db_helper = new low_level_adapter(ctx);
     }
 
     public void open() {
+       this.opened = true;
         this.db = this.db_helper.getWritableDatabase();
     }
     public void close() {
+        check_open();
+        this.opened = false;
         this.db.close();
         this.db_helper.close();
     }
 
     public User register_user(String login, String password, URL server) {
+        check_open();
         long result;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
@@ -50,10 +61,12 @@ public class object_level_db {
     }
 
     public LinkedList<User> get_all_user_logins(){
+        check_open();
         return null;
     };
 
     public Project register_project(User user, String project_name) {
+        check_open();
         long result;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.projects.getField("user_id").getName(),user.getUser_id());
@@ -70,69 +83,58 @@ public class object_level_db {
         }
     }
 
-    public static final table experiments = new table("experiments",
-            new table.table_field("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT NOT NULL"),
-            new table.table_field("remote_id", "INTEGER", "UNIQUE"),
-            new table.table_field("user_id", "INTEGER", "NOT NULL"),
-            new table.table_field("name", "STRING", "NOT NULL"),
-            new table.table_field("description", "STRING"),
-            new table.table_field("date_creation", "INTEGER")
-
     public Experiment register_experiment(User user, Project project, String experiment_name) {
-        long result;
+        check_open();
+        long id;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.experiments.getField("user_id").getName(), user.getUser_id());
         initialValues.put(layout.experiments.getField("project_id").getName(), project.get_id());
         initialValues.put(layout.experiments.getField("name").getName(), experiment_name);
-        result = this.db.insert(layout.experiments.getName(), null, initialValues);
-        if(result == -1){
+        id = this.db.insert(layout.experiments.getName(), null, initialValues);
+        if(id == -1){
             //FIXME
             //what happens if the project already exists?
             //should we load it from db?
             //and then update?
             return null;
         }else{
-            return new Experiment()
+            return new Experiment(id, project.get_id(), experiment_name);
         }
     }
 
     public Entry new_Entry(User user, Experiment experiment, String title, AttachmentBase attachment) {
+        check_open();
         return null;
     }
 
 
     public LinkedList<Project> match_project(Project project) {
+        check_open();
         return null;
     }
 
 
     public LinkedList<Project> match_project(Project project, Project real_project) {
+        check_open();
         return null;
     }
 
 
     public LinkedList<Experiment> match_experiment(Experiment experiment) {
+        check_open();
         return null;
     }
 
 
     public LinkedList<Experiment> match_experiment(Experiment experiment, Experiment real_experiment) {
+        check_open();
         return null;
     }
 
-    private LinkedList<String> get_project_names(User user) {
+    private LinkedList<String> get_project_names(User user){
+        check_open();
         return null;
     }
-
-
-    public static final table projects = new table("projects",
-            new table.table_field("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT NOT NULL"),
-            new table.table_field("remote_id", "INTEGER", "UNIQUE"),
-            new table.table_field("user_id", "INTEGER", "NOT NULL"),
-            new table.table_field("name", "STRING", "NOT NULL"),
-            new table.table_field("description", "STRING"),
-            new table.table_field("date_creation", "INTEGER")
-
 
 
     private Project get_project(User user, String project_name) {
@@ -150,10 +152,6 @@ public class object_level_db {
 
         index = c.getColumnIndex(layout.projects.getField("id").getName());
         id = c.getLong(index);
-        index = c.getColumnIndex(layout.projects.getField("remote_id").getName());
-        remote_id = c.getLong(index);
-        index = c.getColumnIndex(layout.projects.getField("user_id").getName());
-        user_id = c.getLong(index);
         index = c.getColumnIndex(layout.projects.getField("name").getName());
         name = c.getString(index);
 
@@ -176,23 +174,28 @@ public class object_level_db {
     }
 
     public LinkedList<Project> get_projects(User user) {
+        check_open();
         return null;
     }
 
     public LinkedList<Experiment> get_experiments(User user, Project project) {
+        check_open();
         return null;
     }
 
 
     public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) {
+        check_open();
         return null;
     }
 
     public LinkedList<Integer> get_all_users_with_login(){
+        check_open();
         return null;
     };
 
     public LinkedList<Entry_Remote_Identifier> get_all_entry_timestamps(Integer user_id) {
+        check_open();
         return null;
     }
 
