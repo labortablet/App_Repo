@@ -41,6 +41,12 @@ public class object_level_db {
         this.db_helper.close();
     }
 
+
+    public LinkedList<User> get_all_user_logins(){
+        check_open();
+        return null;
+    };
+
     public User register_user(String login, String password, URL server) {
         check_open();
         long result;
@@ -60,11 +66,6 @@ public class object_level_db {
         }
     }
 
-    public LinkedList<User> get_all_user_logins(){
-        check_open();
-        return null;
-    };
-
     public Project register_project(User user, String project_name) {
         check_open();
         long result;
@@ -73,10 +74,7 @@ public class object_level_db {
         initialValues.put(layout.projects.getField("name").getName(), project_name);
         result = this.db.insert(layout.projects.getName(), null, initialValues);
         if(result == -1){
-            //FIXME
-            //what happens if the project already exists?
-            //should we load it from db?
-            //and then update?
+            //This should never happen
             return null;
         }else{
             return new Project(result, project_name);
@@ -92,19 +90,45 @@ public class object_level_db {
         initialValues.put(layout.experiments.getField("name").getName(), experiment_name);
         id = this.db.insert(layout.experiments.getName(), null, initialValues);
         if(id == -1){
-            //FIXME
-            //what happens if the project already exists?
-            //should we load it from db?
-            //and then update?
+            //this should never happen
             return null;
         }else{
             return new Experiment(id, project.get_id(), experiment_name);
         }
     }
+    public static final table entries = new table("entries",
+            new table.table_field("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT NOT NULL"),
+            new table.table_field("remote_id", "INTEGER", "UNIQUE"),
+            new table.table_field("experiment_id", "INTEGER", "NOT NULL"),
+            new table.table_field("user_id", "INTEGER NOT NULL"),
+            new table.table_field("title", "STRING", "NOT NULL"),
+            new table.table_field("date_creation", "INTEGER", "NOT NULL"),
+            new table.table_field("date_user", "INTEGER", "NOT NULL"),
+            new table.table_field("date_current", "INTEGER"),
+            new table.table_field("attachment_ref", "STRING", "NOT NULL"),
+            new table.table_field("attachment_type", "INTEGER", "NOT NULL")
 
-    public Entry new_Entry(User user, Experiment experiment, String title, AttachmentBase attachment) {
+    public Entry new_Entry(User user, Experiment experiment, String title, AttachmentBase attachment, long date_user) {
         check_open();
-        return null;
+        long current_time = (long)(System.currentTimeMillis() / 1000);
+        long id;
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(layout.entries.getField("experiment_id").getName(), experiment.get_id());
+        initialValues.put(layout.entries.getField("user_id").getName(), user.getId());
+        initialValues.put(layout.entries.getField("title").getName(), title);
+        initialValues.put(layout.entries.getField("date_creation").getName(), current_time);
+        initialValues.put(layout.entries.getField("date_user").getName(), date_user);
+        initialValues.put(layout.entries.getField("date_current").getName(), current_time);
+        initialValues.put(layout.entries.getField("attachment_ref").getName(), attachment.getTypeNumber());
+        //FIXME how to store attachments in the local db? also with a ref or with a blob?
+        //initialValues.put(layout.entries.getField("attachment_type").getName(), attachment.getContent());
+
+        id = this.db.insert(layout.entries.getName(), null, initialValues);
+        if(id == -1){
+            //this should never happen
+            return null;
+        }else{
+            return new Entry(id, user, experiment.get_id(), title, attachment, current_time);
     }
 
 

@@ -40,6 +40,7 @@ public class User {
     this.user_email = email;
 }
 
+    //not sure if we need this
     public User(String firstname, String lastname){
         this.lastname = lastname;
         this.firstname = firstname;
@@ -95,7 +96,7 @@ public class User {
         return this.user_email;
     }
 
-
+    public long getId(){return this.id;}
 
 
 }
