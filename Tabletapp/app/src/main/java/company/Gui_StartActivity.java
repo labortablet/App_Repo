@@ -92,7 +92,7 @@ public class Gui_StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         myDb = new DBAdapter(this);
         context = getApplicationContext();
-        setContentView(R.layout.start_show);
+        setContentView(R.layout.layout_gui_start_activity);
         //doBindService();
         ActivityRegistry.register(this);
       // Intent wtdservice = new Intent(this, LocalService.class);
