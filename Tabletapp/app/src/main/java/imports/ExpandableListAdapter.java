@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
@@ -37,9 +38,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
-        List<Experiment> list = _listDataChild.get(0);
-        int test = (int) _listDataHeader.get(0).get_id();
-        Log.d("liste", String.valueOf(list.size()));
     }
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
@@ -71,7 +69,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-
+       final int i =groupPosition;
       //  final String childText = (String) getChild(groupPosition, childPosition);
 
         final String childText = _listDataChild.get((int) _listDataHeader.get(groupPosition).get_id()).get(childPosition).get_name();
@@ -86,6 +84,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.lblListItem);
 
         txtListChild.setText(childText);
+        convertView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(_context, _listDataChild.get((int) _listDataHeader.get(i).get_id()).get(childPosition).get_name(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
         return convertView;
     }
 
@@ -127,27 +134,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
-        ImageView img1 = (ImageView)convertView.findViewById(R.id.imageView);
-        TextView lbListDate = (TextView) convertView.findViewById(R.id.lblistdate);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
-
-        if(!_listDataDate.isEmpty())
-        {
-            if(!_listDataDate.get(groupPosition).trim().equals("empty"))
-                lbListDate.setText(_listDataDate.get(groupPosition));
-        }
-
-        if (!img.isEmpty()) {
-            if(img.get(groupPosition))
-
-                img1.setImageResource(R.drawable.richtig);
-            else
-                img1.setImageResource(R.drawable.falsch);
-
-        }
-
-
 
         return convertView;
     }
