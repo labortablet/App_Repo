@@ -110,7 +110,7 @@ public class NewAdapter extends BaseExpandableListAdapter {
         TextView text2 = (TextView) convertView.findViewById(R.id.lblistdate);
         ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
         text.setText(localEntries.get(groupPosition).getTitle());
-        text2.setText(localEntries.get(groupPosition).getEntry_time().toString());
+       // text2.setText(localEntries.get(groupPosition).getEntry_time().toString());
         if(localEntries.get(groupPosition).isSync())
         image.setImageResource(R.drawable.richtig);
         else

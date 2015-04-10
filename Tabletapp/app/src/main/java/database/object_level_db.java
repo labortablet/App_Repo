@@ -25,10 +25,10 @@ public class object_level_db {
             //trow exception so we know we haven't opened the interface yet!
         }
     }
-
+/* TODO: outcommentet because of bug
     public object_level_db(Context ctx) {
         this.db_helper = new low_level_adapter(ctx);
-    }
+    }*/
 
     public void open() {
        this.opened = true;

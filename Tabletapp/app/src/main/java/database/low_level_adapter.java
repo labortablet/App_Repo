@@ -5,7 +5,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class low_level_adapter extends SQLiteOpenHelper {
+
+    /*
+    public low_level_adapter(Context context) {
+        //TODO: error: connot reference this before suptertype constructir has been called
+        super(context, this.db_layout.NAME, null, this.db_layout.VERSION);
+
+    }*/
+
+   // TODO: added this to fix the issue
     public static final layout db_layout = new layout();
+
+    public low_level_adapter(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+    }
+   //
 
     //always call interface ready before doing anything else!
     //once patching is in place, initalizing the db might take some time
@@ -14,9 +28,6 @@ public class low_level_adapter extends SQLiteOpenHelper {
         return true;
     };
 
-    public low_level_adapter(Context context) {
-        super(context, this.db_layout.NAME, null, this.db_layout.VERSION);
-    }
 
     public void onCreate(SQLiteDatabase db) {
         for (table tmp : this.db_layout.tables) {
