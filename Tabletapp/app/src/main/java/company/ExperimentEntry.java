@@ -31,7 +31,7 @@ public class ExperimentEntry {
     {int entry_id = 0;
         for(int i = 0; i < entriesList.size();i++)
         {
-            if (entriesList.get(i).getEntry_time().equals(timestamp))
+         //   if (entriesList.get(i).getEntry_time().equals(timestamp))
             {  entry_id = i;
             }
         }

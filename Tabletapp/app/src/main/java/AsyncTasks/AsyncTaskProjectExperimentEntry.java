@@ -38,6 +38,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
                 ArrayList<ExperimentEntry> experimentEntries = new ArrayList<ExperimentEntry>();
                 projectExperimentEntries.add(new ProjectExperimentEntry((remoteProject_list.get(i)), experimentEntries));
             }
+            /*
 
             for (int i = 0; i < remoteExperiment_list.size(); i++) {
 
@@ -49,12 +50,12 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
                         break;
                     }
                 }
-            }
+            }*/
 
             for (int i = 0; i < remoteEntry_list.size(); i++) {
                 for (int j = 0; j < projectExperimentEntries.size(); j++) {
                     for (int k = 0; k < projectExperimentEntries.get(j).getExperimentEntry().size(); k++) {
-                        if (projectExperimentEntries.get(j).getExperimentEntry().get(k).getExperiments().get_id().equals(remoteEntry_list.get(i).getExperiment_id())) {
+                    //    if (projectExperimentEntries.get(j).getExperimentEntry().get(k).getExperiments().get_id().equals(remoteEntry_list.get(i).getExperiment_id())) {
                             projectExperimentEntries.get(j).getExperimentEntry().get(k).getEntriesList().add(remoteEntry_list.get(i));
                             Log.d("Entry" + k,remoteEntry_list.get(i).getTitle());
                             break;
@@ -62,7 +63,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
                         }
                     }
                 }
-            }
+           // }
 
 
         } catch (NullPointerException e) {
@@ -92,7 +93,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
             if (cursor.moveToFirst()) {
                 do {
                     // Process the data:
-                    remoteProjects.add(new Project(cursor.getInt(DBAdapter.COL_ProjectID), cursor.getInt(DBAdapter.COL_ProjectRemoteID), cursor.getString(DBAdapter.COL_ProjectName), cursor.getString(DBAdapter.COL_ProjectDescription)));
+                   // remoteProjects.add(new Project(cursor.getInt(DBAdapter.COL_ProjectID), cursor.getInt(DBAdapter.COL_ProjectRemoteID), cursor.getString(DBAdapter.COL_ProjectName), cursor.getString(DBAdapter.COL_ProjectDescription)));
 
                 } while (cursor.moveToNext());
             }
@@ -116,7 +117,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
             if (cursor.moveToFirst()) {
                 do {
                     // Process the data:
-                    experiments.add(new Experiment(cursor.getInt(DBAdapter.COL_ExperimentID), cursor.getInt(DBAdapter.COL_ExperimentRemoteID), cursor.getInt(DBAdapter.COL_ExperimentProjectID), cursor.getString(DBAdapter.COL_ExperimentName), cursor.getString(DBAdapter.COL_ExperimentDescription)));
+                 //   experiments.add(new Experiment(cursor.getInt(DBAdapter.COL_ExperimentID), cursor.getInt(DBAdapter.COL_ExperimentRemoteID), cursor.getInt(DBAdapter.COL_ExperimentProjectID), cursor.getString(DBAdapter.COL_ExperimentName), cursor.getString(DBAdapter.COL_ExperimentDescription)));
 
                 } while (cursor.moveToNext());
             }
@@ -130,7 +131,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
     }
 
     private LinkedList<Entry> displayEntries(Cursor cursor) {
-        try {
+    /*    try {
 
             LinkedList<Entry> entries;
             entries = new LinkedList<Entry>();
@@ -160,6 +161,8 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
             e.printStackTrace();
             return null;
         }
+        */
+        return null;
     }
 
 

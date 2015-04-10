@@ -74,11 +74,11 @@ public class Gui_NewTableEntry extends Activity {
 
 //TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
 
-                    Entry table_entry =  new Entry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
+    //                Entry table_entry =  new Entry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
                     Gui_StartActivity.myDb.open();
-                    Gui_StartActivity.myDb.insertLocalEntry(table_entry);
+                 //   Gui_StartActivity.myDb.insertLocalEntry(table_entry);
                     Gui_StartActivity.myDb.close();
-                    projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(table_entry);
+             //       projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(table_entry);
                     Gui_DisplayProjectAndExperiment.setProjectExperimentEntries(projectExperimentEntries);
                     this.finish();
             }

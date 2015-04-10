@@ -106,7 +106,7 @@ public class object_level_db {
             new table.table_field("date_user", "INTEGER", "NOT NULL"),
             new table.table_field("date_current", "INTEGER"),
             new table.table_field("attachment_ref", "STRING", "NOT NULL"),
-            new table.table_field("attachment_type", "INTEGER", "NOT NULL")
+            new table.table_field("attachment_type", "INTEGER", "NOT NULL"));
 
     public Entry new_Entry(User user, Experiment experiment, String title, AttachmentBase attachment, long date_user) {
         check_open();
@@ -129,7 +129,7 @@ public class object_level_db {
             return null;
         }else{
             return new Entry(id, user, experiment.get_id(), title, attachment, current_time);
-    }
+    }}
 
 
     public LinkedList<Project> match_project(Project project) {

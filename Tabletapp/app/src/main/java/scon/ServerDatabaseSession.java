@@ -19,7 +19,6 @@ import datastructures.Entry;
 import datastructures.Entry_Remote_Identifier;
 import datastructures.Experiment;
 import datastructures.Project;
-import datastructures.RemoteEntry;
 import datastructures.User;
 
 import java.io.BufferedOutputStream;
@@ -295,7 +294,8 @@ public class ServerDatabaseSession {
                 id = experiment_json.getInt(1);
                 name = experiment_json.getString(2);
                 description = experiment_json.getString(3);
-                remoteExperiment_list.add(new Experiment(project_id, id, name, description));
+                //TODO Fix this issue
+              //  remoteExperiment_list.add(new Experiment(project_id, id, name, description));
             } catch (JSONException e) {
                 System.out.println("JSON exception!");
                 System.out.println(e);
@@ -391,7 +391,9 @@ public class ServerDatabaseSession {
         String user_lastname = result.getString("user_lastname");
         User user = new User("sad", "sad");
         AttachmentBase attachment = AttachmentBase.deserialize(attachment_type, attachment_serialized);
-        return new Entry(a.getId(), attachment, entry_time, experiment_id, sync_time, change_time, title, user);
+        //TODO : Fix this issue
+      //  return new Entry(a.getId(), attachment, entry_time, experiment_id, sync_time, change_time, title, user);
+        return null;
     }
 
 

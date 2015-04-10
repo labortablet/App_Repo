@@ -24,7 +24,7 @@ import java.util.TimerTask;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutionException;
 
-import AsyncTasks.StartUpAsyncTask;
+
 import exceptions.NoInternetAvailable;
 import exceptions.SBSBaseException;
 import datastructures.AttachmentBase;
@@ -264,10 +264,11 @@ public class LocalService extends Service {
         if (isOnline()) {
             SDS = new ServerDatabaseSession(url, user);
             SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
-            int i = new StartUpAsyncTask().execute(SDCO).get();
+            //int i = new StartUpAsyncTask().execute(SDCO).get();
 
             myTimer.schedule(new MyTask(), 60000);
-            return i;
+            //return i;
+            return 0;
         } else return 2;
     }
     @Override
@@ -413,12 +414,12 @@ if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
             experimentHashMap = new HashMap<Integer, Integer>();
             for (int i = 0;i < projectExperimentEntries.size();i++)
             {
-                projectHashMap.put(projectExperimentEntries.get(i).getProject().get_remote_id(),i);
+             /*   projectHashMap.put(projectExperimentEntries.get(i).getProject().get_remote_id(),i);
                 for (int j = 0;projectExperimentEntries.get(i).getExperimentEntry().size() > j; j++)
                 {
                     experimentHashMap.put(projectExperimentEntries.get(i).getExperimentEntry().get(j).getExperiments().get_id(),j);
 
-                }
+                }*/
 
             }
             return null;
@@ -434,21 +435,21 @@ if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
             if (c.moveToFirst()) {
                 do {
                     // Process the data:
-                project_local_id2project_object.put(c.getInt(DBAdapter.COL_ProjectRemoteID), new SoftReference<Project>(new Project(c.getInt(DBAdapter.COL_ProjectRemoteID),c.getInt(DBAdapter.COL_EntryRemoteID),c.getString(DBAdapter.COL_ProjectName),c.getString(DBAdapter.COL_ProjectDescription))));
+              //  project_local_id2project_object.put(c.getInt(DBAdapter.COL_ProjectRemoteID), new SoftReference<Project>(new Project(c.getInt(DBAdapter.COL_ProjectRemoteID),c.getInt(DBAdapter.COL_EntryRemoteID),c.getString(DBAdapter.COL_ProjectName),c.getString(DBAdapter.COL_ProjectDescription))));
                 } while (c.moveToNext());
             }
             c = myDb.getAllExperimentRows();
             if (c.moveToFirst()) {
                 do {
                     // Process the data:
-                    experiment_local_id2experiment_object.put(c.getInt(DBAdapter.COL_ExperimentID), new SoftReference<Experiment>(new Experiment(c.getInt(DBAdapter.COL_ExperimentID),c.getInt(DBAdapter.COL_ExperimentRemoteID),c.getInt(DBAdapter.COL_ExperimentProjectID),c.getString(DBAdapter.COL_ExperimentName),c.getString(DBAdapter.COL_ExperimentDescription))));
+                //    experiment_local_id2experiment_object.put(c.getInt(DBAdapter.COL_ExperimentID), new SoftReference<Experiment>(new Experiment(c.getInt(DBAdapter.COL_ExperimentID),c.getInt(DBAdapter.COL_ExperimentRemoteID),c.getInt(DBAdapter.COL_ExperimentProjectID),c.getString(DBAdapter.COL_ExperimentName),c.getString(DBAdapter.COL_ExperimentDescription))));
                 } while (c.moveToNext());
             }
             c = myDb.getAllEntryRows();
             if (c.moveToFirst()) {
                 do {
                     // Process the data:
-                  entry_local_id2entry_object.put(c.getInt(DBAdapter.COL_EntryID), new SoftReference<Entry>(new Entry(c.getInt(DBAdapter.COL_EntryID),new User(c.getString(DBAdapter.COL_EntryUserID),c.getString(DBAdapter.COL_EntryUserID)),c.getInt(DBAdapter.COL_EntryExperimentID),c.getString(DBAdapter.COL_EntryTitle),new AttachmentText(c.getString(DBAdapter.COL_EntryContent)),true,c.getLong(DBAdapter.COL_EntryCreationDate),c.getLong(DBAdapter.COL_EntrySyncDate),c.getLong(DBAdapter.COL_EntryChangeDate))));
+              //    entry_local_id2entry_object.put(c.getInt(DBAdapter.COL_EntryID), new SoftReference<Entry>(new Entry(c.getInt(DBAdapter.COL_EntryID),new User(c.getString(DBAdapter.COL_EntryUserID),c.getString(DBAdapter.COL_EntryUserID)),c.getInt(DBAdapter.COL_EntryExperimentID),c.getString(DBAdapter.COL_EntryTitle),new AttachmentText(c.getString(DBAdapter.COL_EntryContent)),true,c.getLong(DBAdapter.COL_EntryCreationDate),c.getLong(DBAdapter.COL_EntrySyncDate),c.getLong(DBAdapter.COL_EntryChangeDate))));
                 } while (c.moveToNext());
             }
 

@@ -51,7 +51,7 @@ public class Gui_NewKeyboardEntry extends Activity {
 
             case R.id.button3:
                 if (!(title.getText().toString().trim().isEmpty())) {
-                   if (!unique_Test(title.getText().toString())) {
+                  /* if (!unique_Test(title.getText().toString())) {
                         try {
                             Entry edit = new Entry(title.getText().toString(), new AttachmentText(content.getText().toString().trim()), App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
                             Gui_StartActivity.myDb.open();
@@ -67,7 +67,7 @@ public class Gui_NewKeyboardEntry extends Activity {
                         Popup popup = new Popup();            // Popup für leeren title
                         popup.set_String(R.string.popup4);
                         popup.show(getFragmentManager(), "this");
-                    }}
+                    }*/}
                  else {
                     Popup popup = new Popup();            // Popup für leeren title
                     popup.set_String(R.string.popup3);

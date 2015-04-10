@@ -14,7 +14,7 @@ import datastructures.Project;
 import datastructures.User;
 import datastructures.Entry;
 import datastructures.Entry_Remote_Identifier;
-import datastructures.RemoteEntry;
+
 
 public class DBAdapter {
     /////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ public class DBAdapter {
         initialValues.put(Project_Name,remoteProject.get_name());
         initialValues.put(Project_Description,remoteProject.get_description());
         initialValues.put(Project_Sync,1);
-        initialValues.put(Project_RemoteID,remoteProject.get_remote_id());
+       // initialValues.put(Project_RemoteID,remoteProject.get_remote_id());
         return db.insert(Table_Project,null,initialValues);
     }
     public Long insertRemoteProject(String project_Name,String project_Description,int project_Id){
@@ -510,16 +510,16 @@ public class DBAdapter {
         }
         else
         {
-            this.insertNewUser(new User("","",strings,""));
-            c = db.query(true, Table_User, User_KEYS,
-                    where, null, null, null, null, null);
+           // this.insertNewUser(new User("","",strings,""));
+          //  c = db.query(true, Table_User, User_KEYS,
+          //          where, null, null, null, null, null);
         }
         return c.getInt(DBAdapter.COL_UserID);
     }
 
     // Needs a Remote entry and the User-email
     public boolean updateEntry(Entry obj,String userEmail){
-        String where = Entry_RemoteID + " = " + obj.getRemote_id();
+        //String where = Entry_RemoteID + " = " + obj.getRemote_id();
         ContentValues newValues = new ContentValues();
         newValues.put(Entry_Titel,obj.getTitle());
         newValues.put(Entry_Typ,obj.getAttachment().getTypeNumber());
@@ -527,11 +527,12 @@ public class DBAdapter {
         newValues.put(Entry_Sync,1);
         newValues.put(Entry_CreationDate,obj.getEntry_time());
         newValues.put(Entry_ChangeDate,obj.getChange_time());
-        newValues.put(Entry_SyncDate,obj.sync_time);
-        newValues.put(Entry_RemoteID,obj.remote_id);
+     //   newValues.put(Entry_SyncDate,obj.sync_time);
+      //  newValues.put(Entry_RemoteID,obj.remote_id);
         newValues.put(Entry_ExperimentID,obj.getExperiment_id());
         newValues.put(Entry_UserID,getUserByEmail(userEmail));
-        return db.update(Table_Entry, newValues, where, null) != 0;
+      //  return db.update(Table_Entry, newValues, where, null) != 0;
+        return false;
     }
 
     public boolean updateEntryAfterSync(Entry_Remote_Identifier entry_remoteIdentifier,Long entry_Time){
