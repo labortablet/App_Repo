@@ -48,11 +48,10 @@ public class Gui_StartActivity extends Activity {
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-    private Matcher matcher;
     private Pattern pattern;
     boolean mServiceConnected = false;
     private LocalService mLocnServ;
-    private static String[][] project = new String[10][20];
+
 
 
 
@@ -62,29 +61,15 @@ public class Gui_StartActivity extends Activity {
     EditText text;
     EditText text2;
     EditText text3;
-    private String Server;
     private String email;
     private String password;
 
     public Gui_StartActivity() {  //Construktor
         super();
-
         // Initialisierung der Variablen
         mIsBound = false;
-
         pattern = Pattern.compile(EMAIL_PATTERN);
-
-        project[0][0] = "test";
-        project[1][0] = "test1";
-        project[2][0] = "test2";
-        project[3][0] = null;
-        project[4][0] = null;
-        project[0][1] = "test";
-        project[1][1] = "test1";
-
-        project[0][2] = "Test3";
-
-    }
+ }
 
 
     @Override
@@ -141,21 +126,18 @@ public class Gui_StartActivity extends Activity {
                 if (validate(text2.getText().toString())) { // abfrage der korrektheit der email
                     text2.setText("fredi@uni-siegen.de");
                     text3.setText("test");
-                   Server = text.getText().toString();
+                    String server = text.getText().toString();
                    email = text2.getText().toString();
                    password = text3.getText().toString();
-
-                   mService.setUserAndURL(new User(email, password),Server);
-                   int i =  mService.connect(Server);
+                   mService.setUserAndURL(new User(email, password), server);
+                   int i =  mService.connect(server);
 
 
                   switch (i) {
                        case 0:
 
-                           Intent intent = new Intent(this, SmplExpandable.class);
-                        //   Intent intent = new Intent(this, Project_show.class);
+                           Intent intent = new Intent(this, Gui_DisplayProjectAndExperiment.class);
                            startActivity(intent);
-
                             break;
                        case 1:
                             Popup popup = new Popup();
@@ -246,29 +228,6 @@ public class Gui_StartActivity extends Activity {
     };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /** Defines callbacks for service binding, passed to bindService()*/
    /* private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -288,11 +247,6 @@ public class Gui_StartActivity extends Activity {
             mBound = false;
         }
     };*/
-
-
-
-
-
 
 
 
@@ -345,26 +299,9 @@ public class Gui_StartActivity extends Activity {
     */
     public boolean validate(final String hex) {
 
-        matcher = pattern.matcher(hex);
+        Matcher matcher = pattern.matcher(hex);
         return matcher.matches();
 
-    }
-
-
-
-
-    public static void set_Project(String[][] Project) {
-        project = Project;
-    }
-
-    public static String[][] get_Projekts() {
-        return project;
-    }
-
-    private void start_NewActivity() {
-
-        Intent intent = new Intent(this, Gui_DisplayProjectAndExperiment.class);
-        startActivity(intent);
     }
 }
 

@@ -3,6 +3,7 @@ package company;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,10 +14,13 @@ import com.example.test1.tabletapp.app.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import AsyncTasks.AsyncTaskProjectExperimentEntry;
+import datastructures.Experiment;
+import datastructures.Project;
 import imports.ActivityRegistry;
 import imports.ExpandableListAdapter;
 import datastructures.ProjectExperimentEntry;
@@ -30,6 +34,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    LinkedList<Project> projects = new LinkedList<Project>();
 
     public static int getExperiment_Selected() {
         return experiment_Selected;
@@ -49,28 +54,50 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
     @Override
 
         public void onCreate(Bundle savedInstanceState) {
-        try {
+    /*    try {
             projectExperimentEntries = new AsyncTaskProjectExperimentEntry().execute(Gui_StartActivity.myDb).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
+        }*/
+        // dummidata
+        HashMap<Integer,List<Experiment>> hashMap = new HashMap<Integer, List<Experiment>>();
+        projects.add(new Project(0,"testproject0"));
+        projects.add(new Project(1,"testproject1"));
+
+        List<Experiment> list = new ArrayList<Experiment>();
+        list.add(new Experiment(0,0,"experiment test 1"));
+        list.add(new Experiment(1,0,"experiment test 2"));
+        list.add(new Experiment(2,0,"experiment test 3"));
+        hashMap.put(0,list);
+        list.clear();
+
+        list.add(new Experiment(3,1,"experiment test 4"));
+        list.add(new Experiment(4,1,"experiment test 5"));
+        hashMap.put(1,list);
+
+        // dummidata
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_show);
         ActivityRegistry.register(this);
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
        // preparing list data
-        prepareListData();
-       listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+     //   prepareListData();
+       listAdapter = new ExpandableListAdapter(this, projects, hashMap);
         // setting list adapter
-       expListView.setAdapter(listAdapter);
-
+        try {
+            expListView.setAdapter(listAdapter);
+        }catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
     }
         /*
          * Preparing the list data
          */
+    /*
         private void prepareListData() {
             try{
         listDataHeader = new ArrayList<String>();
@@ -127,7 +154,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
                 }
             });
     }
-
+*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

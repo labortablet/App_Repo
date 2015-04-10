@@ -173,7 +173,7 @@ public class object_level_db {
         int index;
         Long id, remote_id, user_id, date_creation;
         String name, description;
-
+        //TODO: can produce nullpointer except
         index = c.getColumnIndex(layout.projects.getField("id").getName());
         id = c.getLong(index);
         index = c.getColumnIndex(layout.projects.getField("name").getName());
