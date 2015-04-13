@@ -21,7 +21,11 @@ public abstract class AttachmentBase {
     };
 
     public abstract String serialize();
+    //this is the serialized data used by scon
 
+    public abstract String getReference();
+    //this is a short local reference which can be used to reconstruc the attachment
+    //for example this could be the name of a picture or a video or a string for a text entry
 }
 
 

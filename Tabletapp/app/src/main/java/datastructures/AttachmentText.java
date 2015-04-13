@@ -5,9 +5,8 @@ public class AttachmentText extends AttachmentBase {
     private String TextContent;
 
     public String serialize(){
-        return TextContent;
+        return this.TextContent;
     };
-
 	public AttachmentText(String text){
         this.TextContent = text;
 	}
@@ -15,5 +14,7 @@ public class AttachmentText extends AttachmentBase {
     public String getContent() {
         return this.TextContent;
     }
+    public String getReference() {return this.TextContent;}
+
 
 }
