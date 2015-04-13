@@ -37,7 +37,7 @@ import datastructures.Project;
 import datastructures.ProjectExperimentEntry;
 import imports.ServersideDatabaseConnectionObject;
 import datastructures.User;
-import datastructures.Entry_Remote_Identifier;
+import scon.Entry_Remote_Identifier;
 import scon.ServerDatabaseSession;
 
 

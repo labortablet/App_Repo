@@ -1,21 +1,5 @@
 package AsyncTasks;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import java.util.LinkedList;
-
-import datastructures.Entry;
-import datastructures.Experiment;
-import datastructures.Project;
-import imports.DBAdapter;
-import exceptions.SBSBaseException;
-import imports.ServersideDatabaseConnectionObject;
-import datastructures.Entry_Remote_Identifier;
-
-import scon.ServerDatabaseSession;
-
 /**
  * Created by Grit on 21.10.2014.
  */

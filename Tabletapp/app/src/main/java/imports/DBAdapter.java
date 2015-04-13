@@ -13,7 +13,7 @@ import datastructures.Entry;
 import datastructures.Experiment;
 import datastructures.Project;
 import datastructures.User;
-import datastructures.Entry_Remote_Identifier;
+import scon.Entry_Remote_Identifier;
 
 
 public class DBAdapter {

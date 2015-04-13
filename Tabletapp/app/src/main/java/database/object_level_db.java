@@ -1,7 +1,6 @@
 package database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -13,7 +12,7 @@ import datastructures.Entry;
 import datastructures.Experiment;
 import datastructures.Project;
 import datastructures.User;
-import datastructures.Entry_Remote_Identifier;
+import scon.Entry_Remote_Identifier;
 
 public class object_level_db {
     private low_level_adapter db_helper;
@@ -174,6 +173,7 @@ public class object_level_db {
         Long id, remote_id, user_id, date_creation;
         String name, description;
         //TODO: can produce nullpointer except
+        //nope, it cannot as it is only called with a existing project_name
         index = c.getColumnIndex(layout.projects.getField("id").getName());
         id = c.getLong(index);
         index = c.getColumnIndex(layout.projects.getField("name").getName());

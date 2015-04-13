@@ -13,14 +13,6 @@ import org.json_pc.JSONArray;
 import org.json_pc.JSONException;
 import org.json_pc.JSONObject;
 
-import datastructures.AttachmentBase;
-
-import datastructures.Entry;
-import datastructures.Entry_Remote_Identifier;
-import datastructures.Experiment;
-import datastructures.Project;
-import datastructures.User;
-
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +26,8 @@ import java.util.Scanner;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLHandshakeException;
 
+import datastructures.AttachmentBase;
+import datastructures.User;
 import exceptions.*;
 
 
@@ -171,7 +165,7 @@ public class ServerDatabaseSession {
         try {
             obj.put(name, value);
         } catch (JSONException e) {
-            //should be impossible as we add a valid parameter to the json
+            System.out.println("This should not happen, put wrapper failed");
         }
         return obj;
     };
@@ -196,17 +190,17 @@ public class ServerDatabaseSession {
             this.session_id = result.getString("session_id");
             this.session_id_set = Boolean.TRUE;
         }catch (JSONException e){
-            throw new SBSBaseException();
+            throw new JSONError();
         }
         try{
             this.salt = this.uni2bin(result.getString("salt").trim());
         }catch (JSONException e){
-            throw new SBSBaseException();
+            throw new JSONError();
         }
         try{
             return this.uni2bin(result.getString("challenge"));
         }catch (JSONException e){
-            throw new SBSBaseException();
+            throw new JSONError();
         }
     }
 
@@ -226,7 +220,7 @@ public class ServerDatabaseSession {
         this.auth_session(response);
     };
 
-    public LinkedList<Project> get_projects() throws SBSBaseException {
+    public LinkedList<RemoteProject> get_projects() throws SBSBaseException {
         this.check_for_session();
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_projects");
@@ -238,25 +232,29 @@ public class ServerDatabaseSession {
         try {
             project_json_array = result.getJSONArray("projects");
         } catch (JSONException e) {
-            throw new SBSBaseException();
+            System.out.println("no projects json array");
+            System.out.println(project_json_array);
+            throw new JSONError();
         }
 
-        LinkedList<Project> remoteProject_list = new LinkedList<Project>();
+        LinkedList<RemoteProject> remoteProject_list = new LinkedList<RemoteProject>();
         for (int i = 0; i < project_json_array.length(); i++) {
             JSONArray project_json = null;
-            Integer id = null;
+            Long id = null;
             String name = null;
             String description = null;
+            Long date = null;
             try {
                 project_json = project_json_array.getJSONArray(i);
-                id = project_json.getInt(0);
+                id = project_json.getLong(0);
                 name = project_json.getString(1);
                 description = project_json.getString(2);
-                //FIXME need to change scon as we only will have parameters
-                //remoteProject_list.add(new Project(new long, id, name, description, null));
+                //date = project_json.getLong(3);
+                remoteProject_list.add(new RemoteProject(id, name, description, 0));
             } catch (JSONException e) {
-                //some project did not decode correctly
-                throw new SBSBaseException();
+                System.out.println("Some project did not decode properly");
+                System.out.println(project_json_array);
+                throw new JSONError();
             }
 
         }
@@ -264,7 +262,7 @@ public class ServerDatabaseSession {
     }
 
 
-    public LinkedList<Experiment> get_experiments() throws SBSBaseException {
+    public LinkedList<RemoteExperiment> get_experiments() throws SBSBaseException {
         this.check_for_session();
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_experiments");
@@ -279,35 +277,36 @@ public class ServerDatabaseSession {
             System.out.println("jSON exception");
             System.out.println(result);
             System.out.println(e);
-            throw new SBSBaseException();
+            throw new JSONError();
         }
-        LinkedList<Experiment> remoteExperiment_list = new LinkedList<Experiment>();
+        LinkedList<RemoteExperiment> remoteExperiment_list = new LinkedList<RemoteExperiment>();
         for (int i = 0; i < experiment_json_array.length(); i++) {
             JSONArray experiment_json = null;
-            Integer project_id = null;
-            Integer id = null;
+            Long project_id = null;
+            Long id = null;
             String name = null;
             String description = null;
+            Long date = null;
             try {
                 experiment_json = experiment_json_array.getJSONArray(i);
-                project_id = experiment_json.getInt(0);
-                id = experiment_json.getInt(1);
+                project_id = experiment_json.getLong(0);
+                id = experiment_json.getLong(1);
                 name = experiment_json.getString(2);
                 description = experiment_json.getString(3);
-                //TODO Fix this issue
-              //  remoteExperiment_list.add(new Experiment(project_id, id, name, description));
+                //date = experiment_json.getLong(4);
+                remoteExperiment_list.add(new RemoteExperiment(id, project_id, name, description, 0));
             } catch (JSONException e) {
                 System.out.println("JSON exception!");
                 System.out.println(e);
                 //some project did not decode correctly
-                throw new SBSBaseException();
+                throw new JSONError();
             }
 
         }
         return remoteExperiment_list;
     }
 
-    public LinkedList<Entry_Remote_Identifier> get_last_entry_references(Integer experiment_id, Integer entry_count, LinkedList<Entry_Remote_Identifier> excluded) throws SBSBaseException {
+    public LinkedList<Entry_Remote_Identifier> get_last_entry_references(long experiment_id, long entry_count, LinkedList<Entry_Remote_Identifier> excluded) throws SBSBaseException {
         //excluded is ignored right now but in the future, you will be able
         //to list entries you do not like to be shown so you only will
         //see entries which you do not know.
@@ -315,8 +314,8 @@ public class ServerDatabaseSession {
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_last_entry_ids");
         this.put_wrapper(request, "session_id", this.session_id);
-        this.put_wrapper(request, "entry_count", entry_count.toString());
-        this.put_wrapper(request, "experiment_id", experiment_id.toString());
+        this.put_wrapper(request, "entry_count", entry_count);
+        this.put_wrapper(request, "experiment_id", experiment_id);
 
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
@@ -325,7 +324,7 @@ public class ServerDatabaseSession {
         try {
             entry_id_timestamps = result.getJSONArray("entry_id_timestamps");
         } catch (JSONException e) {
-            throw new SBSBaseException();
+            throw new JSONError();
         }
         LinkedList<Entry_Remote_Identifier> entry_references = new LinkedList<Entry_Remote_Identifier>();
 
@@ -345,7 +344,7 @@ public class ServerDatabaseSession {
         return result.getBoolean("auth");
     };
 
-    public Entry_Remote_Identifier send_entry(Integer experiment_id, Long entry_time, String title, AttachmentBase attachment) throws SBSBaseException{
+    public Entry_Remote_Identifier send_entry(long experiment_id, long entry_time, String title, AttachmentBase attachment) throws SBSBaseException{
         this.check_for_session();
         //only text right now
         JSONObject request = new JSONObject();
@@ -366,12 +365,12 @@ public class ServerDatabaseSession {
         } catch (JSONException e) {
             System.out.println("JSOn exception!");
             System.out.println(result);
-            throw new SBSBaseException();
+            throw new JSONError();
         }
         return new Entry_Remote_Identifier(entry_id, entry_current_time);
     }
 
-    public Entry get_entry(Entry_Remote_Identifier a) throws SBSBaseException{
+    public RemoteEntry get_entry(Entry_Remote_Identifier a) throws SBSBaseException{
         this.check_for_session();
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_entry");
@@ -383,17 +382,14 @@ public class ServerDatabaseSession {
         Long entry_time = result.getLong("entry_date_user");
         Long sync_time = result.getLong("entry_date");
         Long change_time = result.getLong("entry_current_time");
-        int experiment_id = result.getInt("experiment_id");
+        long experiment_id = result.getLong("experiment_id");
         int attachment_type = result.getInt("entry_attachment_type");
         String attachment_serialized = result.getString("entry_attachment");
         String title = result.getString("entry_title");
         String user_firstname = result.getString("user_firstname");
+        long user_id = result.getLong("user_id");
         String user_lastname = result.getString("user_lastname");
-        User user = new User("sad", "sad");
-        AttachmentBase attachment = AttachmentBase.deserialize(attachment_type, attachment_serialized);
-        //TODO : Fix this issue
-      //  return new Entry(a.getId(), attachment, entry_time, experiment_id, sync_time, change_time, title, user);
-        return null;
+        return new RemoteEntry(a.getId(), experiment_id, title, attachment_serialized, attachment_type, sync_time, entry_time, change_time, user_id, user_firstname, user_lastname);
     }
 
 
