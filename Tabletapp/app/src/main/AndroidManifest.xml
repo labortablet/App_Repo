@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
-    <uses-sdk android:minSdkVersion="11" />
+
 
     <application
 
@@ -38,10 +38,6 @@
             android:name="company.Gui_DisplayEntryDetails"
             android:label="@string/app_name" >
         </activity>
-        <activity
-            android:name="company.Project_entries_show"
-            android:label="@string/app_name">
-            </activity>
         <activity android:name="company.Gui_DisplayProjectDetails"
             android:label="Tabletapp">
             </activity>
@@ -73,7 +69,10 @@
 
         <activity
             android:name="company.Gui_DisplayProjectAndExperiment"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+android:theme="@style/MyTheme"
+
+       >
         </activity>
     </application>
 

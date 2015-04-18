@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
@@ -158,8 +160,9 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.project_show, menu);
-        return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
 
     }
     @Override
@@ -167,8 +170,27 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+
+            case R.id.action_refresh:
+                // refresh
+              //  Toast.makeText(getApplicationContext(), "Settings Clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.settings:
+                // refresh
+                Toast.makeText(getApplicationContext(), "settings", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.sync:
+                // refresh
+                Toast.makeText(getApplicationContext(), "sync", Toast.LENGTH_SHORT).show();
+                return true;
+            // help action
+
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
     public void buttonEventHandler(View v) {  // butten events
         switch (v.getId()) {  // switch ID button
@@ -200,5 +222,8 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
         intent.putExtra("description", description);
         startActivity(intent);
 
-    }
+    }    /**
+     * On selecting action bar icons
+     * */
+
 }

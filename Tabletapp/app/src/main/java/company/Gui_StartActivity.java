@@ -36,37 +36,19 @@ public class Gui_StartActivity extends Activity {
     public static void setUser(User user) {
         Gui_StartActivity.user = user;
     }
-
     public static LocalService mService;
     static Context context;
     public static DBAdapter myDb;
     private static User user;
-
     boolean mBound = false;
-
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
     private Pattern pattern;
-    boolean mServiceConnected = false;
-    private LocalService mLocnServ;
-
-
-
-
-
     boolean mIsBound;
 
-    EditText text;
-    EditText text2;
-    EditText text3;
-    private String email;
-    private String password;
-
-    public Gui_StartActivity() {  //Construktor
+    public Gui_StartActivity() {
         super();
-        // Initialisierung der Variablen
         mIsBound = false;
         pattern = Pattern.compile(EMAIL_PATTERN);
  }
@@ -78,10 +60,7 @@ public class Gui_StartActivity extends Activity {
         myDb = new DBAdapter(this);
         context = getApplicationContext();
         setContentView(R.layout.layout_gui_start_activity);
-        //doBindService();
         ActivityRegistry.register(this);
-      // Intent wtdservice = new Intent(this, LocalService.class);
-      // startService(wtdservice);
 
     } // Standart Android Methoden für apps
 
@@ -111,9 +90,9 @@ public class Gui_StartActivity extends Activity {
         switch (v.getId()) {  // switch ID button
 
             case R.id.button:
-                text = (EditText) findViewById(R.id.editText);
-                text2 = (EditText) findViewById(R.id.editText2);
-                text3 = (EditText) findViewById(R.id.editText3);
+                EditText text = (EditText) findViewById(R.id.editText);
+                EditText text2 = (EditText) findViewById(R.id.editText2);
+                EditText text3 = (EditText) findViewById(R.id.editText3);
                 text2.setText("fredi@uni-siegen.de");
                 text3.setText("test");
 
@@ -127,8 +106,8 @@ public class Gui_StartActivity extends Activity {
                     text2.setText("fredi@uni-siegen.de");
                     text3.setText("test");
                     String server = text.getText().toString();
-                   email = text2.getText().toString();
-                   password = text3.getText().toString();
+                    String email = text2.getText().toString();
+                    String password = text3.getText().toString();
                    mService.setUserAndURL(new User(email, password), server);
                    int i =  mService.connect(server);
 
@@ -175,11 +154,6 @@ public class Gui_StartActivity extends Activity {
         }
                 break;
 
-            case R.id.button2:   // button exit
-                ActivityRegistry.finishAll(); // exit button
-                System.exit(0);
-                break;
-
         }
     }
 
@@ -208,7 +182,9 @@ public class Gui_StartActivity extends Activity {
     }
 
 
-
+    /**
+     * Connection Function for the Service
+     */
 
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -227,76 +203,11 @@ public class Gui_StartActivity extends Activity {
         }
     };
 
-
-    /** Defines callbacks for service binding, passed to bindService()*/
-   /* private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            LocalService.LocalBinder binder = (LocalService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };*/
-
-
-
-
-
-
-
-
-    // Diese methoden können bisher noch ignoriert werden sie dienen dazu den service hinterher einzubinden wenn er dann läuft.
-   /* private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mBoundService = ((LocalService.LocalBinder)service).getService();
-
-
-            Toast.makeText(Start.this, R.string.local_service_connected,
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has been
-            // unexpectedly disconnected -- that is, its process crashed.
-            // Because it is running in our same process, we should never
-            // see this happen.
-            mBoundService = null;
-            Toast.makeText(Start.this, R.string.local_service_disconnected,
-                    Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    void doBindService() {
-
-        bindService(new Intent(Start.this,
-                LocalService.class), mConnection, Context.BIND_AUTO_CREATE);
-         mIsBound = true;
-    }
-
-    void doUnbindService() {
-        if (mIsBound) {
-
-            unbindService(mConnection);
-            mIsBound = false;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        doUnbindService();
-    }
-    */
+/**
+ *checking for the validation of the E-Mail
+ * @param hex  The E-Mail
+ *
+ */
     public boolean validate(final String hex) {
 
         Matcher matcher = pattern.matcher(hex);
