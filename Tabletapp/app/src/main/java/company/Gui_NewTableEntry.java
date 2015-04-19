@@ -1,7 +1,6 @@
 package company;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,9 +16,6 @@ import com.example.test1.tabletapp.app.R;
 import java.util.List;
 
 import imports.ActivityRegistry;
-import imports.App_Methodes;
-import datastructures.AttachmentTable;
-import datastructures.Entry;
 import imports.Popup;
 import datastructures.ProjectExperimentEntry;
 
@@ -30,112 +26,122 @@ public class Gui_NewTableEntry extends Activity {
 
     private TableLayout table;
     EditText text;
-    private  int cols;
+    EditText text1;
+    EditText text2;
+    private int cols;
     private int rows;
     private String[][] string_array;
     private EditText[][] textView_array;
     private Integer project_Selected = Gui_DisplayProjectAndExperiment.getProject_Selected();
     private Integer experiment_Selected = Gui_DisplayProjectAndExperiment.getExperiment_Selected();
     private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_DisplayProjectAndExperiment.getProjectExperimentEntries();
-    public void buttonEventHandler(View v) {  // butten events
 
-        switch(v.getId()) {  // switch ID button
-
-            case R.id.button:
-               ActivityRegistry.finishAll();
-                System.exit(0);
-                break;
-            case R.id.button2:
-                this.finish();
-                break;
-            case R.id.button3:
-                Log.d("Button 3","Button finish gedrückt");
-
-          for(int i = 0;i < rows;i++ )
-                {
-                    for (int j = 0; j < cols; j++)
-                    {
-                        try {
-
-                            EditText temp = textView_array[i][j];
-                            if(!(temp.getText().toString().isEmpty()))
-                            string_array[i][j] = temp.getText().toString();
-                        }
-                        catch (NullPointerException e)
-                        {}
-                    }
-
-                }
-                if ( !(text.getText().toString().isEmpty()))
-            {
-                if(!unique_Test(text.getText().toString())){
-                try {
-
-
-//TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
-
-    //                Entry table_entry =  new Entry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
-                    Gui_StartActivity.myDb.open();
-                 //   Gui_StartActivity.myDb.insertLocalEntry(table_entry);
-                    Gui_StartActivity.myDb.close();
-             //       projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(table_entry);
-                    Gui_DisplayProjectAndExperiment.setProjectExperimentEntries(projectExperimentEntries);
-                    this.finish();
-            }
-            catch (Exception e )
-            {
-                e.printStackTrace();
-            }
-            }
-                else
-                {
-                    Popup popup = new Popup();            // Popup für leeren title
-                    popup.set_String(R.string.popup4);
-                    popup.show(getFragmentManager(),"this");
-                }
-
-            }
-            else
-            {
-                Popup popup = new Popup();            // Popup für leeren title
-                popup.set_String(R.string.popup3);
-                popup.show(getFragmentManager(),"this");
-            }
-
-
-            // finish button
-
-            break;
-
-
-
-
-
-
-        }
-    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_tableentry);
+        setContentView(R.layout.layout_guinewtableentry);
         //doBindService();
         ActivityRegistry.register(this);
 
         // Receiving the Data
-        Intent i = getIntent();
-        text = (EditText)findViewById(R.id.editText);
-        table = (TableLayout)findViewById(R.id.tableLayout1);
 
+
+
+
+        text = (EditText)findViewById(R.id.editText);
+
+        text1 = (EditText)findViewById(R.id.editText1);
+
+        text2 = (EditText)findViewById(R.id.editText2);
+      // text2.setVisibility(View.INVISIBLE);
+        table = (TableLayout)findViewById(R.id.tableLayout1);
+       // table.setVisibility(View.INVISIBLE);
 
         table.removeAllViews();
-        rows = Integer.parseInt(i.getStringExtra("row"));
-        cols = Integer.parseInt(i.getStringExtra("column"));
 
-        textView_array = new EditText[rows][cols];
-        string_array = new String[rows][cols];
-        BuildTable(rows, cols);
+
+
 
     } // Standart Android Methoden für apps
+
+
+
+    public void buttonEventHandler(View v) {  // butten events
+
+        switch (v.getId()) {  // switch ID button
+
+            case R.id.button:
+                if (!(text.getText().toString().trim().isEmpty()) && !(text1.getText().toString().trim().isEmpty()))
+
+                {
+                rows = Integer.parseInt(text.getText().toString());
+                cols = Integer.parseInt(text1.getText().toString());
+                table.removeAllViews();
+                textView_array = new EditText[rows][cols];
+                string_array = new String[rows][cols];
+
+                BuildTable(rows, cols);
+
+                //table.setVisibility(View.VISIBLE);
+              //  text2.setVisibility(View.VISIBLE);
+                }
+
+                break;
+            case R.id.button3:
+                Log.d("Button 3", "Button finish gedrückt");
+
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        try {
+
+                            EditText temp = textView_array[i][j];
+                            if (!(temp.getText().toString().isEmpty()))
+                                string_array[i][j] = temp.getText().toString();
+                        } catch (NullPointerException e) {
+                        }
+                    }
+
+                }
+                if (!(text.getText().toString().isEmpty())) {
+
+                    try {
+
+
+//TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
+
+                        //                Entry table_entry =  new Entry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
+                        Gui_StartActivity.myDb.open();
+                        //   Gui_StartActivity.myDb.insertLocalEntry(table_entry);
+                        Gui_StartActivity.myDb.close();
+                        //       projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(table_entry);
+                        Gui_DisplayProjectAndExperiment.setProjectExperimentEntries(projectExperimentEntries);
+                        this.finish();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Popup popup = new Popup();            // Popup für leeren title
+                    popup.set_String(R.string.popup4);
+                    popup.show(getFragmentManager(), "this");
+                }
+
+
+
+
+
+        // finish button
+
+        break;
+
+
+    }
+
+
+
+
+    }
+
+
 
 
     private void BuildTable(int rows, int cols) {
@@ -190,21 +196,6 @@ public class Gui_NewTableEntry extends Activity {
 
 
 
-    private boolean unique_Test(String string) {
-        boolean unique = false;
-
-        for (int i = 0;  i < projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().size(); i++) {
-            if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getTitle().equals(string))
-
-            {
-                unique = true;
-                break;
-            }
-            else
-                unique = false;
-        }
-        return unique;
-    }
 
 
 

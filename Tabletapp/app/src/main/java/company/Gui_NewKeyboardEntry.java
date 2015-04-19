@@ -1,56 +1,51 @@
 package company;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import com.example.test1.tabletapp.app.R;
 
-import java.util.List;
+import java.lang.ref.WeakReference;
 
 import imports.ActivityRegistry;
-import imports.App_Methodes;
-import datastructures.AttachmentText;
-import datastructures.Entry;
-
-import imports.Popup;
-import datastructures.ProjectExperimentEntry;
 
 /**
  * Created by Grit on 03.06.2014.
  */
 public class Gui_NewKeyboardEntry extends Activity {
     EditText content; // inhalt des entries
-    private Integer project_Selected = Gui_DisplayProjectAndExperiment.getProject_Selected();
-    private Integer experiment_Selected = Gui_DisplayProjectAndExperiment.getExperiment_Selected();
-   private static LocalService loc = Gui_StartActivity.mService;
-    EditText title; // titel des entries
-    private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_DisplayProjectAndExperiment.getProjectExperimentEntries();
+    EditText title;
+    private WeakReference<LocalService> mSerive = new WeakReference<LocalService>(Gui_StartActivity.mService);
+    Long experimentID;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout_guinewkeyboardentry);
+        ActivityRegistry.register(this);
 
+        Intent intent= getIntent();
+        Bundle b = intent.getExtras();
+        assert b != null;
 
-    public void buttonEventHandler(View v) {  // butten events
+        experimentID = b.getLong("id");
 
+        title = (EditText) findViewById(R.id.editText);
+        content = (EditText) findViewById(R.id.editText1);
+        content.setGravity(Gravity.CENTER);
+    } // Standart Android Methoden für apps
+
+    //public void buttonEventHandler(View v) {  // butten events
+/*
         switch (v.getId()) {  // switch ID button
 
-            case R.id.button:
-
-                this.finish();         // back button
-                break;
-
-
-            case R.id.button2:
-
-                ActivityRegistry.finishAll(); // exit button
-                System.exit(0);
-                break;
-
             case R.id.button3:
-                if (!(title.getText().toString().trim().isEmpty())) {
+                if (!(title.getText().toString().trim().isEmpty()) && !(content.getText().toString().trim().isEmpty())) {
                   /* if (!unique_Test(title.getText().toString())) {
                         try {
                             Entry edit = new Entry(title.getText().toString(), new AttachmentText(content.getText().toString().trim()), App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
@@ -67,32 +62,21 @@ public class Gui_NewKeyboardEntry extends Activity {
                         Popup popup = new Popup();            // Popup für leeren title
                         popup.set_String(R.string.popup4);
                         popup.show(getFragmentManager(), "this");
-                    }*/}
+                    }}
                  else {
                     Popup popup = new Popup();            // Popup für leeren title
                     popup.set_String(R.string.popup3);
                     popup.show(getFragmentManager(), "this");
-
-
                 }
                 // finish button
 
                 break;
 
-        }
-    }
+        }*/
+    //}
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_keyboardentry);
-        ActivityRegistry.register(this);
 
-        title = (EditText) findViewById(R.id.editText2);
-        content = (EditText) findViewById(R.id.editText);
-        content.setGravity(Gravity.CENTER);
-} // Standart Android Methoden für apps
 
 
 
@@ -100,7 +84,7 @@ public class Gui_NewKeyboardEntry extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.start, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }  // Standart Android Methoden für apps
 
@@ -110,30 +94,8 @@ public class Gui_NewKeyboardEntry extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }  // Standart Android Methoden für apps
-
-
-
-
-     private boolean unique_Test(String string) {
-        boolean unique = false;
-
-
-        for (int i = 0;  i < projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().size(); i++) {
-            if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getTitle().equals(string))
-            {
-              unique = true;
-                break;
-            }
-            else
-                unique = false;
-        }
-return unique;
-    }
 }
 
 

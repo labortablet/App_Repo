@@ -24,10 +24,10 @@
         android:id="@+id/editText"
         android:layout_marginTop="36dp"
         android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/editText2"
-        android:layout_alignStart="@+id/editText2"
-        android:layout_alignRight="@+id/editText2"
-        android:layout_alignEnd="@+id/editText2"
+        android:layout_alignLeft="@+id/editText"
+        android:layout_alignStart="@+id/editText"
+        android:layout_alignRight="@+id/editText"
+        android:layout_alignEnd="@+id/editText"
         android:text="https://lablet.vega.uberspace.de/scon/db.cgi" />
 
     <TextView
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/editText2"
+        android:id="@+id/editText"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:text="@string/password"
         android:id="@+id/textView3"
-        android:layout_below="@+id/editText2"
+        android:layout_below="@+id/editText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp" />
 
@@ -64,8 +64,8 @@
         android:ems="10"
         android:id="@+id/editText3"
         android:layout_below="@+id/textView3"
-        android:layout_alignLeft="@+id/editText2"
-        android:layout_alignStart="@+id/editText2"
+        android:layout_alignLeft="@+id/editText"
+        android:layout_alignStart="@+id/editText"
         android:layout_marginTop="47dp" />
 
     <Button

@@ -32,7 +32,7 @@ public class Gui_DisplayEntryDetails extends Activity{
      * @since 1.0
      */
 
-private Integer entry_Selected = Gui_DisplayEntryList.getEntry_Selected();
+//private Integer entry_Selected = Gui_DisplayEntryList.getEntry_Selected();
 
     /**
      * This is the experiment, where the LocalEntry  belongs to
@@ -96,10 +96,11 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_Displ
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        /*
         ActivityRegistry.register(this);
         switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().getTypeNumber()) {
             case 1: // For Keyboard LocalEntry
-                if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
+            /   if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
                     setContentView(R.layout.entry_keyboarddetails_synctrue); // Setting Layout
                 else
                     setContentView(R.layout.entry_keyboarddetails_syncfalse);

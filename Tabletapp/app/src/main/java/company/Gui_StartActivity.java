@@ -74,7 +74,7 @@ public class Gui_StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_gui_start_activity);
         text = (EditText) findViewById(R.id.editText);
-        text2 = (EditText) findViewById(R.id.editText2);
+        text2 = (EditText) findViewById(R.id.editText4);
         text3 = (EditText) findViewById(R.id.editText3);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         checkBox2 = (CheckBox) findViewById(R.id.checkBox2);

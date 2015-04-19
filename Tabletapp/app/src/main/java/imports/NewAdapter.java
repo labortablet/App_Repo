@@ -55,7 +55,7 @@ public class NewAdapter extends BaseExpandableListAdapter {
        // tempChild = (ArrayList<String>) localEntries.get(groupPosition).getAttachment().getContent();
         TextView text = null;
         if (convertView == null) {
-            convertView = minflater.inflate(R.layout.list_item, null);
+            convertView = minflater.inflate(R.layout.list_item_projectexperiment, null);
         }
         text = (TextView) convertView.findViewById(R.id.lblListItem);
         text.setText(tempChild.get(childPosition));
@@ -103,7 +103,7 @@ public class NewAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = minflater.inflate(R.layout.list_group, null);
+            convertView = minflater.inflate(R.layout.list_group_projectexperiment, null);
         }
 
         TextView text = (TextView) convertView.findViewById(R.id.lblListHeader);

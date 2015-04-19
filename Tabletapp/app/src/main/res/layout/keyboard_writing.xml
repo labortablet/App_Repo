@@ -53,7 +53,7 @@
         android:layout_width="fill_parent"
         android:layout_above="@+id/button"
         android:id="@+id/scrollView"
-        android:layout_below="@+id/editText2">
+        android:layout_below="@+id/editText">
 
         <EditText
             android:layout_width="wrap_content"
@@ -69,7 +69,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
+        android:id="@+id/editText"
         android:text="@string/title"
         android:editable="false"
         android:gravity="center"

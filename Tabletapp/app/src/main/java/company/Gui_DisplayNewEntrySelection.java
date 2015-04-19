@@ -27,7 +27,7 @@ public class Gui_DisplayNewEntrySelection extends Activity{
         setContentView(R.layout.new_entry_desition);
         //doBindService();
         ActivityRegistry.register(this);
-       column = (EditText) findViewById(R.id.editText2);
+       column = (EditText) findViewById(R.id.editText);
        row = (EditText) findViewById(R.id.editText);
 
 

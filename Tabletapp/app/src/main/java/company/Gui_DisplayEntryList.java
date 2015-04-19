@@ -1,38 +1,40 @@
 package company;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import datastructures.AttachmentTable;
 import datastructures.AttachmentText;
 import datastructures.Entry;
 import datastructures.Experiment;
-import datastructures.Project;
-import datastructures.User;
 import imports.ActivityRegistry;
 import imports.App_Methodes;
-import imports.ExpandableListAdapterProjectsAndExperiments;
+import imports.ExpandableListAdapterEntries;
 import datastructures.ProjectExperimentEntry;
 
 /**
@@ -42,45 +44,34 @@ import datastructures.ProjectExperimentEntry;
  */
 public class Gui_DisplayEntryList extends Activity {
 
-    private Integer experiment_Selected = Gui_DisplayProjectAndExperiment.getExperiment_Selected();
-    private Integer project_Selected = Gui_DisplayProjectAndExperiment.getProject_Selected();
-    private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_DisplayProjectAndExperiment.getProjectExperimentEntries();
-    ExpandableListAdapterProjectsAndExperiments listAdapter;
+    ExpandableListAdapterEntries listAdapter;
     ExpandableListView expListView;
-    List<String> listDataHeader;
-    List<String> listDataDate;
-    List<String> debugList;
-    private Context _context;
-
-
-
-    View convertView ;
-    HashMap<String, List<String>> listDataChild;
-    public static Integer entry_Selected;
-
-
+    Experiment experiment;
+    TextView textview1;
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.entry_show);
+        setContentView(R.layout.layout_gui_entry_list);
         LinkedList<Entry> entries = new LinkedList<Entry>();
         entries.add(new Entry(0,new datastructures.User("grit","test"),0,"test Entry 1",new AttachmentText("inhalt von entry 1"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
-        entries.add(new Entry(1,new datastructures.User("grit","test"),0,"test Entry 2",new AttachmentText("inhalt von entry 2"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
+        entries.add(new Entry(1,new datastructures.User("grit","test"),0,"test Entry 2",new AttachmentTable("inhalt, von, entry, 2;inhalt, von, entry, 2;inhalt, von, entry, 2;"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
         entries.add(new Entry(2,new datastructures.User("grit","test"),0,"test Entry 3",new AttachmentText("inhalt von entry 3"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
         entries.add(new Entry(3,new datastructures.User("grit","test"),0,"test Entry 4",new AttachmentText("inhalt von entry 4"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
 
         Intent intent= getIntent();
         Bundle b = intent.getExtras();
         assert b != null;
-        Experiment experiment = (Experiment) b.getSerializable("experiment");
-        TextView textview1 = (TextView)findViewById(R.id.textview1);
-        textview1.setText("Active Experiment: " + experiment.get_name());
+        experiment = (Experiment) b.getSerializable("experiment");
+        textview1 = (TextView)findViewById(R.id.textview1);
+        textview1.setText(experiment.get_name());
         //TODO: funktions call für linkedlist mit entries zugehörig dem experiment
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
         // preparing list data
         //   prepareListData();
       //  listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap);
         // setting list adapter
+        listAdapter = new ExpandableListAdapterEntries(this, entries);
+
         try {
             expListView.setAdapter(listAdapter);
         }catch (NullPointerException e)
@@ -89,10 +80,7 @@ public class Gui_DisplayEntryList extends Activity {
         }
 
 // get the listview
-        this._context = this;
-        expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
-        expListView.setAdapter(listAdapter);
 
 
         ActivityRegistry.register(this);
@@ -164,19 +152,12 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         } catch (Exception ignored) {
         }
     }*/
-    /**
-     * Returns the Selected LocalEntry.
-     * @return    ID of Selected entry.
-     */
-    public static Integer getEntry_Selected() {
-        return entry_Selected;
-    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_for_entry_list, menu);
-        return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_for_entry_list, menu);
+        return super.onCreateOptionsMenu(menu);
 
     }  // Standart Android Methoden für apps
 
@@ -190,50 +171,63 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+
+            case R.id.action_refresh:
+                return true;
+            case R.id.settings:
+
+                Toast.makeText(getApplicationContext(), "settings", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.sync:
+
+                Toast.makeText(getApplicationContext(), "sync", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_newentry:
+                PopupMenu popupMenu = new PopupMenu(Gui_DisplayEntryList.this,textview1);
+                popupMenu.getMenuInflater().inflate(R.menu.popupmenu_newentrydesition, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.keyboard:
+                             start_New_ActionKeyboard();
+                                break;
+                            case R.id.table:
+                                start_New_ActionTable();
+                                break;
+                            case R.id.image:
+
+                                break;
+                        }
+
+                        Toast.makeText(getApplicationContext(),"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+                popupMenu.show();//showing popup menu
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }  // Standart Android Methoden für apps
-
-    public void buttonEventHandler(View v) {  // butten events
-
-        switch (v.getId()) {  // switch ID button
-
-            case R.id.button: // back
-             this.finish();
-
-                break;
-            case R.id.button2 :
-                ActivityRegistry.finishAll(); // exit button
-              System.exit(0);
-
-                break;
-            case R.id.button3:      //new entry
-                startnew_action();
-
-        }
-    }
-
     /**
      * Starts the new Intent for creating new Entries
      */
-    private void startnew_action(){
+    private void start_New_ActionKeyboard(){
         Intent intent;
-        intent = new Intent(this, Gui_DisplayNewEntrySelection.class);
+        intent = new Intent(this, Gui_NewKeyboardEntry.class);
+        intent.putExtra("id",experiment.get_id());
         startActivity(intent);
-
     }
-    private String usingDateFormatter(long input){
-        Date date = new Date(input);
-        Calendar cal = new GregorianCalendar();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MMM/dd hh:mm:ss z");
-        sdf.setCalendar(cal);
-        cal.setTime(date);
-        return sdf.format(date);
-
+    private void start_New_ActionTable(){
+        Intent intent;
+        intent = new Intent(this, Gui_NewTableEntry.class);
+        intent.putExtra("id",experiment.get_id());
+        startActivity(intent);
     }
+
     /**
      * Starts the new Intent for Detail view of LocalEntry
      */
@@ -241,7 +235,6 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         Intent intent;
         intent = new Intent(this, Gui_DisplayEntryDetails.class);
         startActivity(intent);
-
     }
 
 

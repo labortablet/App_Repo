@@ -44,18 +44,19 @@
     <string name="keyboard">Keyboard</string>
     <string name="service_name">LocalService</string>
     <string name="active_projects_and_experiments">Active Projects and Experiments</string>
-    <string name="keyboard_entry">Keyboard Entry</string>
+    <string name="keyboard_entry">New Keyboard Entry</string>
     <string name="experiment">Experiments</string>
     <string name="title_activity_Experiment_show">Experimente</string>
     <string name="new_entry">New Entry</string>
-    <string name="popup3">Please enter a Title.</string>
-
+    <string name="popup3">Nothing to say?</string>
+    <string name="generatetable">generate</string>
     <color name="table_background">#999999</color>
     <color name="white">#FFFFFF</color>
     <color name="row_background">#ffffff</color>
     <color name="text_black">#000000</color>
 
-    <string name="new_table">New Table</string>
+    <string name="new_table">New Table Entry</string>
+    <string name="new_image">New Image Entry</string>
     <string name="title_activity_project_show">project_show</string>
     <string name="columns">Columns:</string>
     <string name="row">Row:</string>
@@ -66,4 +67,5 @@
     <string name="creationdate">Creation Date</string>
     <string name="sync">Time till Sync</string>
     <string name="settings">settings</string>
+    <string name="syncimage">status Bild</string>
 </resources>

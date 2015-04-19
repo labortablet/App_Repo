@@ -7,15 +7,11 @@ package imports;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
@@ -25,8 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import company.Gui_DisplayEntryList;
-import company.Gui_DisplayProjectAndExperiment;
-import company.Gui_DisplayProjectDetails;
 import datastructures.Experiment;
 import datastructures.Project;
 
@@ -46,12 +40,6 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
         this._listDataChild = listChildData;
     }
 
-
-
-
-
-
-
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
         return this._listDataChild.get(this._listDataHeader.get(groupPosition))
@@ -69,6 +57,7 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
                              boolean isLastChild, View convertView, ViewGroup parent) {
      //  final int i = groupPosition;
       //  final String childText = (String) getChild(groupPosition, childPosition);
+       final List<Experiment> list =  _listDataChild.get( _listDataHeader.get(groupPosition).get_id());
         child = _listDataChild.get( _listDataHeader.get(groupPosition).get_id()).get(childPosition);
 
         String childText = child.get_name();
@@ -76,7 +65,7 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_item, null);
+            convertView = infalInflater.inflate(R.layout.list_item_projectexperiment, null);
         }
 
 
@@ -84,10 +73,10 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
 
 
             public void onClick(View view) {
-                Log.d("Experiment",child.get_name());
+                list.get(childPosition);
                 Intent intent;
                 intent = new Intent(_context, Gui_DisplayEntryList.class);
-                intent.putExtra("experiment", child);
+                intent.putExtra("experiment", list.get(childPosition));
                 _context.startActivity(intent);
 
             }
@@ -133,7 +122,7 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_group, null);
+            convertView = infalInflater.inflate(R.layout.list_group_projectexperiment, null);
         }
 
         TextView lblListHeader = (TextView) convertView
@@ -223,7 +212,7 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_item, null);
+            convertView = infalInflater.inflate(R.layout.list_item_projectexperiment, null);
         }
 
         TextView txtListChild = (TextView) convertView
@@ -263,7 +252,7 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_group, null);
+            convertView = infalInflater.inflate(R.layout.list_group_projectexperiment, null);
         }
 
         TextView lblListHeader = (TextView) convertView
