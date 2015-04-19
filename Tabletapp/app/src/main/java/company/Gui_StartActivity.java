@@ -17,13 +17,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-import imports.App_Methodes;
+
 import com.example.test1.tabletapp.app.R;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import imports.ActivityRegistry;
+
 import imports.DBAdapter;
 import imports.Popup;
 import datastructures.User;
@@ -33,6 +33,7 @@ import static imports.App_Methodes.appendLog;
 
 /**
  * Created by Grit on 29.05.2014.
+ * This is the Application Main Class
  */
 
 public class Gui_StartActivity extends Activity {
@@ -40,6 +41,9 @@ public class Gui_StartActivity extends Activity {
     EditText text ;
     EditText text2;
     EditText text3 ;
+    CheckBox checkBox;
+    CheckBox checkBox2;
+    CheckBox checkBox3;
     public static User getUser() {
         return user;
     }
@@ -72,6 +76,9 @@ public class Gui_StartActivity extends Activity {
         text = (EditText) findViewById(R.id.editText);
         text2 = (EditText) findViewById(R.id.editText2);
         text3 = (EditText) findViewById(R.id.editText3);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
+        checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
         myDb = new DBAdapter(this);
         context = getApplicationContext();
 
@@ -79,11 +86,13 @@ public class Gui_StartActivity extends Activity {
         try {
             SharedPreferences userDetails = context.getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
             if(userDetails.getString("ServerIP", null) != null)
-                userDetails.getString("ServerIP", null);
-                if(userDetails.getString("userName",null)!= null)
-                    text2.setText(userDetails.getString("userName",null));
-                    if(userDetails.getString("Password", null) != null)
+                text.setText(userDetails.getString("ServerIP", null));
+                if(userDetails.getString("userName",null)!= null) {
+                    text2.setText(userDetails.getString("userName", null));
+                     checkBox2.setChecked(true);}
+                    if(userDetails.getString("Password", null) != null) {
                         text3.setText(userDetails.getString("Password", null));
+                         checkBox3.setChecked(true);}
         }catch (Exception e)
         {
             appendLog(e.getMessage());
@@ -109,10 +118,7 @@ public class Gui_StartActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }  // Standart Android Methoden für apps
 
 
@@ -139,24 +145,28 @@ public class Gui_StartActivity extends Activity {
                   switch (i) {
                        case 0:
 
-CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
-CheckBox checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
-CheckBox checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
 
-SharedPreferences settings = getSharedPreferences("AppData", MODE_PRIVATE);
+
+SharedPreferences settings = getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
 SharedPreferences.Editor edit = settings.edit();
-if(checkBox.isChecked()){
-edit.putString("ServerIP",text.getText().toString());
-}
-if(checkBox2.isChecked()){
-edit.putString("userName",text.getText().toString());
-}
-if(checkBox3.isChecked()){
-edit.putString("Password",text.getText().toString());
-}
+
+if(checkBox.isChecked())
+ edit.putString("ServerIP",text.getText().toString());
+  else
+   edit.putString("ServerIP", null);
+
+    if(checkBox2.isChecked())
+     edit.putString("userName",text2.getText().toString());
+      else
+       edit.putString("userName",null);
+
+        if(checkBox3.isChecked())
+         edit.putString("Password",text3.getText().toString());
+          else
+           edit.putString("Password",null);
+
                            edit.apply();
-                           Intent intent = new Intent(this, Gui_DisplayProjectAndExperiment.class);
-                           startActivity(intent);
+                           startActivity(new Intent(this, Gui_DisplayProjectAndExperiment.class));
                             break;
                        case 1:
                             Popup popup = new Popup();
@@ -187,9 +197,9 @@ edit.putString("Password",text.getText().toString());
                 popup.set_String(R.string.popup);     // Popup für leere felder
                 popup.show(getFragmentManager(), "this");
             }
-        } catch (NullPointerException Ignored) {
 
         } catch (Exception e) {
+            appendLog(e.getMessage());
             e.printStackTrace();
         }
                 break;
@@ -219,8 +229,9 @@ edit.putString("Password",text.getText().toString());
 
     @Override
     protected void onDestroy(){
-        android.os.Process.killProcess(android.os.Process.myPid());
         super.onDestroy();
+        this.finish();
+        System.exit(0);
     }
 
 

@@ -43,7 +43,7 @@
     <string name="local_service_disconnected">local_service_disconnected</string>
     <string name="keyboard">Keyboard</string>
     <string name="service_name">LocalService</string>
-    <string name="active_projects">Active Projects</string>
+    <string name="active_projects_and_experiments">Active Projects and Experiments</string>
     <string name="keaboard_entry">Keyboard Entry</string>
     <string name="experiment">Experiments</string>
     <string name="title_activity_Experiment_show">Experimente</string>
@@ -60,4 +60,6 @@
     <string name="table_entry">Table_entry</string>
     <string name="cancel">cancel</string>
     <string name="questionquit">Are you sure that you want to quit?</string>
+    <string name="acntivproject">Active Project:</string>
+    <string name="creationdate">Creation Date</string>
 </resources>

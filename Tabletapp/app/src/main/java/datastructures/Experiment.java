@@ -1,7 +1,9 @@
 package datastructures;
 
 
-public class Experiment{
+import java.io.Serializable;
+
+public class Experiment implements Serializable{
     protected long project_id;
     protected long id;
     protected String name;

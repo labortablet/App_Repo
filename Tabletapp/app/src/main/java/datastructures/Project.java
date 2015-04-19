@@ -1,11 +1,12 @@
 package datastructures;
 
+import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
 
 
-public class Project{ //implements Comparable
+public class Project implements Serializable{ //implements Comparable
     //public Dictionary experiments;
     private long id;
     private String name;

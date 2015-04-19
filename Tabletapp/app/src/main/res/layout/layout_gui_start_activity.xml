@@ -17,7 +17,6 @@
         android:text="@string/app_name"
         android:id="@+id/textView10"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.18"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -38,11 +37,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/editText"
         android:layout_below="@+id/textView"
-        android:text="https://lablet.vega.uberspace.de/scon/db.cgi"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:inputType="textUri" />
 
     <TextView
         android:layout_width="match_parent"
@@ -94,11 +93,11 @@
         android:text="@string/login"
         android:id="@+id/button"
         android:onClick="buttonEventHandler"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/editText3"
-        android:layout_alignEnd="@+id/editText3"
+        android:layout_below="@+id/checkBox3"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <CheckBox
         android:layout_width="wrap_content"

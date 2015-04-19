@@ -25,7 +25,7 @@ import java.util.List;
 
 import imports.ActivityRegistry;
 import imports.App_Methodes;
-import imports.ExpandableListAdapter;
+import imports.ExpandableListAdapterProjectsAndExperiments;
 import datastructures.ProjectExperimentEntry;
 
 /**
@@ -38,7 +38,7 @@ public class Gui_DisplayEntryList extends Activity {
     private Integer experiment_Selected = Gui_DisplayProjectAndExperiment.getExperiment_Selected();
     private Integer project_Selected = Gui_DisplayProjectAndExperiment.getProject_Selected();
     private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_DisplayProjectAndExperiment.getProjectExperimentEntries();
-    ExpandableListAdapter listAdapter;
+    ExpandableListAdapterProjectsAndExperiments listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
     List<String> listDataDate;
@@ -66,7 +66,7 @@ public class Gui_DisplayEntryList extends Activity {
 
        prepareListData();
         for (String aDebugList : debugList) Log.d("debug",aDebugList);
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, img, listDataDate);
+        //listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, listDataHeader, listDataChild, img, listDataDate);
         // setting list adapter
      /*  try {
             NewAdapter mNewAdapter = new NewAdapter(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList());
@@ -181,7 +181,7 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
         listDataHeader.clear();
         projectExperimentEntries = Gui_DisplayProjectAndExperiment.getProjectExperimentEntries();
         prepareListData();
-       listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild,img,listDataDate);
+       //listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, listDataHeader, listDataChild,img,listDataDate);
        expListView.setAdapter(listAdapter);
 
     }

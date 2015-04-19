@@ -3,12 +3,10 @@ package company;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -18,13 +16,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import AsyncTasks.AsyncTaskProjectExperimentEntry;
 import datastructures.Experiment;
 import datastructures.Project;
 import imports.ActivityRegistry;
-import imports.ExpandableListAdapter;
+import imports.ExpandableListAdapterProjectsAndExperiments;
 import datastructures.ProjectExperimentEntry;
 
 public class Gui_DisplayProjectAndExperiment extends Activity {
@@ -32,7 +28,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
     private static int experiment_Selected;
     private static int project_Selected;
     private static List<ProjectExperimentEntry> projectExperimentEntries;
-    ExpandableListAdapter listAdapter;
+    ExpandableListAdapterProjectsAndExperiments listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
@@ -82,12 +78,12 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
         // dummidata
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.project_show);
+        setContentView(R.layout.layout_project_experiment_list);
         ActivityRegistry.register(this);
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
        // preparing list data
      //   prepareListData();
-       listAdapter = new ExpandableListAdapter(this, projects, hashMap);
+       listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap);
         // setting list adapter
         try {
             expListView.setAdapter(listAdapter);
@@ -215,12 +211,10 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
         intent.putExtra("description", description);
         startActivity(intent);
     }
-    private void startNew_action2(String name,String description){
+    private void startNew_action2(Project project){
         Intent intent;
         intent = new Intent(this, Gui_DisplayProjectDetails.class);
-        intent.putExtra("name",name);
-        intent.putExtra("description", description);
-        startActivity(intent);
+        intent.putExtra("Project", project);
 
     }    /**
      * On selecting action bar icons

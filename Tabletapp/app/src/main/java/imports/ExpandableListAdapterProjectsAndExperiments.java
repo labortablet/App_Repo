@@ -5,12 +5,14 @@ package imports;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,33 +24,29 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import company.Gui_DisplayEntryList;
+import company.Gui_DisplayProjectAndExperiment;
+import company.Gui_DisplayProjectDetails;
 import datastructures.Experiment;
 import datastructures.Project;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableListAdapter {
     private ArrayList<Boolean> img =  new ArrayList<Boolean>();
     private Context _context;
     private LinkedList<Project> _listDataHeader; // header titles
     private List<String> _listDataDate = new ArrayList<String>();
     // child data in format of header title, child title
     private HashMap<Integer, List<Experiment>> _listDataChild;
+    private Experiment child;
 
-    public ExpandableListAdapter(Context context, LinkedList<Project> listDataHeader,
-                                 HashMap<Integer, List<Experiment>> listChildData) {
+    public ExpandableListAdapterProjectsAndExperiments(Context context, LinkedList<Project> listDataHeader,
+                                                       HashMap<Integer, List<Experiment>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
     }
 
-    public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData, ArrayList<Boolean> img,List<String> date) {
-        this._context = context;
-       // this._listDataHeader = listDataHeader;
-      //  this._listDataChild = listChildData;
-        this.img = img;
-        this._listDataDate = date;
 
-    }
 
 
 
@@ -73,7 +71,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
       //  final String childText = (String) getChild(groupPosition, childPosition);
 
         final String childText = _listDataChild.get((int) _listDataHeader.get(groupPosition).get_id()).get(childPosition).get_name();
-
+child =_listDataChild.get((int) _listDataHeader.get(groupPosition).get_id()).get(childPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -89,8 +87,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(_context, _listDataChild.get((int) _listDataHeader.get(i).get_id()).get(childPosition).get_name(),
-                        Toast.LENGTH_SHORT).show();
+                Intent intent;
+                intent = new Intent(_context, Gui_DisplayEntryList.class);
+                intent.putExtra("experiment", child);
+                _context.startActivity(intent);
             }
         });
         return convertView;
@@ -122,10 +122,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
+                             View convertView, final ViewGroup parent) {
 
-      //  String headerTitle = (String) getGroup(groupPosition);
-        String headerTitle = _listDataHeader.get(groupPosition).get_name();
+      final Project project = _listDataHeader.get(groupPosition);
+        String headerTitle = project.get_name();
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -136,6 +136,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
+/*
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent;
+                intent = new Intent(_context, Gui_DisplayProjectDetails.class);
+                intent.putExtra("Project", project);
+                _context.startActivity(intent);
+                return false;
+            }
+        });*/
 
         return convertView;
     }
@@ -149,6 +160,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
+
     /*
     private ArrayList<Boolean> img =  new ArrayList<Boolean>();
     private Context _context;
