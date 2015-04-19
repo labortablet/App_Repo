@@ -58,4 +58,6 @@
     <string name="columns">Columns:</string>
     <string name="row">Row:</string>
     <string name="table_entry">Table_entry</string>
+    <string name="cancel">cancel</string>
+    <string name="questionquit">Are you sure that you want to quit?</string>
 </resources>

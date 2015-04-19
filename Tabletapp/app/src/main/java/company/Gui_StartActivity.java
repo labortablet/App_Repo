@@ -1,17 +1,23 @@
 package company;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
-
+import android.widget.Toast;
+import imports.App_Methodes;
 import com.example.test1.tabletapp.app.R;
 
 import java.util.regex.Matcher;
@@ -22,13 +28,18 @@ import imports.DBAdapter;
 import imports.Popup;
 import datastructures.User;
 
+
+import static imports.App_Methodes.appendLog;
+
 /**
  * Created by Grit on 29.05.2014.
  */
 
 public class Gui_StartActivity extends Activity {
     // Variablen Deklaration / Instanzvariable:
-
+    EditText text ;
+    EditText text2;
+    EditText text3 ;
     public static User getUser() {
         return user;
     }
@@ -57,10 +68,29 @@ public class Gui_StartActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout_gui_start_activity);
+        text = (EditText) findViewById(R.id.editText);
+        text2 = (EditText) findViewById(R.id.editText2);
+        text3 = (EditText) findViewById(R.id.editText3);
         myDb = new DBAdapter(this);
         context = getApplicationContext();
-        setContentView(R.layout.layout_gui_start_activity);
-        ActivityRegistry.register(this);
+
+  //      ActivityRegistry.register(this);
+        try {
+            SharedPreferences userDetails = context.getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
+            if(userDetails.getString("ServerIP", null) != null)
+                userDetails.getString("ServerIP", null);
+                if(userDetails.getString("userName",null)!= null)
+                    text2.setText(userDetails.getString("userName",null));
+                    if(userDetails.getString("Password", null) != null)
+                        text3.setText(userDetails.getString("Password", null));
+        }catch (Exception e)
+        {
+            appendLog(e.getMessage());
+            e.printStackTrace();
+
+        }
+
 
     } // Standart Android Methoden für apps
 
@@ -68,8 +98,9 @@ public class Gui_StartActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.start, menu);
-        return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.start, menu);
+        return super.onCreateOptionsMenu(menu);
     }  // Standart Android Methoden für apps
 
     @Override
@@ -90,21 +121,14 @@ public class Gui_StartActivity extends Activity {
         switch (v.getId()) {  // switch ID button
 
             case R.id.button:
-                EditText text = (EditText) findViewById(R.id.editText);
-                EditText text2 = (EditText) findViewById(R.id.editText2);
-                EditText text3 = (EditText) findViewById(R.id.editText3);
-                text2.setText("fredi@uni-siegen.de");
-                text3.setText("test");
-
-
-
+                Toast.makeText(this,"addresse gespeichert",Toast.LENGTH_LONG);
         try {
             if (!text.getText().toString().isEmpty() && !text2.getText().toString().isEmpty() && !text3.getText().toString().isEmpty()) { //Abfrage ob textfelder des logins leer sind
 
 
                 if (validate(text2.getText().toString())) { // abfrage der korrektheit der email
-                    text2.setText("fredi@uni-siegen.de");
-                    text3.setText("test");
+                //    text2.setText("fredi@uni-siegen.de");
+              //      text3.setText("test");
                     String server = text.getText().toString();
                     String email = text2.getText().toString();
                     String password = text3.getText().toString();
@@ -115,6 +139,22 @@ public class Gui_StartActivity extends Activity {
                   switch (i) {
                        case 0:
 
+CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
+CheckBox checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
+CheckBox checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
+
+SharedPreferences settings = getSharedPreferences("AppData", MODE_PRIVATE);
+SharedPreferences.Editor edit = settings.edit();
+if(checkBox.isChecked()){
+edit.putString("ServerIP",text.getText().toString());
+}
+if(checkBox2.isChecked()){
+edit.putString("userName",text.getText().toString());
+}
+if(checkBox3.isChecked()){
+edit.putString("Password",text.getText().toString());
+}
+                           edit.apply();
                            Intent intent = new Intent(this, Gui_DisplayProjectAndExperiment.class);
                            startActivity(intent);
                             break;
@@ -176,8 +216,10 @@ public class Gui_StartActivity extends Activity {
         }
 
     }
+
     @Override
     protected void onDestroy(){
+        android.os.Process.killProcess(android.os.Process.myPid());
         super.onDestroy();
     }
 
@@ -214,6 +256,29 @@ public class Gui_StartActivity extends Activity {
         return matcher.matches();
 
     }
+
+    /** funktion for Closing the app by backpress with popup 2 ask if you want 2 close
+     *
+     */
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
+                .setMessage("Are you sure?")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                        System.exit(0);
+                    }
+                }).setNegativeButton("no", null).show();
+    }
+
 }
 
 
