@@ -33,7 +33,7 @@
     <string name="experiment_description">Experiment Description:</string>
     <string name="project_name">Project name:</string>
     <string name="project_description">Project Description:</string>
-   <string name="sync_status">Sync Status:</string>
+    <string name="sync_status">Sync Status:</string>
     <string name="popup2">Please fill in a valid E-mail address</string>
     <string name="popup4">Entry name must be unique!</string>
     <string name="LocalService">LocalService</string>
@@ -44,15 +44,17 @@
     <string name="keyboard">Keyboard</string>
     <string name="service_name">LocalService</string>
     <string name="active_projects_and_experiments">Active Projects and Experiments</string>
-    <string name="keaboard_entry">Keyboard Entry</string>
+    <string name="keyboard_entry">Keyboard Entry</string>
     <string name="experiment">Experiments</string>
     <string name="title_activity_Experiment_show">Experimente</string>
     <string name="new_entry">New Entry</string>
     <string name="popup3">Please enter a Title.</string>
+
     <color name="table_background">#999999</color>
     <color name="white">#FFFFFF</color>
     <color name="row_background">#ffffff</color>
     <color name="text_black">#000000</color>
+
     <string name="new_table">New Table</string>
     <string name="title_activity_project_show">project_show</string>
     <string name="columns">Columns:</string>
@@ -62,4 +64,6 @@
     <string name="questionquit">Are you sure that you want to quit?</string>
     <string name="acntivproject">Active Project:</string>
     <string name="creationdate">Creation Date</string>
+    <string name="sync">Time till Sync</string>
+    <string name="settings">settings</string>
 </resources>

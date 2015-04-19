@@ -3,6 +3,7 @@ package company;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -60,20 +61,21 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
             e.printStackTrace();
         }*/
         // dummidata
-        HashMap<Integer,List<Experiment>> hashMap = new HashMap<Integer, List<Experiment>>();
+        HashMap<Long,List<Experiment>> hashMap = new HashMap<Long, List<Experiment>>();
         projects.add(new Project(0,"testproject0"));
         projects.add(new Project(1,"testproject1"));
 
         List<Experiment> list = new ArrayList<Experiment>();
+
         list.add(new Experiment(0,0,"experiment test 1"));
         list.add(new Experiment(1,0,"experiment test 2"));
         list.add(new Experiment(2,0,"experiment test 3"));
-        hashMap.put(0,list);
-        list.clear();
+        hashMap.put((long) 0,list);
 
-        list.add(new Experiment(3,1,"experiment test 4"));
-        list.add(new Experiment(4,1,"experiment test 5"));
-        hashMap.put(1,list);
+        List<Experiment> list2 = new ArrayList<Experiment>();
+        list2.add(new Experiment(3,1,"experiment test 4"));
+        list2.add(new Experiment(4,1,"experiment test 5"));
+        hashMap.put((long) 1,list2);
 
         // dummidata
 
@@ -84,6 +86,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
        // preparing list data
      //   prepareListData();
        listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap);
+
         // setting list adapter
         try {
             expListView.setAdapter(listAdapter);

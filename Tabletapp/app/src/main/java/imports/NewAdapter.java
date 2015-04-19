@@ -52,7 +52,7 @@ public class NewAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        tempChild = (ArrayList<String>) localEntries.get(groupPosition).getAttachment().getContent();
+       // tempChild = (ArrayList<String>) localEntries.get(groupPosition).getAttachment().getContent();
         TextView text = null;
         if (convertView == null) {
             convertView = minflater.inflate(R.layout.list_item, null);
@@ -71,7 +71,7 @@ public class NewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return ((ArrayList<String>) localEntries.get(groupPosition).getAttachment().getContent()).size();
+        return 0;//((ArrayList<String>) localEntries.get(groupPosition).getAttachment().getContent()).size();
     }
 
     @Override

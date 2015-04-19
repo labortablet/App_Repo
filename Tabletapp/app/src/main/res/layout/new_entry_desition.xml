@@ -28,7 +28,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/keaboard_entry"
+        android:text="@string/keyboard_entry"
         android:id="@+id/button3"
         android:layout_marginTop="50dp"
         android:onClick="buttonEventHandler"

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import com.example.test1.tabletapp.app.R;
 
@@ -21,8 +22,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
+import datastructures.AttachmentText;
+import datastructures.Entry;
+import datastructures.Experiment;
+import datastructures.Project;
+import datastructures.User;
 import imports.ActivityRegistry;
 import imports.App_Methodes;
 import imports.ExpandableListAdapterProjectsAndExperiments;
@@ -46,7 +53,7 @@ public class Gui_DisplayEntryList extends Activity {
     private Context _context;
 
 
-    private ArrayList<Boolean> img =  new ArrayList<Boolean>();
+
     View convertView ;
     HashMap<String, List<String>> listDataChild;
     public static Integer entry_Selected;
@@ -56,30 +63,34 @@ public class Gui_DisplayEntryList extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.entry_show);
-        //doBindService();
+        LinkedList<Entry> entries = new LinkedList<Entry>();
+        entries.add(new Entry(0,new datastructures.User("grit","test"),0,"test Entry 1",new AttachmentText("inhalt von entry 1"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
+        entries.add(new Entry(1,new datastructures.User("grit","test"),0,"test Entry 2",new AttachmentText("inhalt von entry 2"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
+        entries.add(new Entry(2,new datastructures.User("grit","test"),0,"test Entry 3",new AttachmentText("inhalt von entry 3"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
+        entries.add(new Entry(3,new datastructures.User("grit","test"),0,"test Entry 4",new AttachmentText("inhalt von entry 4"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
+
+        Intent intent= getIntent();
+        Bundle b = intent.getExtras();
+        assert b != null;
+        Experiment experiment = (Experiment) b.getSerializable("experiment");
+        TextView textview1 = (TextView)findViewById(R.id.textview1);
+        textview1.setText("Active Experiment: " + experiment.get_name());
+        //TODO: funktions call für linkedlist mit entries zugehörig dem experiment
+        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+        // preparing list data
+        //   prepareListData();
+      //  listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap);
+        // setting list adapter
+        try {
+            expListView.setAdapter(listAdapter);
+        }catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
 
 // get the listview
         this._context = this;
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
-
-        // preparing list data
-
-       prepareListData();
-        for (String aDebugList : debugList) Log.d("debug",aDebugList);
-        //listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, listDataHeader, listDataChild, img, listDataDate);
-        // setting list adapter
-     /*  try {
-            NewAdapter mNewAdapter = new NewAdapter(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList());
-            mNewAdapter
-                    .setInflater(
-                            (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE),
-                            this);
-            expListView.setAdapter(mNewAdapter);
-        }catch (NullPointerException e)
-        {e.printStackTrace();}*/
-
-        //  getExpandableListView().setAdapter(mNewAdapter);
-    //    expandbleLis.setOnChildClickListener(this);
 
         expListView.setAdapter(listAdapter);
 
@@ -89,6 +100,7 @@ public class Gui_DisplayEntryList extends Activity {
          /*
          * Preparing the list data
          */
+    /*
     private void prepareListData() {
 
         listDataHeader = new ArrayList<String>();
@@ -107,7 +119,7 @@ public class Gui_DisplayEntryList extends Activity {
                }
                 else {
                    listDataDate.add("empty");
-               }*/
+               }
 
                 List<String> list = new ArrayList<String>();
                 switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getTypeNumber()) {
@@ -151,7 +163,7 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
             }
         } catch (Exception ignored) {
         }
-    }
+    }*/
     /**
      * Returns the Selected LocalEntry.
      * @return    ID of Selected entry.
@@ -163,7 +175,7 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.start, menu);
+        getMenuInflater().inflate(R.menu.menu_for_entry_list, menu);
         return true;
 
     }  // Standart Android Methoden für apps
@@ -171,20 +183,7 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
     /**
      * Android Lifecycle method
      * After Adding a new LocalEntry Reload the List of Entries
-     */
-    protected void onResume(){
-
-        super.onResume();
-        img.clear();
-        listDataChild.clear();
-        listDataDate.clear();
-        listDataHeader.clear();
-        projectExperimentEntries = Gui_DisplayProjectAndExperiment.getProjectExperimentEntries();
-        prepareListData();
-       //listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, listDataHeader, listDataChild,img,listDataDate);
-       expListView.setAdapter(listAdapter);
-
-    }
+*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -36,11 +36,11 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
     private LinkedList<Project> _listDataHeader; // header titles
     private List<String> _listDataDate = new ArrayList<String>();
     // child data in format of header title, child title
-    private HashMap<Integer, List<Experiment>> _listDataChild;
+    private HashMap<Long, List<Experiment>> _listDataChild;
     private Experiment child;
 
     public ExpandableListAdapterProjectsAndExperiments(Context context, LinkedList<Project> listDataHeader,
-                                                       HashMap<Integer, List<Experiment>> listChildData) {
+                                                       HashMap<Long, List<Experiment>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
@@ -67,38 +67,42 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-       final int i =groupPosition;
+     //  final int i = groupPosition;
       //  final String childText = (String) getChild(groupPosition, childPosition);
+        child = _listDataChild.get( _listDataHeader.get(groupPosition).get_id()).get(childPosition);
 
-        final String childText = _listDataChild.get((int) _listDataHeader.get(groupPosition).get_id()).get(childPosition).get_name();
-child =_listDataChild.get((int) _listDataHeader.get(groupPosition).get_id()).get(childPosition);
+        String childText = child.get_name();
+
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_item, null);
         }
 
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.lblListItem);
 
-        txtListChild.setText(childText);
         convertView.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
 
+            public void onClick(View view) {
+                Log.d("Experiment",child.get_name());
                 Intent intent;
                 intent = new Intent(_context, Gui_DisplayEntryList.class);
                 intent.putExtra("experiment", child);
                 _context.startActivity(intent);
+
             }
         });
+        TextView txtListChild = (TextView) convertView
+                .findViewById(R.id.lblListItem);
+
+        txtListChild.setText(childText);
+
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-            int position =     (int) _listDataHeader.get(groupPosition).get_id();
+            Long position = _listDataHeader.get(groupPosition).get_id();
             List<Experiment> list = _listDataChild.get(position);
             return list.size();
 
