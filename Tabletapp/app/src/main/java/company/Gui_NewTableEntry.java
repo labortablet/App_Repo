@@ -1,6 +1,7 @@
 package company;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -30,6 +31,7 @@ public class Gui_NewTableEntry extends Activity {
     EditText text2;
     private int cols;
     private int rows;
+    float experimentID;
     private String[][] string_array;
     private EditText[][] textView_array;
     private Integer project_Selected = Gui_DisplayProjectAndExperiment.getProject_Selected();
@@ -42,7 +44,12 @@ public class Gui_NewTableEntry extends Activity {
         setContentView(R.layout.layout_guinewtableentry);
         //doBindService();
         ActivityRegistry.register(this);
-
+        Intent intent= getIntent();
+        Bundle b = intent.getExtras();
+        assert b != null;
+        experimentID = b.getFloat("id");
+        rows = b.getInt("row");
+        cols = b.getInt("column");
         // Receiving the Data
 
 
@@ -58,7 +65,10 @@ public class Gui_NewTableEntry extends Activity {
        // table.setVisibility(View.INVISIBLE);
 
         table.removeAllViews();
+        textView_array = new EditText[rows][cols];
+        string_array = new String[rows][cols];
 
+        BuildTable(rows, cols);
 
 
 
@@ -70,23 +80,6 @@ public class Gui_NewTableEntry extends Activity {
 
         switch (v.getId()) {  // switch ID button
 
-            case R.id.button:
-                if (!(text.getText().toString().trim().isEmpty()) && !(text1.getText().toString().trim().isEmpty()))
-
-                {
-                rows = Integer.parseInt(text.getText().toString());
-                cols = Integer.parseInt(text1.getText().toString());
-                table.removeAllViews();
-                textView_array = new EditText[rows][cols];
-                string_array = new String[rows][cols];
-
-                BuildTable(rows, cols);
-
-                //table.setVisibility(View.VISIBLE);
-              //  text2.setVisibility(View.VISIBLE);
-                }
-
-                break;
             case R.id.button3:
                 Log.d("Button 3", "Button finish gedrückt");
 
@@ -110,11 +103,11 @@ public class Gui_NewTableEntry extends Activity {
 //TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
 
                         //                Entry table_entry =  new Entry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
-                        Gui_StartActivity.myDb.open();
+                   //     Gui_StartActivity.myDb.open();
                         //   Gui_StartActivity.myDb.insertLocalEntry(table_entry);
-                        Gui_StartActivity.myDb.close();
+                   //     Gui_StartActivity.myDb.close();
                         //       projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(table_entry);
-                        Gui_DisplayProjectAndExperiment.setProjectExperimentEntries(projectExperimentEntries);
+                     //  Gui_DisplayProjectAndExperiment.setProjectExperimentEntries(projectExperimentEntries);
                         this.finish();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -162,7 +155,7 @@ public class Gui_NewTableEntry extends Activity {
                 tv.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
                         LayoutParams.WRAP_CONTENT));
 
-                tv.setPadding(5, 5, 5, 5);
+                tv.setPadding(15, 15, 15, 15);
               //  tv.setText("R " + i + ". C" + j); // TODO Delete this to get empty textfields in the table
                 tv.isInEditMode();
                 row.addView(tv);

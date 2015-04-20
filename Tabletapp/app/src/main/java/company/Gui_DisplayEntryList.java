@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +37,8 @@ import imports.ActivityRegistry;
 import imports.App_Methodes;
 import imports.ExpandableListAdapterEntries;
 import datastructures.ProjectExperimentEntry;
+import imports.Popup;
+import imports.RowAndColumnPopup;
 
 /**
  * @author  Grit on 19.07.2014.
@@ -58,7 +61,7 @@ public class Gui_DisplayEntryList extends Activity {
         entries.add(new Entry(2,new datastructures.User("grit","test"),0,"test Entry 3",new AttachmentText("inhalt von entry 3"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
         entries.add(new Entry(3,new datastructures.User("grit","test"),0,"test Entry 4",new AttachmentText("inhalt von entry 4"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
 
-        Intent intent= getIntent();
+        Intent intent = getIntent();
         Bundle b = intent.getExtras();
         assert b != null;
         experiment = (Experiment) b.getSerializable("experiment");
@@ -184,28 +187,29 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
                 Toast.makeText(getApplicationContext(), "sync", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_newentry:
+
                 PopupMenu popupMenu = new PopupMenu(Gui_DisplayEntryList.this,textview1);
                 popupMenu.getMenuInflater().inflate(R.menu.popupmenu_newentrydesition, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     public boolean onMenuItemClick(MenuItem item) {
+
                         switch (item.getItemId()){
                             case R.id.keyboard:
                              start_New_ActionKeyboard();
                                 break;
                             case R.id.table:
-                                start_New_ActionTable();
+                             start_New_ActionTable();
                                 break;
                             case R.id.image:
 
                                 break;
                         }
 
-                        Toast.makeText(getApplicationContext(),"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 });
-                popupMenu.show();//showing popup menu
+                popupMenu.show();//showing popup menu*/
                 return true;
 
             default:
@@ -223,7 +227,7 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
     }
     private void start_New_ActionTable(){
         Intent intent;
-        intent = new Intent(this, Gui_NewTableEntry.class);
+        intent = new Intent(this, RowAndColumnPopup.class);
         intent.putExtra("id",experiment.get_id());
         startActivity(intent);
     }
