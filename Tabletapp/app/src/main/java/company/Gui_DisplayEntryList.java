@@ -73,6 +73,7 @@ public class Gui_DisplayEntryList extends Activity {
         //   prepareListData();
       //  listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap);
         // setting list adapter
+
         listAdapter = new ExpandableListAdapterEntries(this, entries);
 
         try {
@@ -202,7 +203,7 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
                              start_New_ActionTable();
                                 break;
                             case R.id.image:
-
+                             start_New_ActionImage();
                                 break;
                         }
 
@@ -235,9 +236,10 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
     /**
      * Starts the new Intent for Detail view of LocalEntry
      */
-    private void startnew_action1(){
+    private void start_New_ActionImage(){
         Intent intent;
-        intent = new Intent(this, Gui_DisplayEntryDetails.class);
+        intent = new Intent(this, Gui_NewImageEntry.class);
+        intent.putExtra("id",experiment.get_id());
         startActivity(intent);
     }
 

@@ -34,6 +34,7 @@
     <string name="project_name">Project name:</string>
     <string name="project_description">Project Description:</string>
     <string name="tablegeneration">Table information</string>
+    <string name="takeimage">take Photo</string>
     <string name="sync_status">Sync Status:</string>
     <string name="popup2">Please fill in a valid E-mail address</string>
     <string name="popup4">Entry name must be unique!</string>
