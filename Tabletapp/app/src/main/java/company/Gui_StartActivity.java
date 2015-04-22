@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
@@ -98,7 +99,7 @@ public class Gui_StartActivity extends Activity {
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
         checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
-        prgs  = (ProgressBar) findViewById(R.id.progress);
+
         myDb = new DBAdapter(this);
         context = getApplicationContext();
 
@@ -187,7 +188,7 @@ if(checkBox.isChecked())
            edit.putString("Password",null);
 
                            edit.apply();
-                           startActivity(new Intent(this, Gui_DisplayProjectAndExperiment.class));
+
                             break;
                        case 1:
                             Popup popup = new Popup();
@@ -313,10 +314,22 @@ if(checkBox.isChecked())
 
 
     private class ProgressTask extends AsyncTask<Integer,Integer,Void>{
+        ProgressDialog dialog;
 
+        // The variable is moved here, we only need it here while displaying the
+        // progress dialog.
+        TextView txtView;
         protected void onPreExecute() {
-            super.onPreExecute(); ///////???????
-            prgs.setMax(100); // set maximum progress to 100.
+
+            dialog = new ProgressDialog(Gui_StartActivity.this);
+
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.setMax(100);
+            dialog.setTitle("Getting new Data From Server");
+
+            dialog.show();
+           // super.onPreExecute(); ///////???????
+            //prgs.setMax(100); // set maximum progress to 100.
 
         }
         protected void onCancelled() {
@@ -327,44 +340,53 @@ if(checkBox.isChecked())
 
             ServerDatabaseSession SDS = mService.SDS;
 
+
             LinkedList<RemoteProject> projects;
             LinkedList<RemoteExperiment> experiments;
-            LinkedList<Entry> entries = new LinkedList<Entry>();
+            LinkedList<Entry> entries = new LinkedList<Entry>() ;
             // try {
             try {
                 SDS.start_session();
 
             projects = SDS.get_projects();
+                publishProgress(30);
+
+                experiments = SDS.get_experiments();
+                publishProgress(30);
                 for (int i=0; i <projects.size();i++)
                 {
                     Log.d("project",projects.get(i).getName());
                 }
-            experiments = SDS.get_experiments();
+                for (int j=0; j<experiments.size();j++)
+                    Log.d("experiments",experiments.get(j).getName());
             RemoteEntry remoteEntry;
-         /*   for (int i = 0; experiments.size() > i; i++) {
-                LinkedList<Entry_Remote_Identifier> entry_remoteIdentifiers = SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
+
+           for (int i = 0; experiments.size() > i; i++) {
+                LinkedList<Entry_Remote_Identifier> entry_remoteIdentifiers = SDS.get_last_entry_references(experiments.get(i).getId(), 10, null);
                  for (int j = 0; entry_remoteIdentifiers.size() > j; j++) {
                     remoteEntry = SDS.get_entry(entry_remoteIdentifiers.get(j));
+                   Log.d("Attachmentcontent2", remoteEntry.getTitle());
 
-                    entries.add(remoteEntry);
-                   Log.d("Attachmentcontent2", entries.get(j).getAttachment().getContent().toString());
-                }}*/
+                }if(i == experiments.size()/2)
+                   publishProgress(20);
+           }
             }catch (SBSBaseException e) {
             e.printStackTrace();
         }
-
+            publishProgress(20);
             return null;
         }
         protected void onProgressUpdate(Integer... values) {
-
+            dialog.incrementProgressBy(values[0]);
             // increment progress bar by progress value
             //////////////////////setProgress(10);
             //////////////////////prgs.setProgress(prgs.getProgress() + 5); // the bar does not fill 100%
-            prgs.setProgress(5);
-            Log.v("Progress","Once");
+         //   prgs.setProgress(5);
+      //      Log.v("Progress","Once");
         }
         protected void onPostExecute(Void result) {
             // async task finished
+            startActivity(new Intent(getApplicationContext(), Gui_DisplayProjectAndExperiment.class));
             Log.v("Progress", "Finished");
         }
 
@@ -374,12 +396,12 @@ if(checkBox.isChecked())
         task = new ProgressTask();
         // start progress bar with initial progress 10
         ///////////////////task.execute(10,5,null);
-        task.execute(10);
+        task.execute(0);
 
     }
 
     public void stopProgress() {
-        task.cancel(true);
+       // dialog.incrementProgressBy(progress[0]);
     }
 }
 
