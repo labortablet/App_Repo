@@ -146,7 +146,7 @@ public class ServerDatabaseSession {
             }
 
         } catch (JSONException e) {
-            System.out.println("JSon ecveption");
+            System.out.println("status string not found while checking for success of the request");
             System.out.println(result);
             throw new ErroneousResponse();
         }
@@ -156,7 +156,7 @@ public class ServerDatabaseSession {
         try {
             obj.put(name, value);
         } catch (JSONException e) {
-            //should be impossible as we add a valid parameter to the json
+            throw new RuntimeException("This should never happen, put wrapper");
         }
         return obj;
     };
@@ -165,7 +165,7 @@ public class ServerDatabaseSession {
         try {
             obj.put(name, value);
         } catch (JSONException e) {
-            System.out.println("This should not happen, put wrapper failed");
+            throw new RuntimeException("This should never happen, put wrapper");
         }
         return obj;
     };
@@ -190,16 +190,19 @@ public class ServerDatabaseSession {
             this.session_id = result.getString("session_id");
             this.session_id_set = Boolean.TRUE;
         }catch (JSONException e){
+            System.out.println("Challenge: no id!");
             throw new JSONError();
         }
         try{
             this.salt = this.uni2bin(result.getString("salt").trim());
         }catch (JSONException e){
+            System.out.println("Challenge: could not decode the salt");
             throw new JSONError();
         }
         try{
             return this.uni2bin(result.getString("challenge"));
         }catch (JSONException e){
+            System.out.println("Challenge: could not decode the challenge");
             throw new JSONError();
         }
     }
@@ -274,7 +277,7 @@ public class ServerDatabaseSession {
         try {
             experiment_json_array = result.getJSONArray("experiments");
         } catch (JSONException e) {
-            System.out.println("jSON exception");
+            System.out.println("No array of Experiments found");
             System.out.println(result);
             System.out.println(e);
             throw new JSONError();
@@ -296,7 +299,7 @@ public class ServerDatabaseSession {
                 //date = experiment_json.getLong(4);
                 remoteExperiment_list.add(new RemoteExperiment(id, project_id, name, description, 0));
             } catch (JSONException e) {
-                System.out.println("JSON exception!");
+                System.out.println("getting remote Experiments caused exception!");
                 System.out.println(e);
                 //some project did not decode correctly
                 throw new JSONError();
@@ -324,6 +327,8 @@ public class ServerDatabaseSession {
         try {
             entry_id_timestamps = result.getJSONArray("entry_id_timestamps");
         } catch (JSONException e) {
+            System.out.println("getting last entry references!");
+            System.out.println(e);
             throw new JSONError();
         }
         LinkedList<Entry_Remote_Identifier> entry_references = new LinkedList<Entry_Remote_Identifier>();
@@ -363,7 +368,7 @@ public class ServerDatabaseSession {
             entry_current_time = result.getLong("entry_current_time");
             entry_id = result.getInt("entry_id");
         } catch (JSONException e) {
-            System.out.println("JSOn exception!");
+            System.out.println("Exception while analyzing data after sending an entry");
             System.out.println(result);
             throw new JSONError();
         }
