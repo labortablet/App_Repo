@@ -128,6 +128,15 @@
         android:layout_alignLeft="@+id/checkBox2"
         android:layout_alignStart="@+id/checkBox2"
         android:checked="false" />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress"
+        android:max="100"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_above="@+id/textView3"
+        android:layout_centerHorizontal="true">
+    </ProgressBar>
 
 
 </RelativeLayout>

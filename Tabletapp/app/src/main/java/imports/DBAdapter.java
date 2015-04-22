@@ -191,6 +191,7 @@ public class DBAdapter {
         initialValues.put(User_Password, user.getPw_hash());
         initialValues.put(User_FName,user.getFirstname());
         initialValues.put(User_LName,user.getLastname());
+
         return db.insert(Table_User, null, initialValues);
     }
     public long insertRemoteProject(Project remoteProject){
@@ -234,8 +235,8 @@ public class DBAdapter {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Entry_Titel,remoteEntry.getTitle());
         initialValues.put(Entry_Typ, remoteEntry.getAttachment().getTypeNumber());
-        initialValues.put(Entry_Content,remoteEntry.getAttachment().getContent().toString());
-        Log.d("Attachment",remoteEntry.getAttachment().getContent().toString());
+        initialValues.put(Entry_Content, remoteEntry.getAttachment().getContent());
+        Log.d("Attachment", remoteEntry.getAttachment().getContent());
         initialValues.put(Entry_Sync,1);
         initialValues.put(Entry_ExperimentID,remoteEntry.getExperiment_id());
         initialValues.put(Entry_UserID,remoteEntry.getUser().getUser_email());
@@ -411,6 +412,10 @@ public class DBAdapter {
         }
         return c;
     }
+    public Cursor getAllProjectsByUser(User user){
+       return db.query(Table_Project,Project_KEYS,Entry_UserID + " = ?",new String[]{String.valueOf(user.getId())},null,null,null);
+    }
+
 
     //TODO : add a sql query for getting the projects of the specificant user
     public Cursor getAllExperimentRows() {

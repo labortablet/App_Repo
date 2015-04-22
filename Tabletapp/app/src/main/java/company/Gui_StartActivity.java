@@ -2,31 +2,47 @@ package company;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
+import java.lang.ref.WeakReference;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+import datastructures.Entry;
+import datastructures.Experiment;
+import datastructures.Project;
+import exceptions.SBSBaseException;
 import imports.DBAdapter;
 import imports.Popup;
 import datastructures.User;
+import scon.Entry_Remote_Identifier;
+import scon.RemoteEntry;
+import scon.RemoteExperiment;
+import scon.RemoteProject;
+import scon.ServerDatabaseSession;
 
 
 import static imports.App_Methodes.appendLog;
@@ -44,6 +60,8 @@ public class Gui_StartActivity extends Activity {
     CheckBox checkBox;
     CheckBox checkBox2;
     CheckBox checkBox3;
+    ProgressBar prgs;
+    ProgressTask task;
     public static User getUser() {
         return user;
     }
@@ -79,6 +97,7 @@ public class Gui_StartActivity extends Activity {
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
         checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
+        prgs  = (ProgressBar) findViewById(R.id.progress);
         myDb = new DBAdapter(this);
         context = getApplicationContext();
 
@@ -138,9 +157,10 @@ public class Gui_StartActivity extends Activity {
                     String server = text.getText().toString();
                     String email = text2.getText().toString();
                     String password = text3.getText().toString();
+
                    mService.setUserAndURL(new User(email, password), server);
                    int i =  mService.connect(server);
-
+                    showProgress();
 
                   switch (i) {
                        case 0:
@@ -290,6 +310,72 @@ if(checkBox.isChecked())
                 }).setNegativeButton("no", null).show();
     }
 
+
+    private class ProgressTask extends AsyncTask<Integer,Integer,Void>{
+
+        protected void onPreExecute() {
+            super.onPreExecute(); ///////???????
+            prgs.setMax(100); // set maximum progress to 100.
+
+        }
+        protected void onCancelled() {
+            prgs.setMax(0); // stop the progress
+            Log.v("Progress","Cancelled");
+        }
+        protected Void doInBackground(Integer... params) {
+
+            ServerDatabaseSession SDS = mService.SDS;
+
+            LinkedList<RemoteProject> projects;
+            LinkedList<RemoteExperiment> experiments;
+            LinkedList<Entry> entries = new LinkedList<Entry>();
+            // try {
+            try {
+                SDS.start_session();
+
+            projects = SDS.get_projects();
+            experiments = SDS.get_experiments();
+            RemoteEntry remoteEntry;
+         /*   for (int i = 0; experiments.size() > i; i++) {
+                LinkedList<Entry_Remote_Identifier> entry_remoteIdentifiers = SDS.get_last_entry_references(experiments.get(i).get_id(), 10, null);
+                 for (int j = 0; entry_remoteIdentifiers.size() > j; j++) {
+                    remoteEntry = SDS.get_entry(entry_remoteIdentifiers.get(j));
+
+                    entries.add(remoteEntry);
+                   Log.d("Attachmentcontent2", entries.get(j).getAttachment().getContent().toString());
+                }}*/
+            }catch (SBSBaseException e) {
+            e.printStackTrace();
+        }
+
+            return null;
+        }
+        protected void onProgressUpdate(Integer... values) {
+
+            // increment progress bar by progress value
+            //////////////////////setProgress(10);
+            //////////////////////prgs.setProgress(prgs.getProgress() + 5); // the bar does not fill 100%
+            prgs.setProgress(5);
+            Log.v("Progress","Once");
+        }
+        protected void onPostExecute(Void result) {
+            // async task finished
+            Log.v("Progress", "Finished");
+        }
+
+    }
+
+    public void showProgress() {
+        task = new ProgressTask();
+        // start progress bar with initial progress 10
+        ///////////////////task.execute(10,5,null);
+        task.execute(10);
+
+    }
+
+    public void stopProgress() {
+        task.cancel(true);
+    }
 }
 
 

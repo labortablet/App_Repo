@@ -23,6 +23,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
     @Override
 
     protected ArrayList<ProjectExperimentEntry> doInBackground(DBAdapter... params) {
+
         ArrayList<ProjectExperimentEntry> projectExperimentEntries = new ArrayList<ProjectExperimentEntry>();
         DBAdapter myDb = params[0];
         try {

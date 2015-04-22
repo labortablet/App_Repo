@@ -263,7 +263,7 @@ public class LocalService extends Service {
 
         if (isOnline()) {
             SDS = new ServerDatabaseSession(url, user);
-            SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
+           // SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
             //int i = new StartUpAsyncTask().execute(SDCO).get();
 
             myTimer.schedule(new MyTask(), 60000);
