@@ -215,14 +215,17 @@ public class DBAdapter {
     public void insertExperiments(LinkedList<RemoteExperiment> remoteExperiments){
         for (int i = 0; i<remoteExperiments.size();i++){
             RemoteExperiment experiment = remoteExperiments.get(i);
-            SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO" + DBAdapter.Table_Experiment + " ( "+ Experiment_Name + "," + Experiment_Description + "," + Experiment_RemoteID + "," + Experiment_ProjectID + " ) "+ "VALUES (?,?,?,?)" );
-           SQLiteStatement sqLiteStatement1 = db.compileStatement(" SELECT "+ Project_ID +" FROM "+ Table_Project +" WHERE " + Project_RemoteID + " = ?");
-            sqLiteStatement1.bindLong(1,experiment.getProject_id());
+            SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO " + DBAdapter.Table_Experiment + " ( "+ Experiment_Name + "," + Experiment_Description + "," + Experiment_RemoteID + "," + Experiment_ProjectID + " ) "+ "VALUES (?,?,?,?)" );
+//: TODO fix this entry here
 
-            sqLiteStatement.bindString(1,experiment.getName());
+            Cursor c = db.rawQuery(" SELECT "+ Project_ID +" FROM "+ Table_Project +" WHERE " + Project_RemoteID + " = ?",new String[]{String.valueOf(experiment.getProject_id())});
+
+            c.moveToFirst();
+            Log.d("Id des Projekts", String.valueOf(c.getLong(DBAdapter.COL_ProjectID)));
+            sqLiteStatement.bindString(1, experiment.getName());
             sqLiteStatement.bindString(2 , experiment.getDescription());
             sqLiteStatement.bindLong(3, experiment.getId());
-            sqLiteStatement.bindString(4, String.valueOf(sqLiteStatement1));
+            sqLiteStatement.bindLong(4, c.getLong(DBAdapter.COL_ProjectID));
             sqLiteStatement.executeInsert();
         }
 
@@ -469,25 +472,36 @@ public class DBAdapter {
        return db.query(Table_Project,Project_KEYS,Entry_UserID + " = ?",new String[]{String.valueOf(user.getId())},null,null,null);
     }
 
-public LinkedList<Experiment> getExperimentByLocalProjectID(Project project)
-{
+public LinkedList<Experiment> getExperimentByLocalProjectID(Project project){
    // SQLiteStatement sqLiteStatement1 = db.compileStatement(" SELECT "+ Experiment_ID + Experiment_Name+ Experiment_Description +" FROM "+ Table_Experiment +" WHERE " + Experiment_ProjectID + " = ?");
  //sqLiteStatement1.bindLong(1,project.get_id());
-    Cursor c = db.rawQuery(" SELECT "+ Experiment_ID + Experiment_Name+ Experiment_Description +" FROM "+ Table_Experiment +" WHERE " + Experiment_ProjectID + " = ?",new String[]{String.valueOf(project.get_id())});
+    Cursor cursor = db.rawQuery(" SELECT "+ Experiment_ID + "," + Experiment_Name+ "," + Experiment_Description + ","+Experiment_ProjectID+" FROM "+ Table_Experiment +" WHERE " + Experiment_ProjectID + " = ?",new String[]{String.valueOf(project.get_id())});
 LinkedList<Experiment> experimentLinkedList = new LinkedList<Experiment>();
+   cursor.moveToFirst();
+    Experiment experiment;
+    if(cursor.getCount() > 0 && cursor.moveToFirst()){
     do {
-        experimentLinkedList.add(new Experiment(c.getLong(COL_ExperimentID),c.getLong(COL_ExperimentProjectID),c.getString(COL_ExperimentName),c.getString(COL_ExperimentDescription)));
+
+        experiment = new Experiment(cursor.getLong(DBAdapter.COL_ExperimentID),cursor.getString(DBAdapter.COL_ExperimentName),cursor.getString(DBAdapter.COL_ExperimentDescription),cursor.getLong(DBAdapter.COL_ExperimentProjectID));
+        experimentLinkedList.add(experiment);
          // Process the data:
         // remoteProjects.add(new Project(cursor.getInt(DBAdapter.COL_ProjectID), cursor.getInt(DBAdapter.COL_ProjectRemoteID), cursor.getString(DBAdapter.COL_ProjectName), cursor.getString(DBAdapter.COL_ProjectDescription)));
 
-    } while (c.moveToNext());
+    } while (cursor.moveToNext());
 
     // Close the cursor to avoid a resource leak.
-    c.close();
+    cursor.close();}
 
 return experimentLinkedList;
 
 }
+public int getExperimentCountByProjectLocalID(Long ID){
+        Cursor c = db.rawQuery(" SELECT "+ "COUNT(*) FROM "+ Table_Experiment +" WHERE "+ Experiment_ProjectID +"=?",new String[]{String.valueOf(ID)});
+        c.moveToFirst();
+return c.getInt(0);
+    }
+
+
     //TODO : add a sql query for getting the projects of the specificant user
     public Cursor getAllExperimentRows() {
         String where = null;

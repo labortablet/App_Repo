@@ -7,6 +7,7 @@ package imports;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +37,9 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
     private LocalService service;
 
     public ExpandableListAdapterProjectsAndExperiments(Context context, LinkedList<Project> listDataHeader,
-                                                       HashMap<Long, List<Experiment>> listChildData, LocalService service) {
+                                                       LocalService service) {
         this._context = context;
         this._listDataHeader = listDataHeader;
-        this._listDataChild = listChildData;
         this.service = service;
     }
 
@@ -60,39 +60,73 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
                              boolean isLastChild, View convertView, ViewGroup parent) {
      //  final int i = groupPosition;
       //  final String childText = (String) getChild(groupPosition, childPosition);
-        service.getDB().open();
-        final List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(0)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
-        service.getDB().close();
-        child = _listDataChild.get( _listDataHeader.get(groupPosition).get_id()).get(childPosition);
-
-        String childText = child.get_name();
+if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
 
 
+    final List<Experiment> list =_listDataChild.get(_listDataHeader.get(groupPosition).get_id());
+    child = _listDataChild.get(_listDataHeader.get(groupPosition).get_id()).get(childPosition);
 
-        if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_item_projectexperiment, null);
+    String childText = child.get_name();
+
+
+    if (convertView == null) {
+        LayoutInflater infalInflater = (LayoutInflater) this._context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        convertView = infalInflater.inflate(R.layout.list_item_projectexperiment, null);
+    }
+
+
+    convertView.setOnClickListener(new View.OnClickListener() {
+
+
+        public void onClick(View view) {
+            list.get(childPosition);
+            Intent intent;
+            intent = new Intent(_context, Gui_DisplayEntryList.class);
+            intent.putExtra("experiment", list.get(childPosition));
+            _context.startActivity(intent);
+
         }
+    });
+    TextView txtListChild = (TextView) convertView
+            .findViewById(R.id.lblListItem);
+
+    txtListChild.setText(childText);
+}else{
+            service.getDB().open();
+            final List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(0)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
+
+            service.getDB().close();
+    _listDataChild.put(_listDataHeader.get(groupPosition).get_id(),list);
+            child = _listDataChild.get(_listDataHeader.get(groupPosition).get_id()).get(childPosition);
+
+            String childText = child.get_name();
 
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-
-
-            public void onClick(View view) {
-                list.get(childPosition);
-                Intent intent;
-                intent = new Intent(_context, Gui_DisplayEntryList.class);
-                intent.putExtra("experiment", list.get(childPosition));
-                _context.startActivity(intent);
-
+            if (convertView == null) {
+                LayoutInflater infalInflater = (LayoutInflater) this._context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.list_item_projectexperiment, null);
             }
-        });
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.lblListItem);
 
-        txtListChild.setText(childText);
 
+            convertView.setOnClickListener(new View.OnClickListener() {
+
+
+                public void onClick(View view) {
+                    list.get(childPosition);
+                    Intent intent;
+                    intent = new Intent(_context, Gui_DisplayEntryList.class);
+                    intent.putExtra("experiment", list.get(childPosition));
+                    _context.startActivity(intent);
+
+                }
+            });
+            TextView txtListChild = (TextView) convertView
+                    .findViewById(R.id.lblListItem);
+
+            txtListChild.setText(childText);
+        }
         return convertView;
     }
 
@@ -100,10 +134,16 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
     public int getChildrenCount(int groupPosition) {
         try {
 
-
-            Long position = _listDataHeader.get(groupPosition).get_id();
-            List<Experiment> list = _listDataChild.get(position);
-            return list.size();
+            service.getDB().open();
+            List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(groupPosition)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
+for (int j =0;list.size() > j ; j++)
+    Log.d("Experiment NR."+j,list.get(j).get_name());
+            service.getDB().close();
+            service.getDB().open();
+           int i = service.getDB().getExperimentCountByProjectLocalID(_listDataHeader.get(groupPosition).get_id());
+            Log.d("count kinder", String.valueOf(i));
+            service.getDB().close();
+            return i;
         }catch (Exception E){
             E.printStackTrace();
             return 0;

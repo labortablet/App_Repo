@@ -68,23 +68,23 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
         LocalService service = mservice.get();
 
 
-        HashMap<Long,List<Experiment>> hashMap = new HashMap<Long, List<Experiment>>();
-        projects.add(new Project(0,"testproject0"));
-        projects.add(new Project(1,"testproject1"));
+  //      HashMap<Long,List<Experiment>> hashMap = new HashMap<Long, List<Experiment>>();
+    //    projects.add(new Project(0,"testproject0"));
+   //     projects.add(new Project(1,"testproject1"));
         service.getDB().open();
 projects.addAll(service.getDB().getAllProjectRowsLinkedList());
         service.getDB().close();
-        List<Experiment> list = new ArrayList<Experiment>();
+    //    List<Experiment> list = new ArrayList<Experiment>();
 
-        list.add(new Experiment(0,0,"experiment test 1"));
-        list.add(new Experiment(1,0,"experiment test 2"));
-        list.add(new Experiment(2,0,"experiment test 3"));
-        hashMap.put((long) 0,list);
+   //     list.add(new Experiment(0,0,"experiment test 1"));
+    //    list.add(new Experiment(1,0,"experiment test 2"));
+    //    list.add(new Experiment(2,0,"experiment test 3"));
+      //  hashMap.put((long) 0,list);
 
-        List<Experiment> list2 = new ArrayList<Experiment>();
-        list2.add(new Experiment(3,1,"experiment test 4"));
-        list2.add(new Experiment(4,1,"experiment test 5"));
-        hashMap.put((long) 1,list2);
+      //  List<Experiment> list2 = new ArrayList<Experiment>();
+     //   list2.add(new Experiment(3,1,"experiment test 4"));
+    //    list2.add(new Experiment(4,1,"experiment test 5"));
+   //     hashMap.put((long) 1,list2);
 
         // dummidata
 
@@ -94,7 +94,7 @@ projects.addAll(service.getDB().getAllProjectRowsLinkedList());
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
        // preparing list data
      //   prepareListData();
-       listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap,service);
+       listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects,service);
 
         // setting list adapter
         try {
