@@ -54,7 +54,7 @@ public class LocalService extends Service {
     static ServerDatabaseSession SDS;
     static HashMap<Integer,Integer> projectHashMap; // Remote ID, Tree ID
     static HashMap<Integer,Integer> experimentHashMap; // Remote ID,Tree ID
-    static DBAdapter myDb = Gui_StartActivity.myDb;
+    public static DBAdapter myDb;//= Gui_StartActivity.myDb;
     static List<ProjectExperimentEntry> projectExperimentEntries;
 
     //Hashmaps so we can cache the objects and can update them easily.
@@ -211,6 +211,7 @@ public class LocalService extends Service {
 
     @Override
     public void onCreate() {
+       myDb = new DBAdapter(getApplicationContext());
         super.onCreate();
         deleteAllSynced();
     }
@@ -218,6 +219,9 @@ public class LocalService extends Service {
     public void setUserAndURL(User user, String server) {
         this.user = user;
 
+    }
+    public DBAdapter getDB(){
+        return myDb;
     }
 
     private void openDB() {
@@ -303,6 +307,8 @@ public class LocalService extends Service {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
+
+
 
     public class LocalBinder extends Binder {
         LocalService getService() {

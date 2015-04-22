@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -64,6 +65,7 @@ public class Gui_StartActivity extends Activity {
     CheckBox checkBox3;
     ProgressBar prgs;
     ProgressTask task;
+    WeakReference<LocalService> mserviceweak = new WeakReference<LocalService>(mService);
     public static User getUser() {
         return user;
     }
@@ -163,6 +165,7 @@ public class Gui_StartActivity extends Activity {
                    mService.setUserAndURL(new User(email, password,new URL(server)), server);
                    int i =  mService.connect(server);
                    showProgress();
+
 
                   switch (i) {
                        case 0:
@@ -314,6 +317,8 @@ if(checkBox.isChecked())
 
 
     private class ProgressTask extends AsyncTask<Integer,Integer,Void>{
+        LinkedList<RemoteProject> projects;
+        LinkedList<RemoteExperiment> experiments;
         ProgressDialog dialog;
 
         // The variable is moved here, we only need it here while displaying the
@@ -341,24 +346,22 @@ if(checkBox.isChecked())
             ServerDatabaseSession SDS = mService.SDS;
 
 
-            LinkedList<RemoteProject> projects;
-            LinkedList<RemoteExperiment> experiments;
+
             LinkedList<Entry> entries = new LinkedList<Entry>() ;
             // try {
             try {
                 SDS.start_session();
 
             projects = SDS.get_projects();
+                mService.getDB().open();
+                mService.getDB().deleteAllExperiments();
+                mService.getDB().deleteAllProjects();
+                mService.getDB().insertProject(projects);
                 publishProgress(30);
-
                 experiments = SDS.get_experiments();
+                mService.getDB().insertExperiments(experiments);
                 publishProgress(30);
-                for (int i=0; i <projects.size();i++)
-                {
-                    Log.d("project",projects.get(i).getName());
-                }
-                for (int j=0; j<experiments.size();j++)
-                    Log.d("experiments",experiments.get(j).getName());
+                mService.getDB().close();
             RemoteEntry remoteEntry;
 
            for (int i = 0; experiments.size() > i; i++) {
@@ -386,7 +389,10 @@ if(checkBox.isChecked())
         }
         protected void onPostExecute(Void result) {
             // async task finished
-            startActivity(new Intent(getApplicationContext(), Gui_DisplayProjectAndExperiment.class));
+            Intent intent;
+            intent = new Intent(getApplicationContext(), Gui_DisplayProjectAndExperiment.class);
+            startActivity(intent);
+
             Log.v("Progress", "Finished");
         }
 
@@ -402,6 +408,10 @@ if(checkBox.isChecked())
 
     public void stopProgress() {
        // dialog.incrementProgressBy(progress[0]);
+    }
+
+    public static LocalService getmService() {
+        return mService;
     }
 }
 

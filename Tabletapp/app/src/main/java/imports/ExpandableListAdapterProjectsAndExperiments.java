@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import company.Gui_DisplayEntryList;
+import company.LocalService;
 import datastructures.Experiment;
 import datastructures.Project;
 
@@ -32,12 +33,14 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
     // child data in format of header title, child title
     private HashMap<Long, List<Experiment>> _listDataChild;
     private Experiment child;
+    private LocalService service;
 
     public ExpandableListAdapterProjectsAndExperiments(Context context, LinkedList<Project> listDataHeader,
-                                                       HashMap<Long, List<Experiment>> listChildData) {
+                                                       HashMap<Long, List<Experiment>> listChildData, LocalService service) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
+        this.service = service;
     }
 
     @Override
@@ -57,10 +60,14 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
                              boolean isLastChild, View convertView, ViewGroup parent) {
      //  final int i = groupPosition;
       //  final String childText = (String) getChild(groupPosition, childPosition);
-       final List<Experiment> list =  _listDataChild.get( _listDataHeader.get(groupPosition).get_id());
+        service.getDB().open();
+        final List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(0)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
+        service.getDB().close();
         child = _listDataChild.get( _listDataHeader.get(groupPosition).get_id()).get(childPosition);
 
         String childText = child.get_name();
+
+
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -91,10 +98,16 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
 
     @Override
     public int getChildrenCount(int groupPosition) {
+        try {
+
+
             Long position = _listDataHeader.get(groupPosition).get_id();
             List<Experiment> list = _listDataChild.get(position);
             return list.size();
-
+        }catch (Exception E){
+            E.printStackTrace();
+            return 0;
+        }
     }
 
     @Override

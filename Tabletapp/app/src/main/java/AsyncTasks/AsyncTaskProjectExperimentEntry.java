@@ -26,16 +26,16 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
 
         ArrayList<ProjectExperimentEntry> projectExperimentEntries = new ArrayList<ProjectExperimentEntry>();
         DBAdapter myDb = params[0];
-        try {
+        /*try {
             myDb.open();
-            LinkedList<Project> remoteProject_list = displayProjects(myDb.getAllProjectRows());
+         //   LinkedList<Project> remoteProject_list = displayProjects(myDb.getAllProjectRows());
             LinkedList<Experiment> remoteExperiment_list = displayExperiments(myDb.getAllExperimentRows());
             LinkedList<Entry> remoteEntry_list = displayEntries(myDb.getAllEntryRows());
             myDb.close();
             ArrayList<Entry> entries;
 
 
-            for (int i = 0; i < remoteProject_list.size(); i++) {
+       /*     for (int i = 0; i < remoteProject_list.size(); i++) {
                 ArrayList<ExperimentEntry> experimentEntries = new ArrayList<ExperimentEntry>();
                 projectExperimentEntries.add(new ProjectExperimentEntry((remoteProject_list.get(i)), experimentEntries));
             }
@@ -53,7 +53,7 @@ public class AsyncTaskProjectExperimentEntry extends AsyncTask<DBAdapter,Integer
                 }
             }*/
 
-            for (int i = 0; i < remoteEntry_list.size(); i++) {
+ /*           for (int i = 0; i < remoteEntry_list.size(); i++) {
                 for (int j = 0; j < projectExperimentEntries.size(); j++) {
                     for (int k = 0; k < projectExperimentEntries.get(j).getExperimentEntry().size(); k++) {
                     //    if (projectExperimentEntries.get(j).getExperimentEntry().get(k).getExperiments().get_id().equals(remoteEntry_list.get(i).getExperiment_id())) {

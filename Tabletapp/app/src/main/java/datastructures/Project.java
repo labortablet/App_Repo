@@ -19,7 +19,12 @@ public class Project implements Serializable{ //implements Comparable
         this.description = null;
         this.date_creation = null;
     }
-
+    public Project(long id, String name,String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.date_creation = null;
+    }
 
     public Project(long id, String name, String description, Long date_creation) {
         this.id = id;

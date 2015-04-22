@@ -5,15 +5,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import datastructures.Entry;
 import datastructures.Experiment;
 import datastructures.Project;
 import datastructures.User;
 import scon.Entry_Remote_Identifier;
+import scon.RemoteExperiment;
+import scon.RemoteProject;
 
 
 public class DBAdapter {
@@ -113,7 +117,8 @@ public class DBAdapter {
                     + Project_Name + Typ_String + "not null, "
                     + Project_Description + Typ_Text + Comma_Separator
                     + Project_Sync + Typ_Integer + Comma_Separator
-                    + Project_RemoteID + Typ_Integer + " UNIQUE "
+                    + Project_RemoteID + Typ_Integer + " UNIQUE " + Comma_Separator
+                    + Project_UserID + Typ_Integer
                     + Bracket_Separator_Right + Semicolon_Separator;
     public static final String Table_Experiment = " _experiment ";
     //
@@ -193,6 +198,34 @@ public class DBAdapter {
         initialValues.put(User_LName,user.getLastname());
 
         return db.insert(Table_User, null, initialValues);
+    }
+
+    public void insertProject(LinkedList<RemoteProject> projectLinkedList){
+        for (int i = 0; i<projectLinkedList.size();i++){
+            RemoteProject project = projectLinkedList.get(i);
+       SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO" + DBAdapter.Table_Project + " ( "+ Project_Name + "," + Project_Description + "," + Project_RemoteID + " ) "+ "VALUES (?,?,?)" );
+            sqLiteStatement.bindString(1, project.getName());
+            sqLiteStatement.bindString(2 , project.getDescription());
+            sqLiteStatement.bindLong(3, project.getId());
+            sqLiteStatement.executeInsert();
+        }
+
+    }
+
+    public void insertExperiments(LinkedList<RemoteExperiment> remoteExperiments){
+        for (int i = 0; i<remoteExperiments.size();i++){
+            RemoteExperiment experiment = remoteExperiments.get(i);
+            SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO" + DBAdapter.Table_Experiment + " ( "+ Experiment_Name + "," + Experiment_Description + "," + Experiment_RemoteID + "," + Experiment_ProjectID + " ) "+ "VALUES (?,?,?,?)" );
+           SQLiteStatement sqLiteStatement1 = db.compileStatement(" SELECT "+ Project_ID +" FROM "+ Table_Project +" WHERE " + Project_RemoteID + " = ?");
+            sqLiteStatement1.bindLong(1,experiment.getProject_id());
+
+            sqLiteStatement.bindString(1,experiment.getName());
+            sqLiteStatement.bindString(2 , experiment.getDescription());
+            sqLiteStatement.bindLong(3, experiment.getId());
+            sqLiteStatement.bindString(4, String.valueOf(sqLiteStatement1));
+            sqLiteStatement.executeInsert();
+        }
+
     }
     public long insertRemoteProject(Project remoteProject){
         // Create row's data:
@@ -410,13 +443,51 @@ public class DBAdapter {
         if (c != null) {
             c.moveToFirst();
         }
+
         return c;
+    }
+    public LinkedList<Project> getAllProjectRowsLinkedList() {
+        String where = null;
+        Cursor c = 	db.query(true, Table_Project, Project_KEYS,
+                where, null, null, null, null, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        LinkedList<Project> projects = new LinkedList<Project>();
+            do {
+              projects.add(new Project(c.getLong(DBAdapter.COL_ProjectID),c.getString(DBAdapter.COL_ProjectName),c.getString(DBAdapter.COL_ProjectDescription)));
+                // Process the data:
+                // remoteProjects.add(new Project(cursor.getInt(DBAdapter.COL_ProjectID), cursor.getInt(DBAdapter.COL_ProjectRemoteID), cursor.getString(DBAdapter.COL_ProjectName), cursor.getString(DBAdapter.COL_ProjectDescription)));
+
+            } while (c.moveToNext());
+
+        // Close the cursor to avoid a resource leak.
+        c.close();
+        return projects;
     }
     public Cursor getAllProjectsByUser(User user){
        return db.query(Table_Project,Project_KEYS,Entry_UserID + " = ?",new String[]{String.valueOf(user.getId())},null,null,null);
     }
 
+public LinkedList<Experiment> getExperimentByLocalProjectID(Project project)
+{
+   // SQLiteStatement sqLiteStatement1 = db.compileStatement(" SELECT "+ Experiment_ID + Experiment_Name+ Experiment_Description +" FROM "+ Table_Experiment +" WHERE " + Experiment_ProjectID + " = ?");
+ //sqLiteStatement1.bindLong(1,project.get_id());
+    Cursor c = db.rawQuery(" SELECT "+ Experiment_ID + Experiment_Name+ Experiment_Description +" FROM "+ Table_Experiment +" WHERE " + Experiment_ProjectID + " = ?",new String[]{String.valueOf(project.get_id())});
+LinkedList<Experiment> experimentLinkedList = new LinkedList<Experiment>();
+    do {
+        experimentLinkedList.add(new Experiment(c.getLong(COL_ExperimentID),c.getLong(COL_ExperimentProjectID),c.getString(COL_ExperimentName),c.getString(COL_ExperimentDescription)));
+         // Process the data:
+        // remoteProjects.add(new Project(cursor.getInt(DBAdapter.COL_ProjectID), cursor.getInt(DBAdapter.COL_ProjectRemoteID), cursor.getString(DBAdapter.COL_ProjectName), cursor.getString(DBAdapter.COL_ProjectDescription)));
 
+    } while (c.moveToNext());
+
+    // Close the cursor to avoid a resource leak.
+    c.close();
+
+return experimentLinkedList;
+
+}
     //TODO : add a sql query for getting the projects of the specificant user
     public Cursor getAllExperimentRows() {
         String where = null;

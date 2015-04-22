@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
+import java.io.Serializable;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,6 +35,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
     ExpandableListAdapterProjectsAndExperiments listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
+   Reference<LocalService> mservice = new WeakReference<LocalService>(Gui_StartActivity.getmService());
     HashMap<String, List<String>> listDataChild;
     LinkedList<Project> projects = new LinkedList<Project>();
 
@@ -61,10 +65,15 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
             e.printStackTrace();
         }*/
         // dummidata
+        LocalService service = mservice.get();
+
+
         HashMap<Long,List<Experiment>> hashMap = new HashMap<Long, List<Experiment>>();
         projects.add(new Project(0,"testproject0"));
         projects.add(new Project(1,"testproject1"));
-
+        service.getDB().open();
+projects.addAll(service.getDB().getAllProjectRowsLinkedList());
+        service.getDB().close();
         List<Experiment> list = new ArrayList<Experiment>();
 
         list.add(new Experiment(0,0,"experiment test 1"));
@@ -85,7 +94,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
        // preparing list data
      //   prepareListData();
-       listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap);
+       listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap,service);
 
         // setting list adapter
         try {

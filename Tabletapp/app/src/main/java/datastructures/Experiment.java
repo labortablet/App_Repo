@@ -17,7 +17,13 @@ public class Experiment implements Serializable{
         this.description = null;
         this.date_creation = null;
     };
-
+    public Experiment(long id, long project_id, String name, String description) {
+        this.project_id = project_id;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.date_creation = date_creation;
+    };
     public Experiment(long id, long project_id, String name, String description, Long date_creation) {
         this.project_id = project_id;
         this.id = id;
