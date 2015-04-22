@@ -46,11 +46,10 @@ public class User {
         this.firstname = firstname;
     }
 
-    public User(String user_email, String password, URL server, long id){
+    public User(String user_email, String password, URL server){
         this.user_email = user_email;
         this.setPw(password);
         this.server = server;
-        this.id = id;
     }
 
     public String display(String separator){

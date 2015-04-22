@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.test1.tabletapp.app.R;
 
 import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -158,9 +159,9 @@ public class Gui_StartActivity extends Activity {
                     String email = text2.getText().toString();
                     String password = text3.getText().toString();
 
-                   mService.setUserAndURL(new User(email, password), server);
+                   mService.setUserAndURL(new User(email, password,new URL(server)), server);
                    int i =  mService.connect(server);
-                    showProgress();
+                   showProgress();
 
                   switch (i) {
                        case 0:
@@ -334,6 +335,10 @@ if(checkBox.isChecked())
                 SDS.start_session();
 
             projects = SDS.get_projects();
+                for (int i=0; i <projects.size();i++)
+                {
+                    Log.d("project",projects.get(i).getName());
+                }
             experiments = SDS.get_experiments();
             RemoteEntry remoteEntry;
          /*   for (int i = 0; experiments.size() > i; i++) {

@@ -68,7 +68,9 @@ public class object_level_db {
             //or not
             return null;
         }else{
-            return new User(login, password, server, result);
+           // TODO: changed this for getting server data to check if user is failed
+         //   return new User(login, password, server, result);
+            return new User(login,password,server);
         }
     }
 
