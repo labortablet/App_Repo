@@ -170,7 +170,7 @@ public class ExpandableListAdapterEntries extends BaseExpandableListAdapter {
             lblListDate.setTypeface(null, Typeface.BOLD);
             lblListDate.setText(headerDate);
 
-            if (entry.getSync_time() != null)
+            if (entry.getSync_time() != 0)
                 imageView.setImageResource(R.drawable.richtig);
             else
                 imageView.setImageResource(R.drawable.falsch);

@@ -51,6 +51,17 @@ public class Entry implements Serializable{
         this.sync_time = sync_time;
         this.change_time = change_time;
     }
+    //Konstruktor for new entries whitch got no id yet
+    public Entry( User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time, Long change_time) {
+        this.title = title;
+        this.attachment = attachment;
+        this.entry_time = entry_time;
+        this.user = user;
+        this.id = id;
+        this.Experiment_id =Experiment_id;
+        this.sync_time = sync_time;
+        this.change_time = change_time;
+    }
     public Entry(long id, User user, String title, AttachmentBase attachment, Long entry_time, Long sync_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;

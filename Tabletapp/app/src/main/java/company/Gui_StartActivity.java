@@ -314,8 +314,6 @@ if(checkBox.isChecked())
                     }
                 }).setNegativeButton("no", null).show();
     }
-
-
     private class ProgressTask extends AsyncTask<Integer,Integer,Void>{
         LinkedList<RemoteProject> projects;
         LinkedList<RemoteExperiment> experiments;
@@ -352,9 +350,9 @@ if(checkBox.isChecked())
             try {
                 SDS.start_session();
                 mService.getDB().open();
-              //  mService.getDB().insertNewUser(mService.getUser());
-            projects = SDS.get_projects();
-
+                long ll = mService.getDB().insertNewUser(mService.getUser());
+                mService.setUserID(mService.getDB().getUserByEmail(mService.getUser().getUser_email()));
+                projects = SDS.get_projects();
                 mService.getDB().deleteAllExperiments();
                 mService.getDB().deleteAllProjects();
                 mService.getDB().deleteAllEntries();

@@ -51,8 +51,8 @@ public class User implements Serializable{
         this.user_email = user_email;
         this.setPw(password);
         this.server = server;
-        this.firstname ="";
-        this.lastname="";
+        this.firstname ="Ich";
+        this.lastname="ich";
     }
 
     public String display(String separator){
@@ -100,5 +100,7 @@ public class User implements Serializable{
 
     public long getId(){return this.id;}
 
-
+    public void setId(long id) {
+        this.id = id;
+    }
 }

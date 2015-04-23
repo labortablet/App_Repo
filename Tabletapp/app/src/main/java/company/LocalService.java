@@ -207,7 +207,9 @@ public class LocalService extends Service {
             StrictMode.setThreadPolicy(policy);
         }*/
     }
-
+public void setUserID(Long l){
+    this.user.setId(l);
+}
     @Override
     public void onCreate() {
        myDb = new DBAdapter(getApplicationContext());

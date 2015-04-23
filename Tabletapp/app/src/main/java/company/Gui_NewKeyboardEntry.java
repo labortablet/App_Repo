@@ -3,16 +3,23 @@ package company;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.example.test1.tabletapp.app.R;
 
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+import datastructures.AttachmentText;
+import datastructures.Entry;
 import imports.ActivityRegistry;
+import imports.App_Methodes;
+import imports.Popup;
 
 /**
  * Created by Grit on 03.06.2014.
@@ -22,11 +29,14 @@ public class Gui_NewKeyboardEntry extends Activity {
     EditText title;
     private WeakReference<LocalService> mSerive = new WeakReference<LocalService>(Gui_StartActivity.mService);
     Long experimentID;
+    Reference<LocalService> ref = new WeakReference<LocalService>(Gui_StartActivity.getmService());
+    LocalService service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_guinewkeyboardentry);
+        service = ref.get();
         ActivityRegistry.register(this);
 
         Intent intent= getIntent();
@@ -40,29 +50,26 @@ public class Gui_NewKeyboardEntry extends Activity {
         content.setGravity(Gravity.CENTER);
     } // Standart Android Methoden für apps
 
-    //public void buttonEventHandler(View v) {  // butten events
-/*
+    public void buttonEventHandler(View v) {  // butten events
+
         switch (v.getId()) {  // switch ID button
 
             case R.id.button3:
                 if (!(title.getText().toString().trim().isEmpty()) && !(content.getText().toString().trim().isEmpty())) {
-                  /* if (!unique_Test(title.getText().toString())) {
+
                         try {
-                            Entry edit = new Entry(title.getText().toString(), new AttachmentText(content.getText().toString().trim()), App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
-                            Gui_StartActivity.myDb.open();
-                            Gui_StartActivity.myDb.insertLocalEntry(edit);
-                            Gui_StartActivity.myDb.close();
-                            projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(edit);
-                            Gui_DisplayProjectAndExperiment.setProjectExperimentEntries(projectExperimentEntries);
+                            long time = App_Methodes.generateTimestamp();
+                            Entry edit = new Entry(service.getUser(),experimentID,title.getText().toString(), new AttachmentText(content.getText().toString().trim()),time ,time);
+
+                            service.getDB().open();
+                            service.getDB().insertLocalEntry(edit);
+                            service.getDB().close();
+
                             this.finish();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    } else {
-                        Popup popup = new Popup();            // Popup für leeren title
-                        popup.set_String(R.string.popup4);
-                        popup.show(getFragmentManager(), "this");
-                    }}
+                    }
                  else {
                     Popup popup = new Popup();            // Popup für leeren title
                     popup.set_String(R.string.popup3);
@@ -72,8 +79,7 @@ public class Gui_NewKeyboardEntry extends Activity {
 
                 break;
 
-        }*/
-    //}
+            }}
 
 
 
@@ -84,7 +90,7 @@ public class Gui_NewKeyboardEntry extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.start, menu);
         return true;
     }  // Standart Android Methoden für apps
 
