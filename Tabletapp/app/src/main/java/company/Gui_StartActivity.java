@@ -351,31 +351,36 @@ if(checkBox.isChecked())
             // try {
             try {
                 SDS.start_session();
-
-            projects = SDS.get_projects();
                 mService.getDB().open();
+                mService.getDB().insertNewUser(mService.getUser());
+            projects = SDS.get_projects();
+
                 mService.getDB().deleteAllExperiments();
                 mService.getDB().deleteAllProjects();
+                mService.getDB().deleteAllEntries();
+                mService.getDB().deleteAllUsers();
                 mService.getDB().insertProject(projects);
                 publishProgress(30);
                 experiments = SDS.get_experiments();
                 mService.getDB().insertExperiments(experiments);
                 publishProgress(30);
-                mService.getDB().close();
-            RemoteEntry remoteEntry;
+
+           LinkedList<RemoteEntry> remoteEntry = new LinkedList<RemoteEntry>();
 
            for (int i = 0; experiments.size() > i; i++) {
                 LinkedList<Entry_Remote_Identifier> entry_remoteIdentifiers = SDS.get_last_entry_references(experiments.get(i).getId(), 10, null);
                  for (int j = 0; entry_remoteIdentifiers.size() > j; j++) {
-                    remoteEntry = SDS.get_entry(entry_remoteIdentifiers.get(j));
-                   Log.d("Attachmentcontent2", remoteEntry.getTitle());
-
-                }if(i == experiments.size()/2)
+                    remoteEntry.add(SDS.get_entry(entry_remoteIdentifiers.get(j)));
+                }
+               mService.getDB().insertEntries(remoteEntry,mService.getUser());
+               remoteEntry.clear();
+               if(i == experiments.size()/2)
                    publishProgress(20);
            }
             }catch (SBSBaseException e) {
             e.printStackTrace();
         }
+            mService.getDB().close();
             publishProgress(20);
             return null;
         }

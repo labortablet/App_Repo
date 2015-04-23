@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.example.test1.tabletapp.app.R;
 
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,20 +53,21 @@ public class Gui_DisplayEntryList extends Activity {
     ExpandableListView expListView;
     Experiment experiment;
     TextView textview1;
+    Reference<LocalService> mservice = new WeakReference<LocalService>(Gui_StartActivity.getmService());
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_gui_entry_list);
         LinkedList<Entry> entries = new LinkedList<Entry>();
-        entries.add(new Entry(0,new datastructures.User("grit","test"),0,"test Entry 1",new AttachmentText("inhalt von entry 1"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
-        entries.add(new Entry(1,new datastructures.User("grit","test"),0,"test Entry 2",new AttachmentTable("inhalt, von, entry, 2;inhalt, von, entry, 2;inhalt, von, entry, 2;"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
-        entries.add(new Entry(2,new datastructures.User("grit","test"),0,"test Entry 3",new AttachmentText("inhalt von entry 3"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
-        entries.add(new Entry(3,new datastructures.User("grit","test"),0,"test Entry 4",new AttachmentText("inhalt von entry 4"),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp(),App_Methodes.generateTimestamp()));
+        LocalService service = mservice.get();
 
         Intent intent = getIntent();
         Bundle b = intent.getExtras();
         assert b != null;
         experiment = (Experiment) b.getSerializable("experiment");
+        service.getDB().open();
+        entries = service.getDB().getGetEntryByExperiment(experiment);
+        service.getDB().close();
         textview1 = (TextView)findViewById(R.id.textview1);
         textview1.setText(experiment.get_name());
         //TODO: funktions call für linkedlist mit entries zugehörig dem experiment

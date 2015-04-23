@@ -50,6 +50,8 @@ public class User {
         this.user_email = user_email;
         this.setPw(password);
         this.server = server;
+        this.firstname ="";
+        this.lastname="";
     }
 
     public String display(String separator){

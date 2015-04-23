@@ -41,6 +41,7 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
         this._context = context;
         this._listDataHeader = listDataHeader;
         this.service = service;
+        _listDataChild = new HashMap<Long, List<Experiment>>();
     }
 
     @Override
@@ -94,7 +95,7 @@ if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
     txtListChild.setText(childText);
 }else{
             service.getDB().open();
-            final List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(0)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
+            final List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(groupPosition)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
 
             service.getDB().close();
     _listDataChild.put(_listDataHeader.get(groupPosition).get_id(),list);
@@ -137,11 +138,11 @@ if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
             service.getDB().open();
             List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(groupPosition)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
 for (int j =0;list.size() > j ; j++)
-    Log.d("Experiment NR."+j,list.get(j).get_name());
+
             service.getDB().close();
             service.getDB().open();
            int i = service.getDB().getExperimentCountByProjectLocalID(_listDataHeader.get(groupPosition).get_id());
-            Log.d("count kinder", String.valueOf(i));
+
             service.getDB().close();
             return i;
         }catch (Exception E){
