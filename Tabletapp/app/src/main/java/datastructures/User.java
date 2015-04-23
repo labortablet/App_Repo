@@ -1,8 +1,9 @@
 package datastructures;
+import java.io.Serializable;
 import java.net.URL;
 import java.security.MessageDigest;
 
-public class User {
+public class User implements Serializable{
     private String lastname;
     private String firstname;
     private String user_email;

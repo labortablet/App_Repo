@@ -14,11 +14,13 @@ import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import company.Gui_DisplayEntryDetails;
 import company.Gui_DisplayEntryList;
 import datastructures.Entry;
 import datastructures.Experiment;
@@ -56,7 +58,7 @@ public class ExpandableListAdapterEntries extends BaseExpandableListAdapter {
             //  final int i = groupPosition;
             //  final String childText = (String) getChild(groupPosition, childPosition);
             final String childText =  _listData.get(groupPosition).getAttachment().getContent();
-
+            final Entry entry =_listData.get(groupPosition);
 
             TextView txtListChild;
 
@@ -107,7 +109,18 @@ public class ExpandableListAdapterEntries extends BaseExpandableListAdapter {
 
 
          //   txtListChild.setText(childText);
+            convertView.setOnClickListener(new View.OnClickListener() {
 
+
+                public void onClick(View view) {
+
+                    Intent intent;
+                    intent = new Intent(_context, Gui_DisplayEntryDetails.class);
+                    intent.putExtra("entry", entry);
+                    _context.startActivity(intent);
+
+                }
+            });
             return convertView;
         }
 

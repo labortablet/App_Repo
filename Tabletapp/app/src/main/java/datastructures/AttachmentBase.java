@@ -1,6 +1,8 @@
 package datastructures;
 
-public abstract class AttachmentBase {
+import java.io.Serializable;
+
+public abstract class AttachmentBase implements Serializable{
     public static AttachmentBase deserialize(int attachment_type, String attachment_serialized) {
         switch (attachment_type) {
             case 1:

@@ -70,13 +70,7 @@ public class Gui_DisplayEntryList extends Activity {
         service.getDB().close();
         textview1 = (TextView)findViewById(R.id.textview1);
         textview1.setText(experiment.get_name());
-        //TODO: funktions call für linkedlist mit entries zugehörig dem experiment
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
-        // preparing list data
-        //   prepareListData();
-      //  listAdapter = new ExpandableListAdapterProjectsAndExperiments(this, projects, hashMap);
-        // setting list adapter
-
         listAdapter = new ExpandableListAdapterEntries(this, entries);
 
         try {

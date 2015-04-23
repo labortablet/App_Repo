@@ -565,28 +565,31 @@ return c.getInt(0);
     public LinkedList<Entry> getGetEntryByExperiment(Experiment experiment){
         // SQLiteStatement sqLiteStatement1 = db.compileStatement(" SELECT "+ Experiment_ID + Experiment_Name+ Experiment_Description +" FROM "+ Table_Experiment +" WHERE " + Experiment_ProjectID + " = ?");
         //sqLiteStatement1.bindLong(1,project.get_id());
-        Cursor cursor = db.rawQuery(" SELECT "+ Entry_ID + "," + Entry_Titel+ "," + Entry_Typ+ "," + Entry_Content + ","+ Entry_CreationDate +"," + Entry_ChangeDate + "," +Entry_SyncDate+ ","+ Entry_ExperimentID+ "," + Entry_UserID +" FROM "+ Table_Entry +" WHERE " + Entry_ExperimentID + " = ?",new String[]{String.valueOf(experiment.get_id())});
+        Cursor cursor = db.rawQuery(" SELECT * FROM "+ Table_Entry +" WHERE " + Entry_ExperimentID + " = ?",new String[]{String.valueOf(experiment.get_id())});
         LinkedList<Entry> entryLinkedList = new LinkedList<Entry>();
         cursor.moveToFirst();
         Entry entry;
 
         if(cursor.getCount() > 0 && cursor.moveToFirst()){
             do {
-           //    Cursor cursor1 = db.rawQuery(" SELECT "+ User_FName + ","+ User_LName +" FROM "+ Table_User +" WHERE " + User_ID + " = ?",new String[]{java.lang.String.valueOf(cursor.getLong(DBAdapter.COL_EntryUserID))});
 
-              // cursor1.moveToFirst();
+
+               Cursor cursor1 = db.rawQuery(" SELECT * FROM "+ Table_User +" WHERE " + User_ID + " = ?",new String[]{java.lang.String.valueOf(cursor.getLong(DBAdapter.COL_EntryUserID))});
+
+             cursor1.moveToFirst();
+
 
                     if(cursor.getLong(DBAdapter.COL_EntryTyp) == 1) {
-                        entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID), new User("Hans","Maier")/*new User(cursor1.getString(DBAdapter.COL_UserFName), cursor1.getString(DBAdapter.COL_UserLName))*/, cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
+                        entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID),new User(cursor1.getString(DBAdapter.COL_UserFName), cursor1.getString(DBAdapter.COL_UserLName)), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
                         entryLinkedList.add(entry);
                     }
                         if(cursor.getLong(DBAdapter.COL_EntryTyp) == 2) {
-                            entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID),new User("Hans","Maier") /*new User(cursor1.getString(DBAdapter.COL_UserFName), cursor1.getString(DBAdapter.COL_UserLName))*/, cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
+                            entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID),new User(cursor1.getString(DBAdapter.COL_UserFName), cursor1.getString(DBAdapter.COL_UserLName)), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
                             entryLinkedList.add(entry);
                         }
-                // TODO: ALSO fix USER QUERY IF REMOTE ID IS ADDED
+
                 //TODO: ADD THE OTHER ENTRY TYPES HERE
-//cursor1.close();
+             cursor1.close();
             } while (cursor.moveToNext());
 
             // Close the cursor to avoid a resource leak.

@@ -1,6 +1,7 @@
 package company;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import com.example.test1.tabletapp.app.R;
 
 import java.util.List;
 
+import datastructures.Entry;
 import imports.ActivityRegistry;
 import datastructures.ProjectExperimentEntry;
 
@@ -96,11 +98,16 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_Displ
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        /*
-        ActivityRegistry.register(this);
-        switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().getTypeNumber()) {
+
+        Intent intent= getIntent();
+        Bundle b = intent.getExtras();
+        assert b != null;
+
+        Entry entry = (Entry) b.getSerializable("entry");
+
+        switch (entry.getAttachment().getTypeNumber()) {
             case 1: // For Keyboard LocalEntry
-            /   if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
+              if (entry.getSync_time() != null)
                     setContentView(R.layout.entry_keyboarddetails_synctrue); // Setting Layout
                 else
                     setContentView(R.layout.entry_keyboarddetails_syncfalse);
@@ -110,15 +117,15 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_Displ
                 textView3 = (TextView) findViewById(R.id.textView6);
                 textView4 = (TextView) findViewById(R.id.textView8);
 
-                textView.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getTitle());
+                textView.setText(entry.getTitle());
 
-                textView2.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().getContent().toString());
-                textView3.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time()*1000)));
+                textView2.setText(entry.getAttachment().getContent());
+                textView3.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (entry.getEntry_time()*1000)));
            //     textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
-                textView4.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getUser().display("  "));
+                textView4.setText(entry.getUser().display("  "));
                 break;
             case 2: //For Table LocalEntry
-                if (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).isSync())
+                if (entry.getSync_time() != null)
                     setContentView(R.layout.entry_tabledetails_synctrue);  // Setting Layout
                 else
                     setContentView(R.layout.entry_tabledetails_syncfalse);
@@ -128,10 +135,10 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_Displ
                 textView3 = (TextView) findViewById(R.id.textView6);
                 table = (TableLayout) findViewById(R.id.tableLayout2);
 
-                textView.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getTitle());
-              //  textView2.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
-                textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getUser().display("  "));
-                String[][] strings =  return2DArray(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getAttachment().getContent().toString());
+                textView.setText(entry.getTitle());
+                textView2.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (entry.getEntry_time()*1000)));
+                textView3.setText(entry.getUser().display("  "));
+                String[][] strings =  return2DArray(entry.getAttachment().getContent());
                 for(String[] s: strings) { // Starting Table output
 
                                       TableRow row = new TableRow(this);
@@ -212,7 +219,7 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_Displ
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.start, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
 
     }  // Standart Android Methoden für apps
