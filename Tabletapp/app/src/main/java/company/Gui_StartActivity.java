@@ -352,7 +352,7 @@ if(checkBox.isChecked())
             try {
                 SDS.start_session();
                 mService.getDB().open();
-                mService.getDB().insertNewUser(mService.getUser());
+              //  mService.getDB().insertNewUser(mService.getUser());
             projects = SDS.get_projects();
 
                 mService.getDB().deleteAllExperiments();
@@ -372,7 +372,9 @@ if(checkBox.isChecked())
                  for (int j = 0; entry_remoteIdentifiers.size() > j; j++) {
                     remoteEntry.add(SDS.get_entry(entry_remoteIdentifiers.get(j)));
                 }
+               mService.getDB().insertNewUserByRemoteEntry(remoteEntry);
                mService.getDB().insertEntries(remoteEntry,mService.getUser());
+
                remoteEntry.clear();
                if(i == experiments.size()/2)
                    publishProgress(20);

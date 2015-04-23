@@ -21,6 +21,7 @@ import scon.Entry_Remote_Identifier;
 import scon.RemoteEntry;
 import scon.RemoteExperiment;
 import scon.RemoteProject;
+import scon.RemoteUser;
 
 
 public class DBAdapter {
@@ -72,8 +73,9 @@ public class DBAdapter {
     public static final String User_Password = " User_Password ";
     public static final String User_FName =" User_FName ";
     public static final String User_LName =" User_LName ";
+    public static final String User_Remote_ID = " User_RemoteID";
     //The Keys for each table
-    public static final String[] User_KEYS = new String[]{User_ID, User_EMail, User_Password, User_FName, User_LName};
+    public static final String[] User_KEYS = new String[]{User_ID, User_EMail, User_Password, User_FName, User_LName,User_Remote_ID};
     /*
    Table Fields for Table _project
     */
@@ -107,10 +109,11 @@ public class DBAdapter {
     private static final String DATABASE_CREATE_USER =
             "CREATE TABLE IF NOT EXISTS" + Table_User
                     + Bracket_Separator_Left + User_ID + Typ_Integer + "primary key autoincrement" + Comma_Separator
-                    + User_EMail + Typ_String + "not null" + Comma_Separator
-                    + User_Password + Typ_String + "not null" + Comma_Separator
+                    + User_EMail + Typ_String  + Comma_Separator
+                    + User_Password + Typ_String  + Comma_Separator
                     + User_FName + Typ_String + Comma_Separator
-                    + User_LName + Typ_String
+                    + User_LName + Typ_String + Comma_Separator
+                    + User_Remote_ID + Typ_Integer + " UNIQUE "
                     + Bracket_Separator_Right + Semicolon_Separator;
     public static final String Table_Project = " _project ";
     //
@@ -135,7 +138,7 @@ public class DBAdapter {
                     + Experiment_ProjectID + Typ_Integer
                     + Bracket_Separator_Right + Semicolon_Separator;
     // Track DB version if a new version of your app changes the format.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
     // ids for the specific rows
     //user table
     public final static int COL_UserID = 0;
@@ -144,6 +147,7 @@ public class DBAdapter {
     public final static int COL_UserPass = 2;
     public final static int COL_UserFName = 3;
     public final static int COL_UserLName = 4;
+    public final static int COL_UserRemoteID = 5;
     //entry table
     public final static int COL_EntryID = 0;
     public final static int COL_EntryTitle = 1;
@@ -191,9 +195,8 @@ public class DBAdapter {
     public void close() {
         myDBHelper.close();
     }
-    // Add a new set of values to the database.
     public void insertNewUser(User user) {
-        //TODO: We need a REMOTE ID of the user
+
         // Create row's data:
         SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO" + Table_User + " ( "+ User_EMail + "," + User_Password + "," + User_FName + "," +User_LName+ " ) "+ "VALUES (?,?,?,?)" );
         sqLiteStatement.bindString(1, user.getUser_email());
@@ -202,6 +205,31 @@ public class DBAdapter {
         sqLiteStatement.bindString(4, user.getLastname());
         sqLiteStatement.executeInsert();
     }
+    private boolean getAllUserRemoteID(Long userid){
+        Cursor c = db.rawQuery(" SELECT "+ User_Remote_ID +" FROM "+ Table_User +" WHERE " + User_Remote_ID +" == ? ",new String[]{String.valueOf(userid)});
+        c.moveToFirst();
+        return c.getCount() >= 1;
+    }
+    // Add a new set of values to the database.
+    public void insertNewUserByRemoteEntry(LinkedList<RemoteEntry> entries) {
+        //TODO: We need a REMOTE ID of the user
+
+        // Create row's data:
+        for (int i = 0 ;i<entries.size();i++) {
+            RemoteUser user = entries.get(i).getUser();
+            if (!(getAllUserRemoteID(user.getId()))){
+                try {
+
+
+            SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO" + Table_User + " ("+ User_EMail+","+User_Password+","+ User_FName + "," + User_LName +","+User_Remote_ID+" ) " + "VALUES (?,?,?,?,?)");
+                    sqLiteStatement.bindString(1, "");
+                    sqLiteStatement.bindString(2, "");
+                    sqLiteStatement.bindString(3, user.getFirstname());
+            sqLiteStatement.bindString(4, user.getLastname());
+            sqLiteStatement.bindLong(5, user.getId());
+            sqLiteStatement.executeInsert();}catch (Exception e){e.printStackTrace();}}
+        }
+        }
 
     public void insertProject(LinkedList<RemoteProject> projectLinkedList){
         for (int i = 0; i<projectLinkedList.size();i++){
@@ -241,11 +269,10 @@ public class DBAdapter {
                RemoteEntry remoteEntry = remoteEntries.get(i);
 
                 SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO " + DBAdapter.Table_Entry + " ( "+ Entry_Titel + "," + Entry_Typ + "," + Entry_Content + "," + Entry_CreationDate + "," + Entry_ChangeDate + "," + Entry_SyncDate + "," + Entry_RemoteID + "," + Entry_ExperimentID + "," + Entry_UserID + " ) "+ " VALUES (?,?,?,?,?,?,?,?,?) " );
-//: TODO fix this entry here
 
+                RemoteUser user1 = remoteEntry.getUser();
                 Cursor c = db.rawQuery(" SELECT "+ Experiment_ID +" FROM "+ Table_Experiment +" WHERE " + Experiment_RemoteID + " = ?",new String[]{String.valueOf(remoteEntry.getExperiment_id())});
-                Cursor c1 = db.rawQuery(" SELECT "+ User_ID +" FROM "+ Table_User +" WHERE " + User_EMail + " = ?",new String[]{String.valueOf(user.getUser_email())});
-
+                Cursor c1 = db.rawQuery(" SELECT "+ User_ID +" FROM "+ Table_User +" WHERE " + User_Remote_ID + " = ?",new String[]{String.valueOf(user1.getId())});
                 c.moveToFirst();
                 c1.moveToFirst();
                 sqLiteStatement.bindString(1,remoteEntry.getTitle());
@@ -256,8 +283,9 @@ public class DBAdapter {
                 sqLiteStatement.bindLong(6, remoteEntry.getSync_time());
                 sqLiteStatement.bindLong(7, remoteEntry.getId());
                 sqLiteStatement.bindLong(8, c.getLong(DBAdapter.COL_ExperimentID));
-//                sqLiteStatement.bindLong(9, c1.getLong(DBAdapter.COL_UserID));
-                sqLiteStatement.bindNull(9);
+
+                sqLiteStatement.bindLong(9, c1.getLong(DBAdapter.COL_UserID));
+              //  sqLiteStatement.bindNull(9);
                 c.close();
                 c1.close();
                 sqLiteStatement.executeInsert();
@@ -774,6 +802,7 @@ return c.getInt(0);
             _db.execSQL("DROP TABLE IF EXISTS " + Table_Experiment);
             _db.execSQL("DROP TABLE IF EXISTS " + Table_Project);
             _db.execSQL("DROP TABLE IF EXISTS " + Table_Project);
+            _db.execSQL("DROP TABLE IF EXISTS " + Table_User);
 
             // Recreate new database:
             onCreate(_db);

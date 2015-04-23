@@ -52,8 +52,7 @@ public class LocalService extends Service {
     public static Timer alwaysTimer = new Timer();
     private ServersideDatabaseConnectionObject SDCO;
     static ServerDatabaseSession SDS;
-    static HashMap<Integer,Integer> projectHashMap; // Remote ID, Tree ID
-    static HashMap<Integer,Integer> experimentHashMap; // Remote ID,Tree ID
+
     public static DBAdapter myDb;//= Gui_StartActivity.myDb;
     static List<ProjectExperimentEntry> projectExperimentEntries;
 
@@ -411,26 +410,7 @@ if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
     }
 
 
-    private static class AsyncTaskProjectExperimentHashtable extends AsyncTask<List<ProjectExperimentEntry>,Integer,Boolean>{
 
-
-        @Override
-        protected Boolean doInBackground(List<ProjectExperimentEntry>... params) {
-            projectHashMap = new HashMap<Integer, Integer>();
-            experimentHashMap = new HashMap<Integer, Integer>();
-            for (int i = 0;i < projectExperimentEntries.size();i++)
-            {
-             /*   projectHashMap.put(projectExperimentEntries.get(i).getProject().get_remote_id(),i);
-                for (int j = 0;projectExperimentEntries.get(i).getExperimentEntry().size() > j; j++)
-                {
-                    experimentHashMap.put(projectExperimentEntries.get(i).getExperimentEntry().get(j).getExperiments().get_id(),j);
-
-                }*/
-
-            }
-            return null;
-        }
-    }
 
     private class DownloadFilesTask extends AsyncTask<Void, Integer, Void> {
 
