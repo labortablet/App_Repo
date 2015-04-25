@@ -16,7 +16,7 @@ public abstract class AttachmentBase implements Serializable{
         }
     }
 
-    public abstract String getContent(); //FIXME der return Wert hier solle nicht Object sein!!!
+    public abstract String getContent();
 
     public int getTypeNumber() {
         return -1;

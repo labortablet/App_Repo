@@ -100,6 +100,8 @@ public class User implements Serializable{
 
     public long getId(){return this.id;}
 
+    //auch hier: es gibt keinen Grund die ID jemals zu setzen!
+    //wenn wir es noch brauchen weil wir alten Code haben, okay, ansonsten weg damit!
     public void setId(long id) {
         this.id = id;
     }

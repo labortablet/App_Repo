@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.Objects;
 
 import datastructures.AttachmentBase;
 import datastructures.Entry;
@@ -21,29 +22,33 @@ public class object_level_db {
     private low_level_adapter db_helper;
     private SQLiteDatabase db;
     private boolean opened = false;
+    private object_level_db singleton_ref = null;
+
 
     private void check_open()throws SBSBaseException{
         if(!this.opened){
-            //trow exception so we know we haven't opened the interface yet!
+            //TODO: throw exception so we know we haven't opened the interface yet!
         }
     }
 
     public object_level_db(Context ctx) {
-        this.db_helper = new low_level_adapter(ctx);
+        if(this.db_helper == null) {
+            this.db_helper = new low_level_adapter(ctx);
+        }
     }
-
 
     public void open() {
        this.opened = true;
-        this.db = this.db_helper.getWritableDatabase();
+       this.db = this.db_helper.getWritableDatabase();
     }
+
     public void close()throws SBSBaseException{
         check_open();
         this.opened = false;
         this.db.close();
         this.db_helper.close();
+        this.db_helper = null;
     }
-
 
     public LinkedList<User> get_all_user_logins() throws SBSBaseException{
         check_open();
@@ -59,18 +64,17 @@ public class object_level_db {
         initialValues.put(layout.users.getField("server").getName(), server.toString());
         result = this.db.insert(layout.users.getName(), null, initialValues);
         if(result == -1){
-            //FIXME
+            //TODO
             //what happens if the user already exists?
             //should we load it from db?
             //and then update?
             //should the compare the password?
             //because we need a way to check if a user is using a offline pw
             //or not
-            return null;
+            throw new RuntimeException("Not yet implemented yet!");
+            //return null;
         }else{
-           // TODO: changed this for getting server data to check if user is failed
-         //   return new User(login, password, server, result);
-            return new User(login,password,server);
+            return new User(login, password, server);
         }
     }
 
@@ -82,9 +86,7 @@ public class object_level_db {
         initialValues.put(layout.projects.getField("name").getName(), project_name);
         result = this.db.insert(layout.projects.getName(), null, initialValues);
         if(result == -1){
-            //This should never happen
-            //No, really, there is no reason why this should ever happen
-            return null;
+            throw new RuntimeException("Registering a new project failed, this should never happen");
         }else{
             return new Project(result, project_name);
         }
@@ -99,7 +101,7 @@ public class object_level_db {
         initialValues.put(layout.experiments.getField("name").getName(), experiment_name);
         id = this.db.insert(layout.experiments.getName(), null, initialValues);
         if(id == -1){
-            throw new SqLiteInsertError();
+            throw new RuntimeException("Registering a new experiment failed, this should never happen");
         }else{
             return new Experiment(id, project.get_id(), experiment_name);
         }
@@ -120,33 +122,80 @@ public class object_level_db {
         initialValues.put(layout.entries.getField("attachment_type").getName(), attachment.getTypeNumber());
         id = this.db.insert(layout.entries.getName(), null, initialValues);
         if(id == -1){
-            throw new SqLiteInsertError();
+            throw new RuntimeException("Registering a new entry failed, this should never happen");
         }else{
             return new Entry(id, user, experiment.get_id(), title, attachment, current_time);
-    }}
+        }
+    }
 
-    public LinkedList<Project> match_project(Project project) throws SBSBaseException{
-        check_open();
-        return null;
+    private void merge_experiment_or_project_with_underlying_references(
+            Long id_to_be_merged, Long id_to_merge_into,
+            table upper_table,
+            table underlying_table_with_references,
+            String field_name_for_reference_in_underlying_table
+    )
+    {
+        int index;
+        Cursor c = null;
+        //first, what is the remote_id of id_to_merge_into?
+        Long remote_id = null;
+        c = db.rawQuery("SELECT "+ upper_table.getField("remote_id").getName()
+                + " FROM " + upper_table.getName()
+                + " WHERE "
+                + upper_table.getField("id") + "="
+                +  id_to_merge_into , null);
+        c.moveToFirst();
+        index = c.getColumnIndex(upper_table.getField("remote_id").getName());
+        if (!c.isNull(index)) {
+            remote_id = c.getLong(index);
+        }else{
+            throw new RuntimeException("You called a merge on a unsynced entry! This is not supported!");
+        }
+        //second, check that the to be merged entry does not have a remote_id
+        c = db.rawQuery("SELECT "+ upper_table.getField("remote_id").getName()
+                + " FROM " + upper_table.getName()
+                + " WHERE "
+                + upper_table.getField("id") + "="
+                +  id_to_be_merged , null);
+        c.moveToFirst();
+        index = c.getColumnIndex(upper_table.getField("remote_id").getName());
+        if (!c.isNull(index)) {
+            throw new RuntimeException("Entries to be merged into need to be synced!");
+        }
+        //third, update the references in the underlying table
+        ContentValues newValues = new ContentValues();
+        newValues.put(field_name_for_reference_in_underlying_table, id_to_merge_into);
+        String[] args = new String[]{id_to_be_merged.toString()};
+        db.update(underlying_table_with_references.getName(), newValues,
+                field_name_for_reference_in_underlying_table + "=?", args);
+        //fourth, delete the row with the id_to_be_merged
+        int deleted_rows;
+        deleted_rows = db.delete(upper_table.getName(), upper_table.getField("id") + "=" + id_to_be_merged, null);
+        if(deleted_rows!=1){
+            throw new RuntimeException("During a merge, mor then or less than 1 row was deleted! This should never happen!");
+        }
     }
 
 
-    public LinkedList<Project> match_project(Project project, Project real_project)throws SBSBaseException {
+    public void merge_project_into(Project project, Project real_project)throws SBSBaseException {
         check_open();
-        return null;
+        this.merge_experiment_or_project_with_underlying_references(project.get_id(),
+                real_project.get_id(),
+                layout.projects,
+                layout.experiments,
+                layout.experiments.getField("project_id").getName()
+        );
     }
 
-
-    public LinkedList<Experiment> match_experiment(Experiment experiment) throws SBSBaseException{
+    public void match_experiment(Experiment experiment, Experiment real_experiment) throws SBSBaseException{
         check_open();
-        return null;
-    }
-
-
-    public LinkedList<Experiment> match_experiment(Experiment experiment, Experiment real_experiment) throws SBSBaseException{
-        check_open();
-        return null;
-    }
+        this.merge_experiment_or_project_with_underlying_references(experiment.get_id(),
+                real_experiment.get_id(),
+                layout.experiments,
+                layout.entries,
+                layout.entries.getField("experiment_id").getName()
+        );
+    };
 
     public LinkedList<Project> get_projects(User user)throws SBSBaseException {
         check_open();
@@ -204,7 +253,7 @@ public class object_level_db {
                 id = c.getLong(index);
                 index = c.getColumnIndex(layout.projects.getField("name").getName());
                 name = c.getString(index);
-                index = c.getColumnIndex(layout.projects.getField("proejct_id").getName());
+                index = c.getColumnIndex(layout.projects.getField("project_id").getName());
                 project_id = c.getLong(index);
 
                 index = c.getColumnIndex(layout.projects.getField("description").getName());
@@ -230,17 +279,17 @@ public class object_level_db {
 
     public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) throws SBSBaseException{
         check_open();
-        return null;
+        throw new RuntimeException("Not Implemented yet");
     }
 
     public LinkedList<Integer> get_all_users_with_login()throws SBSBaseException{
         check_open();
-        return null;
+        throw new RuntimeException("Not Implemented yet");
     };
 
     public LinkedList<Entry_Remote_Identifier> get_all_entry_timestamps(Integer user_id)throws SBSBaseException {
         check_open();
-        return null;
+        throw new RuntimeException("Not Implemented yet");
     }
 
 }

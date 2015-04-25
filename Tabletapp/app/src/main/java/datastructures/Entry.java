@@ -52,6 +52,10 @@ public class Entry implements Serializable{
         this.change_time = change_time;
     }
     //Konstruktor for new entries whitch got no id yet
+    //FIXME
+    //Es gibt ekine Entries die noch keine ID haben weil sie zuerst in die DB geschrieben werden und dann
+    //erzeugt werden
+    //werde es jetzt erstmal drin lassen, aber später muss das hier weg
     public Entry( User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
@@ -62,13 +66,17 @@ public class Entry implements Serializable{
         this.sync_time = sync_time;
         this.change_time = change_time;
     }
+    //Sorry, aber das hier ist totaler bullshit, Expeiment_id had hier irgendeinen belebigen wert, des wird nämlich garnicht gesetzt.
+    //ich gehe mal davon aus, dass das hier auc nur drin ist weil wir
+    //gerade noch alten Code haben der das braucht aber ansosnten muss das Weg!
     public Entry(long id, User user, String title, AttachmentBase attachment, Long entry_time, Long sync_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
         this.entry_time = entry_time;
         this.user = user;
         this.id = id;
-        this.Experiment_id =Experiment_id;
+        //totaler blödsinn
+        //this.Experiment_id =Experiment_id;
         this.sync_time = sync_time;
         this.change_time = change_time;
     }
