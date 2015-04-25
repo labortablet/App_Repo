@@ -9,6 +9,10 @@ public class User implements Serializable{
     private String user_email;
     private byte[] pw_hashb;
     private static Boolean lastname_first = false;
+    //TODO
+    //wat?
+    //das ist eine App weite Einstellung
+    //warum wird das den an jedes Objekt drangepapt?
     private URL server;
     private long id;
 
@@ -36,6 +40,8 @@ public class User implements Serializable{
         this.pw_hashb = hashedPW(password);
     }
 
+    //TODO
+    //wat? Warum brauchen wir das den???
     public User(String email)
 {
     this.user_email = email;
@@ -51,8 +57,8 @@ public class User implements Serializable{
         this.user_email = user_email;
         this.setPw(password);
         this.server = server;
-        this.firstname ="Ich";
-        this.lastname="ich";
+        this.firstname = null;
+        this.lastname = null;
     }
 
     public String display(String separator){
