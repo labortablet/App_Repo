@@ -165,9 +165,8 @@ public class object_level_db {
         //third, update the references in the underlying table
         ContentValues newValues = new ContentValues();
         newValues.put(field_name_for_reference_in_underlying_table, id_to_merge_into);
-        String[] args = new String[]{id_to_be_merged.toString()};
         db.update(underlying_table_with_references.getName(), newValues,
-                field_name_for_reference_in_underlying_table + "=?", args);
+                field_name_for_reference_in_underlying_table + "=" + id_to_be_merged, null);
         //fourth, delete the row with the id_to_be_merged
         int deleted_rows;
         deleted_rows = db.delete(upper_table.getName(), upper_table.getField("id") + "=" + id_to_be_merged, null);
@@ -277,9 +276,49 @@ public class object_level_db {
     }
 
 
+    private User get_user_by_local_id(long user_id){
+
+    };
+
     public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) throws SBSBaseException{
         check_open();
-        throw new RuntimeException("Not Implemented yet");
+        Cursor c = db.rawQuery("SELECT * FROM " + layout.entries.getName()
+                + " WHERE "
+                + layout.entries.getField("user_id") + "="
+                + user.getUser_id() + " AND "
+                + layout.entries.getField("experiment_id") + "=" + experiment.get_id(), null);
+        LinkedList<Experiment> tmp = new LinkedList<Experiment>();
+        if (c != null) {
+            int index;
+            Long remote_id, date_creation;
+            long id, user_id, project_id;
+            String name, description;
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                index = c.getColumnIndex(layout.projects.getField("id").getName());
+                id = c.getLong(index);
+                index = c.getColumnIndex(layout.projects.getField("name").getName());
+                name = c.getString(index);
+                index = c.getColumnIndex(layout.projects.getField("project_id").getName());
+                project_id = c.getLong(index);
+
+                index = c.getColumnIndex(layout.projects.getField("description").getName());
+                if (!c.isNull(index)) {
+                    description = c.getString(index);
+                } else {
+                    description = null;
+                }
+
+                index = c.getColumnIndex(layout.projects.getField("date_creation").getName());
+                if (!c.isNull(index)) {
+                    date_creation = c.getLong(index);
+                } else {
+                    date_creation = null;
+                }
+                tmp.add(new Experiment(id, project_id, name, description, date_creation));
+            }
+            c.close();
+        }
+        return tmp;
     }
 
     public LinkedList<Integer> get_all_users_with_login()throws SBSBaseException{
