@@ -275,7 +275,7 @@ public class object_level_db {
         return tmp;
     }
 
-
+    //maybe we need a remote user here as we only have Firstname, lastname
     private User get_user_by_local_id(long user_id){
 
     };

@@ -62,6 +62,7 @@ public class User implements Serializable{
         this.id = id;
     }
 
+    //TODO: remove once the interface is done
     public User(String user_email, String password, URL server){
         this.user_email = user_email;
         this.setPw(password);
@@ -97,6 +98,9 @@ public class User implements Serializable{
     }
 
     public void setLogin(String user_email, String password){
+        //TODO
+        //we need to add some connection to the database so we also update
+        //we state of the db
         this.user_email = user_email;
         this.setPw(password);
     }
@@ -126,6 +130,7 @@ public class User implements Serializable{
     //In https://bitbucket.org/Gritu/main_repo/src/d6df48c48f5d/Tabletapp/app/src/main/java/datastructures/User.java
     //hast du die id aus dem Konstruktur raus gepatched.
     //die id sollte im Konstuktur natürlich gesetzt werden und danach ist sie konstant.
+    //TODO: remove once the interface is done
     public void setId(long id) {
         this.id = id;
     }
