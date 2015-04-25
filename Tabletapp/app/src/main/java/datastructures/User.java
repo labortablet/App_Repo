@@ -53,12 +53,13 @@ public class User implements Serializable{
         this.firstname = firstname;
     }
 
-    public User(String user_email, String password, URL server){
+    public User(String user_email, String password, URL server, long id){
         this.user_email = user_email;
         this.setPw(password);
         this.server = server;
         this.firstname = null;
         this.lastname = null;
+        this.id = id;
     }
 
     public String display(String separator){
@@ -111,6 +112,11 @@ public class User implements Serializable{
     //1. warum hat er dann eine ID?
     //2. ich habe keine lust jedesmal wenn ein neuer entry erzeugt wird die datenbank ran zu ziehen um zu schauen welche ID zu der Email gehört
     //3. da es keinen konstruktor mit id gibt, muss ich sie im nachhinein setzen was sowieso besser ist
+
+    //Du bist mir ein Spaßvogel.
+    //In https://bitbucket.org/Gritu/main_repo/src/d6df48c48f5d/Tabletapp/app/src/main/java/datastructures/User.java
+    //hast du die id aus dem Konstruktur raus gepatched.
+    //die id sollte im Konstuktur natürlich gesetzt werden und danach ist sie konstant.
     public void setId(long id) {
         this.id = id;
     }
