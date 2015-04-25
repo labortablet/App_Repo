@@ -102,6 +102,9 @@ public class User implements Serializable{
 
     //auch hier: es gibt keinen Grund die ID jemals zu setzen!
     //wenn wir es noch brauchen weil wir alten Code haben, okay, ansonsten weg damit!
+    //1. warum hat er dann eine ID?
+    //2. ich habe keine lust jedesmal wenn ein neuer entry erzeugt wird die datenbank ran zu ziehen um zu schauen welche ID zu der Email gehört
+    //3. da es keinen konstruktor mit id gibt, muss ich sie im nachhinein setzen was sowieso besser ist
     public void setId(long id) {
         this.id = id;
     }

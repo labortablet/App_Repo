@@ -56,6 +56,7 @@ public class Entry implements Serializable{
     //Es gibt ekine Entries die noch keine ID haben weil sie zuerst in die DB geschrieben werden und dann
     //erzeugt werden
     //werde es jetzt erstmal drin lassen, aber später muss das hier weg
+    // das ist geplant, da das interface aber noch nicht fertig ist, nutze ich die alten funktionen, bis das interface fertig ist, da du ja deine eigenen Datenbank klasse geschrieben hast, gehe ich davon aus, das du auch die entsprechenden sql queries geschrieben hast, ansonsten muss ich meine queries noch anpassen.
     public Entry( User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
