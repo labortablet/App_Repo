@@ -62,6 +62,15 @@ public class User implements Serializable{
         this.id = id;
     }
 
+    public User(String user_email, String password, URL server){
+        this.user_email = user_email;
+        this.setPw(password);
+        this.server = server;
+        this.firstname = null;
+        this.lastname = null;
+        this.id = 0;
+    }
+
     public String display(String separator){
         if(this.lastname != null && this.firstname != null){
             if(lastname_first){

@@ -74,7 +74,7 @@ public class object_level_db {
             throw new RuntimeException("Not yet implemented yet!");
             //return null;
         }else{
-            return new User(login, password, server);
+            return new User(login, password, server, result);
         }
     }
 
