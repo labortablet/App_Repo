@@ -51,11 +51,30 @@ public class User implements Serializable{
     public User(String firstname, String lastname){
         this.lastname = lastname;
         this.firstname = firstname;
+        this.id = 0;
+    }
+
+    public User(String firstname, String lastname, long id){
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.id = id;
+        this.user_email = null;
+        this.server = null;
     }
 
     public User(String user_email, String password, URL server, long id){
         this.user_email = user_email;
         this.setPw(password);
+        this.server = server;
+        this.firstname = null;
+        this.lastname = null;
+        this.id = id;
+    }
+
+    public User(String user_email, byte[] hashed_pw, URL server, long id, String firstname,
+                String lastname){
+        this.user_email = user_email;
+        this.pw_hashb = hashed_pw;
         this.server = server;
         this.firstname = null;
         this.lastname = null;

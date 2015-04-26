@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 
@@ -20,12 +21,12 @@ public class object_level_db {
     private low_level_adapter db_helper;
     private SQLiteDatabase db;
     private boolean opened = false;
-    private object_level_db singleton_ref = null;
 
 
     private void check_open()throws SBSBaseException{
         if(!this.opened){
-            //TODO: throw exception so we know we haven't opened the interface yet!
+            //TODO
+            throw new RuntimeException("Check for interface open. Not implemented yet");
         }
     }
 
@@ -47,11 +48,6 @@ public class object_level_db {
         this.db_helper.close();
         this.db_helper = null;
     }
-
-    public LinkedList<User> get_all_local_users() throws SBSBaseException{
-        check_open();
-        return null;
-    };
 
     public User register_user(String login, String password, URL server) throws SBSBaseException{
         check_open();
@@ -84,13 +80,15 @@ public class object_level_db {
         initialValues.put(layout.projects.getField("name").getName(), project_name);
         result = this.db.insert(layout.projects.getName(), null, initialValues);
         if(result == -1){
-            throw new RuntimeException("Registering a new project failed, this should never happen");
+            throw new RuntimeException("Registering a new project failed," +
+                    " this should never happen");
         }else{
             return new Project(result, project_name);
         }
     }
 
-    public Experiment register_experiment(User user, Project project, String experiment_name) throws SBSBaseException{
+    public Experiment register_experiment(User user, Project project, String experiment_name)
+            throws SBSBaseException{
         check_open();
         long id;
         ContentValues initialValues = new ContentValues();
@@ -99,15 +97,17 @@ public class object_level_db {
         initialValues.put(layout.experiments.getField("name").getName(), experiment_name);
         id = this.db.insert(layout.experiments.getName(), null, initialValues);
         if(id == -1){
-            throw new RuntimeException("Registering a new experiment failed, this should never happen");
+            throw new RuntimeException("Registering a new experiment failed," +
+                    " this should never happen");
         }else{
             return new Experiment(id, project.get_id(), experiment_name);
         }
     }
 
-    public Entry new_Entry(User user, Experiment experiment, String title, AttachmentBase attachment, long date_user) throws SBSBaseException{
+    public Entry new_Entry(User user, Experiment experiment, String title,
+                           AttachmentBase attachment, long date_user) throws SBSBaseException{
         check_open();
-        long current_time = (long)(System.currentTimeMillis() / 1000);
+        long current_time = (System.currentTimeMillis() / 1000);
         long id;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.entries.getField("experiment_id").getName(), experiment.get_id());
@@ -116,8 +116,10 @@ public class object_level_db {
         initialValues.put(layout.entries.getField("date_creation").getName(), current_time);
         initialValues.put(layout.entries.getField("date_user").getName(), date_user);
         initialValues.put(layout.entries.getField("date_current").getName(), current_time);
-        initialValues.put(layout.entries.getField("attachment_ref").getName(), attachment.getReference());
-        initialValues.put(layout.entries.getField("attachment_type").getName(), attachment.getTypeNumber());
+        initialValues.put(layout.entries.getField("attachment_ref").getName(),
+                attachment.getReference());
+        initialValues.put(layout.entries.getField("attachment_type").getName(),
+                attachment.getTypeNumber());
         id = this.db.insert(layout.entries.getName(), null, initialValues);
         if(id == -1){
             throw new RuntimeException("Registering a new entry failed, this should never happen");
@@ -134,22 +136,8 @@ public class object_level_db {
     )
     {
         int index;
-        Cursor c = null;
-        //first, what is the remote_id of id_to_merge_into?
-        Long remote_id = null;
-        c = db.rawQuery("SELECT "+ upper_table.getField("remote_id").getName()
-                + " FROM " + upper_table.getName()
-                + " WHERE "
-                + upper_table.getField("id") + "="
-                +  id_to_merge_into , null);
-        c.moveToFirst();
-        index = c.getColumnIndex(upper_table.getField("remote_id").getName());
-        if (!c.isNull(index)) {
-            remote_id = c.getLong(index);
-        }else{
-            throw new RuntimeException("You called a merge on a unsynced entry! This is not supported!");
-        }
-        //second, check that the to be merged entry does not have a remote_id
+        Cursor c;
+        //first, check that the to be merged row does not have a remote_id
         c = db.rawQuery("SELECT "+ upper_table.getField("remote_id").getName()
                 + " FROM " + upper_table.getName()
                 + " WHERE "
@@ -160,16 +148,20 @@ public class object_level_db {
         if (!c.isNull(index)) {
             throw new RuntimeException("Entries to be merged into need to be synced!");
         }
-        //third, update the references in the underlying table
+        c.close();
+        //second, update the references in the underlying table
         ContentValues newValues = new ContentValues();
         newValues.put(field_name_for_reference_in_underlying_table, id_to_merge_into);
         db.update(underlying_table_with_references.getName(), newValues,
                 field_name_for_reference_in_underlying_table + "=" + id_to_be_merged, null);
-        //fourth, delete the row with the id_to_be_merged
+        //third, delete the row with the id_to_be_merged
         int deleted_rows;
-        deleted_rows = db.delete(upper_table.getName(), upper_table.getField("id") + "=" + id_to_be_merged, null);
+        deleted_rows = db.delete(upper_table.getName(), upper_table.getField("id") + "="
+                + id_to_be_merged, null);
         if(deleted_rows!=1){
-            throw new RuntimeException("During a merge, mor then or less than 1 row was deleted! This should never happen!");
+            throw new RuntimeException(
+                    "During a merge, mor then or less " +
+                            "than 1 row was deleted! This should never happen!");
         }
     }
 
@@ -192,12 +184,65 @@ public class object_level_db {
                 layout.entries,
                 layout.entries.getField("experiment_id").getName()
         );
-    };
+    }
+
+    private User convert_cursor_to_user(Cursor c){
+        int index;
+        String firstname, lastname, login, server_string;
+        byte[] hashed_pw;
+        long id;
+        URL server;
+
+        index = c.getColumnIndex(layout.users.getField("id").getName());
+        id = c.getLong(index);
+
+        index = c.getColumnIndex(layout.users.getField("firstname").getName());
+        if (!c.isNull(index)) {
+            firstname = c.getString(index);
+        } else {
+            firstname = null;
+        }
+
+        index = c.getColumnIndex(layout.users.getField("lastname").getName());
+        if (!c.isNull(index)) {
+            lastname = c.getString(index);
+        } else {
+            lastname = null;
+        }
+
+        index = c.getColumnIndex(layout.users.getField("login").getName());
+        if (!c.isNull(index)) {
+            login = c.getString(index);
+        } else {
+            login = null;
+        }
+
+        index = c.getColumnIndex(layout.users.getField("server").getName());
+        if (!c.isNull(index)) {
+            server_string = c.getString(index);
+            try {
+                server = new URL(server_string);
+            }catch (MalformedURLException e){
+                throw new RuntimeException("Url in database is not a valid url. This should never happen as" +
+                        "we check the urls before we write them into the db!");
+            }
+        } else {
+            server = null;
+        }
+
+        index = c.getColumnIndex(layout.users.getField("hashed_pw").getName());
+        if (!c.isNull(index)) {
+            hashed_pw = c.getBlob(index);
+        } else {
+            hashed_pw = null;
+        }
+        return new User(login, hashed_pw, server, id, firstname, lastname);
+    }
 
     private Project convert_cursor_to_project(Cursor c){
         int index;
-        Long remote_id, date_creation;
-        long id, user_id;
+        Long date_creation;
+        long id;
         String name, description;
         index = c.getColumnIndex(layout.projects.getField("id").getName());
         id = c.getLong(index);
@@ -297,7 +342,8 @@ public class object_level_db {
             sync_time = null;
         }
 
-        return new Entry(id, user, experiment_id, title, attachment, entry_time, sync_time, change_time);
+        return new Entry(id, user, experiment_id, title, attachment, entry_time, sync_time,
+                change_time);
     }
 
     public LinkedList<Project> get_projects(User user)throws SBSBaseException {
@@ -334,8 +380,13 @@ public class object_level_db {
     }
 
     private User get_user_by_local_id(long user_id){
-        throw new RuntimeException("Not Implemented yet");
-    };
+        Cursor c = db.rawQuery("SELECT * FROM " + layout.users.getName()
+                + " WHERE "
+                + layout.users.getField("id") + "="
+                + user_id, null);
+        c.moveToFirst();
+        return this.convert_cursor_to_user(c);
+    }
 
     public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) throws SBSBaseException{
         check_open();
@@ -347,18 +398,36 @@ public class object_level_db {
                 + experiment.get_id() + " LIMIT " + number, null);
         LinkedList<Entry> tmp = new LinkedList<Entry>();
         if (c != null) {
-            tmp.add(this.convert_cursor_to_entry(c));
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                tmp.add(this.convert_cursor_to_entry(c));
+            }
+            c.close();
         }
-        c.close();
         return tmp;
     }
 
-    public LinkedList<Integer> get_all_users_with_login()throws SBSBaseException{
+    public LinkedList<User> get_all_users_with_login()throws SBSBaseException{
         check_open();
-        throw new RuntimeException("Not Implemented yet");
-    };
+        Cursor c = db.rawQuery("SELECT * FROM " + layout.users.getName()
+                + " WHERE "
+                + layout.users.getField("login")
+                + " IS NOT NULL AND "
+                + layout.users.getField("hashed_pw")
+                + " IS NOT NULL", null);
+        LinkedList<User> tmp = new LinkedList<User>();
+        if (c != null) {
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                tmp.add(this.convert_cursor_to_user(c));
+            }
+            c.close();
+        }
+        return tmp;
+    }
 
-    public LinkedList<Entry_Remote_Identifier> get_all_entry_timestamps(Integer user_id)throws SBSBaseException {
+    //TODO
+    //Not sure if we need this for the gui, I guess we only need it for the background service
+    public LinkedList<Entry_Remote_Identifier> get_all_entry_timestamps(User user)
+            throws SBSBaseException {
         check_open();
         throw new RuntimeException("Not Implemented yet");
     }
