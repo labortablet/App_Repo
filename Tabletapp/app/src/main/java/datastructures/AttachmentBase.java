@@ -16,6 +16,20 @@ public abstract class AttachmentBase implements Serializable{
         }
     }
 
+    public static AttachmentBase dereference(int attachment_type, String attachment_serialized) {
+        switch (attachment_type) {
+            case 1:
+                return new AttachmentText(attachment_serialized, 0);
+            case 2:
+                return new AttachmentTable(attachment_serialized, 0);
+            /*case 3:  return new AttachmentImage(attachment_serialized);
+            */
+            default:
+                return new AttachmentText(attachment_serialized, 0);
+        }
+    }
+
+
     public abstract String getContent();
 
     public int getTypeNumber() {

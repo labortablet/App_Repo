@@ -4,29 +4,31 @@ import java.io.Serializable;
 
 public class Entry implements Serializable{
     protected long id;
-    protected long Experiment_id;
+    protected long experiment_id;
     protected String title;
     protected AttachmentBase attachment;
-    protected Long sync_time;
-    protected long entry_time;
-    protected long change_time;
     protected User user;
 
+    //altered names so they fit with the MySQL Server
+    //I did not change the getter and setters to not break anything
+    protected Long date; //sync_time
+    protected long date_user; //entry_time
+    protected long current_time; //change_time
 
     public long  getChange_time() {
-        return this.change_time;
+        return this.current_time;
     }
 
     public Long  getSync_time() {
-        return this.sync_time;
+        return this.date;
     }
 
     public long  getEntry_time() {
-        return this.entry_time;
+        return this.date_user;
     }
 
     public long getExperiment_id() {
-        return this.Experiment_id;
+        return this.experiment_id;
     }
 
     public String getTitle() {
@@ -44,12 +46,12 @@ public class Entry implements Serializable{
     public Entry(long id, User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time, Long sync_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
-        this.entry_time = entry_time;
+        this.date_user = entry_time;
         this.user = user;
         this.id = id;
-        this.Experiment_id =Experiment_id;
-        this.sync_time = sync_time;
-        this.change_time = change_time;
+        this.experiment_id = Experiment_id;
+        this.date = sync_time;
+        this.current_time = change_time;
     }
     //Konstruktor for new entries whitch got no id yet
     //FIXME
@@ -60,12 +62,12 @@ public class Entry implements Serializable{
     public Entry( User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
-        this.entry_time = entry_time;
+        this.date_user = entry_time;
         this.user = user;
-        this.id = id;
-        this.Experiment_id =Experiment_id;
-        this.sync_time = sync_time;
-        this.change_time = change_time;
+        this.id = 0;
+        this.experiment_id = Experiment_id;
+        this.date = null;
+        this.current_time = change_time;
     }
     //Sorry, aber das hier ist totaler bullshit, Expeiment_id had hier irgendeinen belebigen wert, des wird nämlich garnicht gesetzt.
     //ich gehe mal davon aus, dass das hier auc nur drin ist weil wir
@@ -73,29 +75,29 @@ public class Entry implements Serializable{
     public Entry(long id, User user, String title, AttachmentBase attachment, Long entry_time, Long sync_time, Long change_time) {
         this.title = title;
         this.attachment = attachment;
-        this.entry_time = entry_time;
+        this.date_user = entry_time;
         this.user = user;
         this.id = id;
         //totaler blödsinn
         //this.Experiment_id =Experiment_id;
-        this.sync_time = sync_time;
-        this.change_time = change_time;
+        this.date = sync_time;
+        this.current_time = change_time;
     }
 
     public Entry(long id, User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time) {
         this.title = title;
         this.attachment = attachment;
-        this.entry_time = entry_time;
+        this.date_user = entry_time;
         this.user = user;
         this.id = id;
-        this.Experiment_id =Experiment_id;
-        this.sync_time = null;
-        this.change_time = entry_time;
+        this.experiment_id =Experiment_id;
+        this.date = null;
+        this.current_time = entry_time;
     }
 
 
     public boolean isSync() {
-        return (this.sync_time == null);
+        return (this.date == null);
     }
 
 

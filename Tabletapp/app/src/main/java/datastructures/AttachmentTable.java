@@ -5,6 +5,9 @@ public class AttachmentTable extends AttachmentText{
     public AttachmentTable(String text){
         super(text);
     }
+    public AttachmentTable(String text, int a){
+        super(text, 1);
+    }
 
     @Override
     public int getTypeNumber(){return 2;};

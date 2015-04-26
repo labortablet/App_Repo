@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.net.URL;
 import java.util.LinkedList;
-import java.util.Objects;
 
 import datastructures.AttachmentBase;
 import datastructures.Entry;
@@ -15,7 +14,6 @@ import datastructures.Experiment;
 import datastructures.Project;
 import datastructures.User;
 import exceptions.SBSBaseException;
-import exceptions.SqLiteInsertError;
 import scon.Entry_Remote_Identifier;
 
 public class object_level_db {
@@ -50,7 +48,7 @@ public class object_level_db {
         this.db_helper = null;
     }
 
-    public LinkedList<User> get_all_user_logins() throws SBSBaseException{
+    public LinkedList<User> get_all_local_users() throws SBSBaseException{
         check_open();
         return null;
     };
@@ -196,6 +194,112 @@ public class object_level_db {
         );
     };
 
+    private Project convert_cursor_to_project(Cursor c){
+        int index;
+        Long remote_id, date_creation;
+        long id, user_id;
+        String name, description;
+        index = c.getColumnIndex(layout.projects.getField("id").getName());
+        id = c.getLong(index);
+        index = c.getColumnIndex(layout.projects.getField("name").getName());
+        name = c.getString(index);
+
+        index = c.getColumnIndex(layout.projects.getField("description").getName());
+        if (!c.isNull(index)) {
+            description = c.getString(index);
+        } else {
+            description = null;
+        }
+
+        index = c.getColumnIndex(layout.projects.getField("date_creation").getName());
+        if (!c.isNull(index)) {
+            date_creation = c.getLong(index);
+        } else {
+            date_creation = null;
+        }
+        return new Project(id, name, description, date_creation);
+    }
+
+    private Experiment convert_cursor_to_experiment(Cursor c){
+        int index;
+        Long date_creation;
+        long id, project_id;
+        String name, description;
+        index = c.getColumnIndex(layout.projects.getField("id").getName());
+        id = c.getLong(index);
+        index = c.getColumnIndex(layout.projects.getField("name").getName());
+        name = c.getString(index);
+        index = c.getColumnIndex(layout.projects.getField("project_id").getName());
+        project_id = c.getLong(index);
+
+        index = c.getColumnIndex(layout.projects.getField("description").getName());
+        if (!c.isNull(index)) {
+            description = c.getString(index);
+        } else {
+            description = null;
+        }
+
+        index = c.getColumnIndex(layout.projects.getField("date_creation").getName());
+        if (!c.isNull(index)) {
+            date_creation = c.getLong(index);
+        } else {
+            date_creation = null;
+        }
+        return new Experiment(id, project_id, name, description, date_creation);
+    }
+
+    private Entry convert_cursor_to_entry(Cursor c){
+        long id;
+        long experiment_id;
+        String title;
+        Long sync_time;
+        long entry_time;
+        long change_time;
+        User user;
+        long user_id;
+        String attachment_ref;
+        int attachment_type;
+        AttachmentBase attachment;
+
+        int index;
+
+        index = c.getColumnIndex(layout.users.getField("id").getName());
+        id = c.getLong(index);
+
+        index = c.getColumnIndex(layout.users.getField("experiment_id").getName());
+        experiment_id = c.getLong(index);
+
+        index = c.getColumnIndex(layout.users.getField("user_id").getName());
+        user_id = c.getLong(index);
+
+        index = c.getColumnIndex(layout.users.getField("entry_time").getName());
+        entry_time = c.getLong(index);
+
+        index = c.getColumnIndex(layout.users.getField("change_time").getName());
+        change_time = c.getLong(index);
+
+        index = c.getColumnIndex(layout.users.getField("attachment_type").getName());
+        attachment_type = c.getInt(index);
+
+        index = c.getColumnIndex(layout.users.getField("title").getName());
+        title = c.getString(index);
+
+        index = c.getColumnIndex(layout.users.getField("attachment_ref").getName());
+        attachment_ref = c.getString(index);
+
+        user = this.get_user_by_local_id(user_id);
+        attachment = AttachmentBase.dereference(attachment_type, attachment_ref);
+
+        index = c.getColumnIndex(layout.users.getField("sync_time").getName());
+        if (!c.isNull(index)) {
+            sync_time = c.getLong(index);
+        } else {
+            sync_time = null;
+        }
+
+        return new Entry(id, user, experiment_id, title, attachment, entry_time, sync_time, change_time);
+    }
+
     public LinkedList<Project> get_projects(User user)throws SBSBaseException {
         check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.projects.getName()
@@ -204,30 +308,8 @@ public class object_level_db {
                 +  user.getUser_id(), null);
         LinkedList<Project> tmp = new LinkedList<Project>();
         if (c != null) {
-            int index;
-            Long remote_id, date_creation;
-            long id, user_id;
-            String name, description;
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                index = c.getColumnIndex(layout.projects.getField("id").getName());
-                id = c.getLong(index);
-                index = c.getColumnIndex(layout.projects.getField("name").getName());
-                name = c.getString(index);
-
-                index = c.getColumnIndex(layout.projects.getField("description").getName());
-                if (!c.isNull(index)) {
-                    description = c.getString(index);
-                } else {
-                    description = null;
-                }
-
-                index = c.getColumnIndex(layout.projects.getField("date_creation").getName());
-                if (!c.isNull(index)) {
-                    date_creation = c.getLong(index);
-                } else {
-                    date_creation = null;
-                }
-                tmp.add(new Project(id, name, description, date_creation));
+                tmp.add(this.convert_cursor_to_project(c));
             }
             c.close();
         }
@@ -243,41 +325,16 @@ public class object_level_db {
                 + layout.experiments.getField("project_id") + "=" + project.get_id(), null);
         LinkedList<Experiment> tmp = new LinkedList<Experiment>();
         if (c != null) {
-            int index;
-            Long remote_id, date_creation;
-            long id, user_id, project_id;
-            String name, description;
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                index = c.getColumnIndex(layout.projects.getField("id").getName());
-                id = c.getLong(index);
-                index = c.getColumnIndex(layout.projects.getField("name").getName());
-                name = c.getString(index);
-                index = c.getColumnIndex(layout.projects.getField("project_id").getName());
-                project_id = c.getLong(index);
-
-                index = c.getColumnIndex(layout.projects.getField("description").getName());
-                if (!c.isNull(index)) {
-                    description = c.getString(index);
-                } else {
-                    description = null;
-                }
-
-                index = c.getColumnIndex(layout.projects.getField("date_creation").getName());
-                if (!c.isNull(index)) {
-                    date_creation = c.getLong(index);
-                } else {
-                    date_creation = null;
-                }
-                tmp.add(new Experiment(id, project_id, name, description, date_creation));
+                tmp.add(this.convert_cursor_to_experiment(c));
             }
             c.close();
         }
         return tmp;
     }
 
-    //maybe we need a remote user here as we only have Firstname, lastname
     private User get_user_by_local_id(long user_id){
-
+        throw new RuntimeException("Not Implemented yet");
     };
 
     public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) throws SBSBaseException{
@@ -286,38 +343,13 @@ public class object_level_db {
                 + " WHERE "
                 + layout.entries.getField("user_id") + "="
                 + user.getUser_id() + " AND "
-                + layout.entries.getField("experiment_id") + "=" + experiment.get_id(), null);
-        LinkedList<Experiment> tmp = new LinkedList<Experiment>();
+                + layout.entries.getField("experiment_id") + "="
+                + experiment.get_id() + " LIMIT " + number, null);
+        LinkedList<Entry> tmp = new LinkedList<Entry>();
         if (c != null) {
-            int index;
-            Long remote_id, date_creation;
-            long id, user_id, project_id;
-            String name, description;
-            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                index = c.getColumnIndex(layout.projects.getField("id").getName());
-                id = c.getLong(index);
-                index = c.getColumnIndex(layout.projects.getField("name").getName());
-                name = c.getString(index);
-                index = c.getColumnIndex(layout.projects.getField("project_id").getName());
-                project_id = c.getLong(index);
-
-                index = c.getColumnIndex(layout.projects.getField("description").getName());
-                if (!c.isNull(index)) {
-                    description = c.getString(index);
-                } else {
-                    description = null;
-                }
-
-                index = c.getColumnIndex(layout.projects.getField("date_creation").getName());
-                if (!c.isNull(index)) {
-                    date_creation = c.getLong(index);
-                } else {
-                    date_creation = null;
-                }
-                tmp.add(new Experiment(id, project_id, name, description, date_creation));
-            }
-            c.close();
+            tmp.add(this.convert_cursor_to_entry(c));
         }
+        c.close();
         return tmp;
     }
 
