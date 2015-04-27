@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import datastructures.AttachmentBase;
@@ -22,10 +24,20 @@ public class object_level_db {
     private SQLiteDatabase db;
     private boolean opened = false;
 
+    private static final HashMap<Long, WeakReference<User>> user_object_cache = new HashMap<Long, WeakReference<User>>();
+    private static final HashMap<Long, WeakReference<Project>> project_object_cache = new HashMap<Long, WeakReference<Project>>();
+    private static final HashMap<Long, WeakReference<Experiment>> experiment_object_cache = new HashMap<Long, WeakReference<Experiment>>();
+    private static final HashMap<Long, WeakReference<Entry>> entry_object_cache = new HashMap<Long, WeakReference<Entry>>();
+
+
+    private long get_row_id(Cursor c){
+        return c.getLong(c.getColumnIndex("id"));
+    }
 
     private void check_open()throws SBSBaseException{
         if(!this.opened){
             //TODO
+            //check the interface is ready
             throw new RuntimeException("Check for interface open. Not implemented yet");
         }
     }
@@ -353,9 +365,17 @@ public class object_level_db {
                 + layout.projects.getField("user_id") + "="
                 +  user.getUser_id(), null);
         LinkedList<Project> tmp = new LinkedList<Project>();
+        Project cache;
+        long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                tmp.add(this.convert_cursor_to_project(c));
+                id = this.get_row_id(c);
+                cache = project_object_cache.get(id).get();
+                if(cache==null){
+                    cache = this.convert_cursor_to_project(c);
+                    project_object_cache.put(id, new WeakReference<Project>(cache));
+                }
+                tmp.add(cache);
             }
             c.close();
         }
@@ -370,9 +390,17 @@ public class object_level_db {
                 +  user.getUser_id() + " AND "
                 + layout.experiments.getField("project_id") + "=" + project.get_id(), null);
         LinkedList<Experiment> tmp = new LinkedList<Experiment>();
+        Experiment cache;
+        long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                tmp.add(this.convert_cursor_to_experiment(c));
+                id = this.get_row_id(c);
+                cache = experiment_object_cache.get(id).get();
+                if(cache==null){
+                    cache = this.convert_cursor_to_experiment(c);
+                    experiment_object_cache.put(id, new WeakReference<Experiment>(cache));
+                }
+                tmp.add(cache);
             }
             c.close();
         }
@@ -397,9 +425,17 @@ public class object_level_db {
                 + layout.entries.getField("experiment_id") + "="
                 + experiment.get_id() + " LIMIT " + number, null);
         LinkedList<Entry> tmp = new LinkedList<Entry>();
+        Entry cache;
+        long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                tmp.add(this.convert_cursor_to_entry(c));
+                id = this.get_row_id(c);
+                cache = entry_object_cache.get(id).get();
+                if(cache==null){
+                    cache = this.convert_cursor_to_entry(c);
+                    entry_object_cache.put(id, new WeakReference<Entry>(cache));
+                }
+                tmp.add(cache);
             }
             c.close();
         }
@@ -415,9 +451,17 @@ public class object_level_db {
                 + layout.users.getField("hashed_pw")
                 + " IS NOT NULL", null);
         LinkedList<User> tmp = new LinkedList<User>();
+        User cache;
+        long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                tmp.add(this.convert_cursor_to_user(c));
+                id = this.get_row_id(c);
+                cache = user_object_cache.get(id).get();
+                if(cache==null){
+                    cache = this.convert_cursor_to_user(c);
+                    user_object_cache.put(id, new WeakReference<User>(cache));
+                }
+                tmp.add(cache);
             }
             c.close();
         }
