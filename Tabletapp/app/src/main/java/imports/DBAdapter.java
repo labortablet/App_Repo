@@ -383,18 +383,17 @@ public class DBAdapter {
 
      //   return c.getLong(DBAdapter.COL_EntryID);
     }
-    public long insertLocalEntry(Entry entry){
+    public long insertLocalEntry(long entry_UserID,long entry_ExperimentID,String entry_Titel,long entry_TypNumber,String entry_Content,long entry_EntryTime){
         SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO" + Table_Entry + " ("+Entry_UserID +","+Entry_ExperimentID+","+Entry_Titel+","+Entry_Typ+","+Entry_Content+","+Entry_CreationDate+","+Entry_ChangeDate+" ) " + "VALUES (?,?,?,?,?,?,?)");
 
-        sqLiteStatement.bindLong(1, entry.getUser().getId());
-        sqLiteStatement.bindLong(2, entry.getExperiment_id());
-        sqLiteStatement.bindString(3, entry.getTitle());
-        sqLiteStatement.bindLong(4, entry.getAttachment().getTypeNumber());
-        sqLiteStatement.bindString(5, entry.getAttachment().getContent());
-        sqLiteStatement.bindLong(6, entry.getEntry_time());
-        sqLiteStatement.bindLong(7,entry.getChange_time());
-       return sqLiteStatement.executeInsert();
-
+        sqLiteStatement.bindLong(1, entry_UserID);
+        sqLiteStatement.bindLong(2, entry_ExperimentID);
+        sqLiteStatement.bindString(3, entry_Titel);
+        sqLiteStatement.bindLong(4, entry_TypNumber);
+        sqLiteStatement.bindString(5, entry_Content);
+        sqLiteStatement.bindLong(6, entry_EntryTime);
+        sqLiteStatement.bindLong(7, entry_EntryTime);
+        return sqLiteStatement.executeInsert();
     }
     // Delete a row from the database, by rowId (primary key)
     public boolean deleteUserByID(long rowId) {

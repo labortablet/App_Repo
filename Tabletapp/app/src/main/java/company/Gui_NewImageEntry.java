@@ -51,7 +51,7 @@ public class Gui_NewImageEntry extends Activity {
             case R.id.button2:
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
                 String date = dateFormat.format(new Date());
-               photoFile = "Picture_" + date + ".jpg";
+                photoFile = "Picture_" + date + ".jpg";
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                 File file = new File(Environment.getExternalStorageDirectory()+File.separator + photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));

@@ -47,7 +47,7 @@ public class User implements Serializable{
     this.user_email = email;
 }
 
-    //not sure if we need this
+    //not sure if we need this: nope
     public User(String firstname, String lastname){
         this.lastname = lastname;
         this.firstname = firstname;
@@ -66,8 +66,8 @@ public class User implements Serializable{
         this.user_email = user_email;
         this.setPw(password);
         this.server = server;
-        this.firstname = null;
-        this.lastname = null;
+        this.firstname = "";
+        this.lastname = "";
         this.id = id;
     }
 
@@ -86,8 +86,8 @@ public class User implements Serializable{
         this.user_email = user_email;
         this.setPw(password);
         this.server = server;
-        this.firstname = null;
-        this.lastname = null;
+        this.firstname = "";
+        this.lastname = "";
         this.id = 0;
     }
 

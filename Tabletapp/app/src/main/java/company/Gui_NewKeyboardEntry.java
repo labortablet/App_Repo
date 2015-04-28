@@ -59,10 +59,9 @@ public class Gui_NewKeyboardEntry extends Activity {
 
                         try {
                             long time = App_Methodes.generateTimestamp();
-                            Entry edit = new Entry(service.getUser(),experimentID,title.getText().toString(), new AttachmentText(content.getText().toString().trim()),time ,time);
 
                             service.getDB().open();
-                            service.getDB().insertLocalEntry(edit);
+                            service.getDB().insertLocalEntry(service.getUser().getId(),experimentID,title.getText().toString(),(long) 1 ,content.getText().toString().trim(),time);
                             service.getDB().close();
 
                             this.finish();

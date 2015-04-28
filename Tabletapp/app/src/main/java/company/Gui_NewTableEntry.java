@@ -14,9 +14,12 @@ import android.widget.TableRow.LayoutParams;
 
 import com.example.test1.tabletapp.app.R;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import imports.ActivityRegistry;
+import imports.App_Methodes;
 import imports.Popup;
 import datastructures.ProjectExperimentEntry;
 
@@ -31,8 +34,10 @@ public class Gui_NewTableEntry extends Activity {
     EditText text2;
     private int cols;
     private int rows;
-    float experimentID;
+    long experimentID;
     private String[][] string_array;
+    Reference<LocalService> ref = new WeakReference<LocalService>(Gui_StartActivity.getmService());
+    LocalService service;
     private EditText[][] textView_array;
     private Integer project_Selected = Gui_DisplayProjectAndExperiment.getProject_Selected();
     private Integer experiment_Selected = Gui_DisplayProjectAndExperiment.getExperiment_Selected();
@@ -47,11 +52,11 @@ public class Gui_NewTableEntry extends Activity {
         Intent intent= getIntent();
         Bundle b = intent.getExtras();
         assert b != null;
-        experimentID = b.getFloat("id");
+        experimentID = b.getLong("id");
         rows = b.getInt("row");
         cols = b.getInt("column");
         // Receiving the Data
-
+        service = ref.get();
 
 
 
@@ -101,13 +106,10 @@ public class Gui_NewTableEntry extends Activity {
 
 
 //TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
-
-                        //                Entry table_entry =  new Entry(text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array)),App_Methodes.generateTimestamp(), Gui_StartActivity.mService.getUser(),false,projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getExperiments().get_id());
-                   //     Gui_StartActivity.myDb.open();
-                        //   Gui_StartActivity.myDb.insertLocalEntry(table_entry);
-                   //     Gui_StartActivity.myDb.close();
-                        //       projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().add(table_entry);
-                     //  Gui_DisplayProjectAndExperiment.setProjectExperimentEntries(projectExperimentEntries);
+                        long time = App_Methodes.generateTimestamp();
+                        service.getDB().open();
+                        service.getDB().insertLocalEntry(service.getUser().getId(),experimentID,text.getText().toString(),(long) 2 ,App_Methodes.twoDArray2String(string_array).trim(),time);
+                        service.getDB().close();
                         this.finish();
                     } catch (Exception e) {
                         e.printStackTrace();
