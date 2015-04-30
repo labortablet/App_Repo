@@ -8,6 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -74,8 +78,9 @@ public class DBAdapter {
     public static final String User_FName =" User_FName ";
     public static final String User_LName =" User_LName ";
     public static final String User_Remote_ID = " User_RemoteID";
+    public static final String User_Server_ip = " User_Server_ip";
     //The Keys for each table
-    public static final String[] User_KEYS = new String[]{User_ID, User_EMail, User_Password, User_FName, User_LName, User_Remote_ID};
+    public static final String[] User_KEYS = new String[]{User_ID, User_EMail, User_Password, User_FName, User_LName, User_Remote_ID,User_Server_ip};
     /*
    Table Fields for Table _project
     */
@@ -102,7 +107,7 @@ public class DBAdapter {
                     + Entry_SyncDate + Typ_Number + Comma_Separator
                     + Entry_RemoteID + Typ_Integer + " UNIQUE " + Comma_Separator
                     + Entry_ExperimentID + Typ_Integer + Comma_Separator
-                    + Entry_UserID + Typ_String
+                    + Entry_UserID + Typ_Integer
                     + Bracket_Separator_Right + Semicolon_Separator;
     public static final String Table_User = " _user ";
     //
@@ -113,7 +118,8 @@ public class DBAdapter {
                     + User_Password + Typ_String  + Comma_Separator
                     + User_FName + Typ_String + Comma_Separator
                     + User_LName + Typ_String + Comma_Separator
-                    + User_Remote_ID + Typ_Integer + " UNIQUE "
+                    + User_Remote_ID + Typ_Integer + " UNIQUE " + Comma_Separator
+                    + User_Server_ip + Typ_String
                     + Bracket_Separator_Right + Semicolon_Separator;
     public static final String Table_Project = " _project ";
     //
@@ -138,7 +144,7 @@ public class DBAdapter {
                     + Experiment_ProjectID + Typ_Integer
                     + Bracket_Separator_Right + Semicolon_Separator;
     // Track DB version if a new version of your app changes the format.
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     // ids for the specific rows
     //user table
     public final static int COL_UserID = 0;
@@ -148,6 +154,7 @@ public class DBAdapter {
     public final static int COL_UserFName = 3;
     public final static int COL_UserLName = 4;
     public final static int COL_UserRemoteID = 5;
+    public final static int COL_User_Server_ip = 6;
     //entry table
     public final static int COL_EntryID = 0;
     public final static int COL_EntryTitle = 1;
@@ -205,6 +212,25 @@ public class DBAdapter {
         sqLiteStatement.bindString(4, user.getLastname());
        return sqLiteStatement.executeInsert();
     }
+    public long insertLoginUser(String user_EMail,byte[] password_hash,String URL) throws UnsupportedEncodingException {
+
+        // Create row's data:
+        SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO" + Table_User + " ("+ User_EMail+","+User_Password+","+ User_FName + "," + User_LName +","+User_Server_ip+" ) " + "VALUES (?,?,?,?,?)");
+        sqLiteStatement.bindString(1, user_EMail);
+        sqLiteStatement.bindString(2 , String.valueOf(new String(password_hash, "UTF-8")));
+        sqLiteStatement.bindString(3, "");
+        sqLiteStatement.bindString(4, "");
+        sqLiteStatement.bindString(5, URL);
+        Log.d("passwdhash1",new String(password_hash, "UTF-8"));
+        return sqLiteStatement.executeInsert();
+    }
+    public User getLocalUser(String user_EMail) throws MalformedURLException {
+        Cursor c = db.rawQuery(" SELECT * FROM "+ Table_User +" WHERE " +  User_EMail +" == ? ",new String[]{user_EMail});
+        c.moveToFirst();
+
+        return new User(c.getString(DBAdapter.COL_UserEmail),(c.getString(DBAdapter.COL_UserPass).getBytes(Charset.forName("UTF-8"))),new URL(c.getString(DBAdapter.COL_User_Server_ip)),c.getLong(DBAdapter.COL_UserID),c.getString(DBAdapter.COL_UserFName),c.getString(DBAdapter.COL_UserLName));
+    }
+
     private boolean getAllUserRemoteID(Long userid){
         Cursor c = db.rawQuery(" SELECT "+ User_Remote_ID +" FROM "+ Table_User +" WHERE " + User_Remote_ID +" == ? ",new String[]{String.valueOf(userid)});
         c.moveToFirst();

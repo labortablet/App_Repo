@@ -71,8 +71,7 @@ public class User implements Serializable{
         this.id = id;
     }
 
-    public User(String user_email, byte[] hashed_pw, URL server, long id, String firstname,
-                String lastname){
+    public User(String user_email, byte[] hashed_pw, URL server, long id, String firstname,String lastname){
         this.user_email = user_email;
         this.pw_hashb = hashed_pw;
         this.server = server;

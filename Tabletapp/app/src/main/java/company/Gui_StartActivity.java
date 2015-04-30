@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.LinkedList;
@@ -161,8 +162,16 @@ public class Gui_StartActivity extends Activity {
                     String server = text.getText().toString();
                     String email = text2.getText().toString();
                     String password = text3.getText().toString();
-
-                   mService.setUserAndURL(new User(email, password,new URL(server)), server);
+                    mService.getDB().open();
+                   mService.getDB().insertLoginUser(email, User.hashedPW(password),server);
+                   mService.setUserAndURL(mService.getDB().getLocalUser(email), server);
+                    try{
+                    Log.d("passwdhash2",  new String(mService.getUser().getPw_hash(), "UTF-8"));
+                    }catch (UnsupportedEncodingException e)
+                    {
+                        e.printStackTrace();
+                    }
+                        mService.getDB().close();
                    int i =  mService.connect(server);
                    showProgress();
 
