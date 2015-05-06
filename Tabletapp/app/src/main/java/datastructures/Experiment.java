@@ -11,21 +11,15 @@ public class Experiment implements Serializable{
     protected Long date_creation;
 
     public Experiment(long id, long project_id, String name) {
-        this.id = id;
-        this.project_id = project_id;
-        this.name = name;
-        this.description = null;
-        this.date_creation = null;
+        this(id, 0, name, null, null);
     }
     public Experiment(long id,  String name, String description ) {
-        this.project_id = project_id;
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.date_creation = date_creation;
+        this(id, 0, name, description, null);
     }
     public Experiment(long id, long project_id, String name, String description, Long date_creation) {
-        this(id,project_id,name);
+        this.id = id;
+        this.project_id = project_id;
+        this.name = name;
         this.description = description;
         this.date_creation = date_creation;
     }

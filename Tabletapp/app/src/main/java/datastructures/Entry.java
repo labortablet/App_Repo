@@ -44,18 +44,17 @@ public class Entry implements Serializable{
     }
 
     public Entry(long id, User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time, Long sync_time, Long change_time) {
-        this(id,user,Experiment_id,title,attachment,entry_time);
-        this.date = sync_time;
-        this.current_time = change_time;
-    }
-    public Entry(long id, User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time) {
         this.title = title;
         this.attachment = attachment;
         this.date_user = entry_time;
         this.user = user;
         this.id = id;
         this.experiment_id = Experiment_id;
-        this.current_time = entry_time;
+        this.date = sync_time;
+        this.current_time = change_time;
+    }
+    public Entry(long id, User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time) {
+        this(id, user, Experiment_id, title, attachment, entry_time, null, entry_time);
     }
 
 

@@ -14,18 +14,16 @@ public class Project implements Serializable{ //implements Comparable
     private Long date_creation;
 
     public Project(long id, String name) {
-        this.id = id;
-        this.name = name;
-        this.description = null;
-        this.date_creation = null;
+        this(id,name,null, null);
     }
     public Project(long id, String name,String description) {
-        this(id,name);
-        this.description = description;
+        this(id,name,description, null);
     }
 
     public Project(long id, String name, String description, Long date_creation) {
-        this(id,name,description);
+        this.id = id;
+        this.name = name;
+        this.description = description;
         this.date_creation = date_creation;
     }
 

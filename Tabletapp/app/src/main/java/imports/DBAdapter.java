@@ -15,6 +15,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import datastructures.AttachmentBase;
 import datastructures.AttachmentTable;
 import datastructures.AttachmentText;
 import datastructures.Entry;
@@ -221,7 +222,7 @@ public class DBAdapter {
         sqLiteStatement.bindString(3, "");
         sqLiteStatement.bindString(4, "");
         sqLiteStatement.bindString(5, URL);
-        Log.d("passwdhash1",new String(password_hash, "UTF-8"));
+        Log.d("passwdhash1", new String(password_hash, "UTF-8"));
         return sqLiteStatement.executeInsert();
     }
     public User getLocalUser(String user_EMail) throws MalformedURLException {
@@ -262,7 +263,7 @@ public class DBAdapter {
             RemoteProject project = projectLinkedList.get(i);
        SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO" + DBAdapter.Table_Project + " ( "+ Project_Name + "," + Project_Description + "," + Project_RemoteID + " ) "+ "VALUES (?,?,?)" );
             sqLiteStatement.bindString(1, project.getName());
-            sqLiteStatement.bindString(2 , project.getDescription());
+            sqLiteStatement.bindString(2, project.getDescription());
             sqLiteStatement.bindLong(3, project.getId());
             sqLiteStatement.executeInsert();
         }
@@ -275,12 +276,12 @@ public class DBAdapter {
             SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO " + Table_Experiment + " ( "+ Experiment_Name + "," + Experiment_Description + "," + Experiment_RemoteID + "," + Experiment_ProjectID + " ) "+ "VALUES (?,?,?,?)" );
 
 
-            Cursor c = db.rawQuery(" SELECT "+ Project_ID +" FROM "+ Table_Project +" WHERE " + Project_RemoteID + " = ?",new String[]{String.valueOf(experiment.getProject_id())});
+            Cursor c = db.rawQuery(" SELECT " + Project_ID + " FROM " + Table_Project + " WHERE " + Project_RemoteID + " = ?", new String[]{String.valueOf(experiment.getProject_id())});
 
             c.moveToFirst();
 
             sqLiteStatement.bindString(1, experiment.getName());
-            sqLiteStatement.bindString(2 , experiment.getDescription());
+            sqLiteStatement.bindString(2, experiment.getDescription());
             sqLiteStatement.bindLong(3, experiment.getId());
 
             sqLiteStatement.bindLong(4, c.getLong(DBAdapter.COL_ProjectID));
@@ -635,7 +636,10 @@ try {
 
                 cursor1.moveToFirst();
 
-
+    //TODO: siehe unten
+     entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID), new User(cursor1.getString(COL_UserEmail)), (long) 0, cursor.getString(DBAdapter.COL_EntryTitle), AttachmentBase.dereference(cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
+                    entryLinkedList.add(entry);
+                    /*
     if (cursor.getLong(DBAdapter.COL_EntryTyp) == 1) {
         entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID), new User(cursor1.getString(DBAdapter.COL_UserFName), cursor1.getString(DBAdapter.COL_UserLName)), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
         entryLinkedList.add(entry);
@@ -647,6 +651,7 @@ try {
     if (cursor.getLong(DBAdapter.COL_EntryTyp) == 3) {
 
     }
+    */
                     cursor1.close();
                 }else {
 String string = String.valueOf(cursor.getLong(DBAdapter.COL_EntryUserID));
@@ -662,7 +667,7 @@ String string = String.valueOf(cursor.getLong(DBAdapter.COL_EntryUserID));
                     Log.d("cursor sync", String.valueOf(cursor.getLong(DBAdapter.COL_EntrySyncDate)));
                     Log.d("cursor change", String.valueOf(cursor.getLong(COL_EntryChangeDate)));
 
-                    if (cursor.getLong(DBAdapter.COL_EntryTyp) == 1) {
+                    /*if (cursor.getLong(DBAdapter.COL_EntryTyp) == 1) {
                         entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID), new User(cursor1.getString(COL_UserEmail)), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
                         entryLinkedList.add(entry);
                     }
@@ -673,7 +678,15 @@ String string = String.valueOf(cursor.getLong(DBAdapter.COL_EntryUserID));
                     if (cursor.getLong(DBAdapter.COL_EntryTyp) == 3) {
 
                     }
+                    */
 
+                    //TODO
+                    //das sollte den gesamten block oben ersetzen
+                    //und wenn wir später mehr EntryTypes haben müssen wir es nur in der Factorie ändern und nicht über all im Code
+                    //was etwas komisch ist, ist, dass keine experiment_id da oben steht. Hab deshalb hier erstmal die experiment_id auf 0 gesetzt
+                    //weil ich gerade nicht weiß wie ich die id aus deinem cursor raus nehme
+                    entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID), new User(cursor1.getString(COL_UserEmail)), (long) 0, cursor.getString(DBAdapter.COL_EntryTitle), AttachmentBase.dereference(cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
+                    entryLinkedList.add(entry);
                     cursor1.close();
                 }
 

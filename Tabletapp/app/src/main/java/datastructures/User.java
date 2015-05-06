@@ -4,9 +4,9 @@ import java.net.URL;
 import java.security.MessageDigest;
 
 public class User implements Serializable{
-    private String lastname="";
-    private String firstname ="";
-    private String user_email ="";
+    private String lastname;
+    private String firstname;
+    private String user_email;
     private byte[] pw_hashb;
     private URL server;
     private long id;
@@ -46,17 +46,17 @@ public class User implements Serializable{
 
     //not sure if we need this: nope
     public User(String firstname, String lastname){
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.id = 0;
+        this(firstname, lastname, 0);
     }
 
     public User(String firstname, String lastname, long id){
-        this(firstname,lastname);
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.id = id;
         this.server = null;
     }
 
+    //not sure what to make out of this...
     public User(String user_email, String password, URL server, long id){
         this.user_email = user_email;
         this.setPw(password);
@@ -65,6 +65,7 @@ public class User implements Serializable{
         this.lastname = "";
         this.id = id;
     }
+
 
     public User(String user_email, byte[] hashed_pw, URL server, long id, String firstname,String lastname){
         this(firstname,lastname,id);
