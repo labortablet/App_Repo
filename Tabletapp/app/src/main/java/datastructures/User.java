@@ -4,15 +4,10 @@ import java.net.URL;
 import java.security.MessageDigest;
 
 public class User implements Serializable{
-    private String lastname;
-    private String firstname;
-    private String user_email;
+    private String lastname="";
+    private String firstname ="";
+    private String user_email ="";
     private byte[] pw_hashb;
-    private static Boolean lastname_first = false;
-    //TODO
-    //wat?
-    //das ist eine App weite Einstellung
-    //warum wird das den an jedes Objekt drangepapt?
     private URL server;
     private long id;
 
@@ -36,6 +31,8 @@ public class User implements Serializable{
         return resultb;
     }
 
+
+
     public void setPw(String password){
         this.pw_hashb = hashedPW(password);
     }
@@ -55,10 +52,8 @@ public class User implements Serializable{
     }
 
     public User(String firstname, String lastname, long id){
-        this.lastname = lastname;
-        this.firstname = firstname;
+        this(firstname,lastname);
         this.id = id;
-        this.user_email = null;
         this.server = null;
     }
 
@@ -72,25 +67,13 @@ public class User implements Serializable{
     }
 
     public User(String user_email, byte[] hashed_pw, URL server, long id, String firstname,String lastname){
+        this(firstname,lastname,id);
         this.user_email = user_email;
         this.pw_hashb = hashed_pw;
         this.server = server;
-        this.firstname = null;
-        this.lastname = null;
-        this.id = id;
     }
 
-    //TODO: remove once the interface is done
-    public User(String user_email, String password, URL server){
-        this.user_email = user_email;
-        this.setPw(password);
-        this.server = server;
-        this.firstname = "";
-        this.lastname = "";
-        this.id = 0;
-    }
-
-    public String display(String separator){
+    public String display(String separator,boolean lastname_first){
         if(this.lastname != null && this.firstname != null){
             if(lastname_first){
                 return this.lastname + separator + this.firstname;
@@ -131,25 +114,5 @@ public class User implements Serializable{
         return this.pw_hashb;
     }
 
-    //Added this so we are not bound to use the email as an id
-    public String getUser_id(){
-        return this.user_email;
-    }
-
     public long getId(){return this.id;}
-
-    //auch hier: es gibt keinen Grund die ID jemals zu setzen!
-    //wenn wir es noch brauchen weil wir alten Code haben, okay, ansonsten weg damit!
-    //1. warum hat er dann eine ID?
-    //2. ich habe keine lust jedesmal wenn ein neuer entry erzeugt wird die datenbank ran zu ziehen um zu schauen welche ID zu der Email gehört
-    //3. da es keinen konstruktor mit id gibt, muss ich sie im nachhinein setzen was sowieso besser ist
-
-    //Du bist mir ein Spaßvogel.
-    //In https://bitbucket.org/Gritu/main_repo/src/d6df48c48f5d/Tabletapp/app/src/main/java/datastructures/User.java
-    //hast du die id aus dem Konstruktur raus gepatched.
-    //die id sollte im Konstuktur natürlich gesetzt werden und danach ist sie konstant.
-    //TODO: remove once the interface is done
-    public void setId(long id) {
-        this.id = id;
-    }
 }

@@ -121,7 +121,6 @@ public class Gui_StartActivity extends Activity {
         {
             appendLog(e.getMessage());
             e.printStackTrace();
-
         }
 
 
@@ -163,8 +162,8 @@ public class Gui_StartActivity extends Activity {
                     String email = text2.getText().toString();
                     String password = text3.getText().toString();
                     mService.getDB().open();
-                   mService.getDB().insertLoginUser(email, User.hashedPW(password),server);
-                   mService.setUserAndURL(mService.getDB().getLocalUser(email), server);
+                    mService.getDB().insertLoginUser(email, User.hashedPW(password),server);
+                    mService.setUserAndURL(mService.getDB().getLocalUser(email), server);
                     try{
                     Log.d("passwdhash2",  new String(mService.getUser().getPw_hash(), "UTF-8"));
                     }catch (UnsupportedEncodingException e)
@@ -358,15 +357,18 @@ if(checkBox.isChecked())
             // try {
             try {
                 SDS.start_session();
+                mService.getObjectlevel_db().open();
+
                 mService.getDB().open();
-                long ll = mService.getDB().insertNewUser(mService.getUser());
-                mService.setUserID(mService.getDB().getUserByEmail(mService.getUser().getUser_email()));
+              //  long ll = mService.getDB().insertNewUser(mService.getUser());
+              //  mService.setUserID(mService.getDB().getUserByEmail(mService.getUser().getUser_email()));
                 projects = SDS.get_projects();
+                mService.getObjectlevel_db();
                 mService.getDB().deleteAllExperiments();
                 mService.getDB().deleteAllProjects();
                 mService.getDB().deleteAllEntries();
                 mService.getDB().deleteAllUsers();
-                mService.getDB().insertProject(projects);
+          //      mService.getDB().insertProject(projects);
                 publishProgress(30);
                 experiments = SDS.get_experiments();
                 mService.getDB().insertExperiments(experiments);

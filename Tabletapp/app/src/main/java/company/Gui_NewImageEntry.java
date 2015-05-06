@@ -73,6 +73,7 @@ public class Gui_NewImageEntry extends Activity {
              bitmap = decodeSampledBitmapFromFile(file.getAbsolutePath(), 1000, 700);
         }
     }
+
     public static Bitmap decodeSampledBitmapFromFile(String path, int reqWidth, int reqHeight)
     { // BEST QUALITY MATCH
 
