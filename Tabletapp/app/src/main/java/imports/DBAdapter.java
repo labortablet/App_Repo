@@ -682,10 +682,10 @@ String string = String.valueOf(cursor.getLong(DBAdapter.COL_EntryUserID));
 
                     //TODO
                     //das sollte den gesamten block oben ersetzen
-                    //und wenn wir später mehr EntryTypes haben müssen wir es nur in der Factorie ändern und nicht über all im Code
+                    //und wenn wir spaeter mehr EntryTypes haben muessen wir es nur in der Factorie aendern und nicht ueber all im Code
                     //was etwas komisch ist, ist, dass keine experiment_id da oben steht. Hab deshalb hier erstmal die experiment_id auf 0 gesetzt
-                    //weil ich gerade nicht weiß wie ich die id aus deinem cursor raus nehme
-                    entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID), new User(cursor1.getString(COL_UserEmail)), (long) 0, cursor.getString(DBAdapter.COL_EntryTitle), AttachmentBase.dereference(cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
+                    //weil ich gerade nicht weiss wie ich die id aus deinem cursor raus nehme
+                    entry = new Entry(cursor.getLong(DBAdapter.COL_EntryID), new User(cursor1.getString(COL_UserEmail)), cursor.getLong(DBAdapter.COL_EntryExperimentID), cursor.getString(DBAdapter.COL_EntryTitle), AttachmentBase.dereference(cursor.getInt(DBAdapter.COL_EntryTyp), cursor.getString(DBAdapter.COL_EntryContent)), cursor.getLong(COL_EntryCreationDate), cursor.getLong((DBAdapter.COL_EntrySyncDate)), cursor.getLong(COL_EntryChangeDate));
                     entryLinkedList.add(entry);
                     cursor1.close();
                 }

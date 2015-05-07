@@ -67,17 +67,8 @@ public class Gui_StartActivity extends Activity {
     ProgressBar prgs;
     ProgressTask task;
     WeakReference<LocalService> mserviceweak = new WeakReference<LocalService>(mService);
-    public static User getUser() {
-        return user;
-    }
-
-    public static void setUser(User user) {
-        Gui_StartActivity.user = user;
-    }
     public static LocalService mService;
     static Context context;
-    public static DBAdapter myDb;
-    private static User user;
     boolean mBound = false;
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -91,7 +82,6 @@ public class Gui_StartActivity extends Activity {
         pattern = Pattern.compile(EMAIL_PATTERN);
  }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,11 +92,8 @@ public class Gui_StartActivity extends Activity {
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
         checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
-
-        myDb = new DBAdapter(this);
         context = getApplicationContext();
 
-  //      ActivityRegistry.register(this);
         try {
             SharedPreferences userDetails = context.getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
             if(userDetails.getString("ServerIP", null) != null)
@@ -150,7 +137,6 @@ public class Gui_StartActivity extends Activity {
         switch (v.getId()) {  // switch ID button
 
             case R.id.button:
-                Toast.makeText(this,"addresse gespeichert",Toast.LENGTH_LONG);
         try {
             if (!text.getText().toString().isEmpty() && !text2.getText().toString().isEmpty() && !text3.getText().toString().isEmpty()) { //Abfrage ob textfelder des logins leer sind
 
@@ -251,7 +237,6 @@ if(checkBox.isChecked())
     @Override
     protected void onStop() {
         super.onStop();
-        mService.deleteAllSynced();
         // Unbind from the service
             if (mBound) {
             unbindService(mConnection);
@@ -266,7 +251,6 @@ if(checkBox.isChecked())
         this.finish();
         System.exit(0);
     }
-
 
     /**
      * Connection Function for the Service
@@ -322,6 +306,7 @@ if(checkBox.isChecked())
                     }
                 }).setNegativeButton("no", null).show();
     }
+
     private class ProgressTask extends AsyncTask<Integer,Integer,Void>{
         LinkedList<RemoteProject> projects;
         LinkedList<RemoteExperiment> experiments;
@@ -350,9 +335,6 @@ if(checkBox.isChecked())
         protected Void doInBackground(Integer... params) {
 
             ServerDatabaseSession SDS = mService.SDS;
-
-
-
             LinkedList<Entry> entries = new LinkedList<Entry>() ;
             // try {
             try {

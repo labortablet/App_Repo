@@ -183,7 +183,7 @@ public class ServerDatabaseSession {
     private byte[] get_challenge() throws SBSBaseException {
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_challenge");
-        this.put_wrapper(request, "username", this.user.getUser_id());
+        this.put_wrapper(request, "username", this.user.getId());
         JSONObject result = null;
         result = this.send_json(request);
         try {

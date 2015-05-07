@@ -88,7 +88,7 @@ public class object_level_db {
         check_open();
         long result;
         ContentValues initialValues = new ContentValues();
-        initialValues.put(layout.projects.getField("user_id").getName(),user.getUser_id());
+        initialValues.put(layout.projects.getField("user_id").getName(),user.getId());
         initialValues.put(layout.projects.getField("name").getName(), project_name);
         result = this.db.insert(layout.projects.getName(), null, initialValues);
         if(result == -1){
@@ -104,7 +104,7 @@ public class object_level_db {
         check_open();
         long id;
         ContentValues initialValues = new ContentValues();
-        initialValues.put(layout.experiments.getField("user_id").getName(), user.getUser_id());
+        initialValues.put(layout.experiments.getField("user_id").getName(), user.getId());
         initialValues.put(layout.experiments.getField("project_id").getName(), project.get_id());
         initialValues.put(layout.experiments.getField("name").getName(), experiment_name);
         id = this.db.insert(layout.experiments.getName(), null, initialValues);
@@ -363,7 +363,7 @@ public class object_level_db {
         Cursor c = db.rawQuery("SELECT * FROM " + layout.projects.getName()
                 + " WHERE "
                 + layout.projects.getField("user_id") + "="
-                +  user.getUser_id(), null);
+                +  user.getId(), null);
         LinkedList<Project> tmp = new LinkedList<Project>();
         Project cache;
         long id;
@@ -387,7 +387,7 @@ public class object_level_db {
         Cursor c = db.rawQuery("SELECT * FROM " + layout.experiments.getName()
                 + " WHERE "
                 + layout.experiments.getField("user_id") + "="
-                +  user.getUser_id() + " AND "
+                +  user.getId() + " AND "
                 + layout.experiments.getField("project_id") + "=" + project.get_id(), null);
         LinkedList<Experiment> tmp = new LinkedList<Experiment>();
         Experiment cache;
@@ -421,7 +421,7 @@ public class object_level_db {
         Cursor c = db.rawQuery("SELECT * FROM " + layout.entries.getName()
                 + " WHERE "
                 + layout.entries.getField("user_id") + "="
-                + user.getUser_id() + " AND "
+                + user.getId() + " AND "
                 + layout.entries.getField("experiment_id") + "="
                 + experiment.get_id() + " LIMIT " + number, null);
         LinkedList<Entry> tmp = new LinkedList<Entry>();

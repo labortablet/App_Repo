@@ -70,9 +70,7 @@ public static object_level_db objectlevel_db;
   //  private WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<Entry>>>> entry_list_cache = new WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<Entry>>>>();
 
     public LocalService() {}
-public void setUserID(Long l){
-    this.user.setId(l);
-}
+
     @Override
     public void onCreate() {
        myDb = new DBAdapter(getApplicationContext());

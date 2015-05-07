@@ -122,7 +122,8 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_Displ
                 textView2.setText(entry.getAttachment().getContent());
                 textView3.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (entry.getEntry_time()*1000)));
            //     textView3.setText(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(entry_Selected).getEntry_time().toString());
-                textView4.setText(entry.getUser().display("  "));
+              //TODO: FIX HERE THE DISPLAY FUNKTION WITH VARIABLE VIEW
+                textView4.setText(entry.getUser().display("  ",false));
                 break;
             case 2: //For Table LocalEntry
                 if (entry.getSync_time() != null)
@@ -137,7 +138,8 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_Displ
 
                 textView.setText(entry.getTitle());
                 textView2.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (entry.getEntry_time()*1000)));
-                textView3.setText(entry.getUser().display("  "));
+                //TODO: FIX HERE THE DISPLAY FUNKTION WITH VARIABLE VIEW
+                textView3.setText(entry.getUser().display("  ",false));
                 String[][] strings =  return2DArray(entry.getAttachment().getContent());
                 for(String[] s: strings) { // Starting Table output
 
