@@ -31,7 +31,7 @@ public class ref_client {
 		String password = "test";
         System.out.println("Username and PW set");
         //TODO: fixed the construktor
-        User user = new User(username, password, 0);
+        User user = new User(username, password, url, 0);
 		ServerDatabaseSession SDS = new ServerDatabaseSession(url, user);
 		try {
             System.out.println("Start session");

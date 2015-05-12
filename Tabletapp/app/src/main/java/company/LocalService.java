@@ -408,19 +408,19 @@ Project register_project(User user, String project_name){
         return null;
         };
 
-        LinkedList<Experiment> match_experiment(Experiment experiment){
+        LinkedList<Experiment> merge_experiment_into(Experiment experiment){
         return null;
         };
 
-        LinkedList<Experiment> match_experiment(Experiment experiment, Experiment real_experiment){
+        LinkedList<Experiment> merge_experiment_into(Experiment experiment, Experiment real_experiment){
         return null;
         };
 
-        LinkedList<Experiment> match_experiment(Experiment experiment, boolean force_sync) throws NoInternetAvailable{
+        LinkedList<Experiment> merge_experiment_into(Experiment experiment, boolean force_sync) throws NoInternetAvailable{
         return null;
         };
 
-        LinkedList<Experiment> match_experiment(Experiment experiment, Experiment real_experiment, boolean force_sync) throws NoInternetAvailable{
+        LinkedList<Experiment> merge_experiment_into(Experiment experiment, Experiment real_experiment, boolean force_sync) throws NoInternetAvailable{
         return null;
         };
 

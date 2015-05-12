@@ -18,6 +18,10 @@ import datastructures.Project;
 import datastructures.User;
 import exceptions.SBSBaseException;
 import scon.Entry_Remote_Identifier;
+import scon.RemoteEntry;
+import scon.RemoteExperiment;
+import scon.RemoteProject;
+import scon.RemoteUser;
 
 public class object_level_db {
     private low_level_adapter db_helper;
@@ -28,6 +32,26 @@ public class object_level_db {
     private static final HashMap<Long, WeakReference<Project>> project_object_cache = new HashMap<Long, WeakReference<Project>>();
     private static final HashMap<Long, WeakReference<Experiment>> experiment_object_cache = new HashMap<Long, WeakReference<Experiment>>();
     private static final HashMap<Long, WeakReference<Entry>> entry_object_cache = new HashMap<Long, WeakReference<Entry>>();
+
+    public void insert_or_update_project(RemoteProject project) throws SBSBaseException{
+        check_open();
+        throw new RuntimeException("Not Yet Implemented");
+    }
+
+    public void insert_or_update_experiment(RemoteExperiment experiment) throws SBSBaseException{
+        check_open();
+        throw new RuntimeException("Not Yet Implemented");
+    }
+
+    public void insert_or_update_user(RemoteUser user) throws SBSBaseException{
+        check_open();
+        throw new RuntimeException("Not Yet Implemented");
+    }
+
+    public void insert_or_update_entry(RemoteEntry entry) throws SBSBaseException{
+        check_open();
+        throw new RuntimeException("Not Yet Implemented");
+    }
 
 
     private long get_row_id(Cursor c){
@@ -188,7 +212,7 @@ public class object_level_db {
         );
     }
 
-    public void match_experiment(Experiment experiment, Experiment real_experiment) throws SBSBaseException{
+    public void merge_experiment_into(Experiment experiment, Experiment real_experiment) throws SBSBaseException{
         check_open();
         this.merge_experiment_or_project_with_underlying_references(experiment.get_id(),
                 real_experiment.get_id(),
@@ -235,7 +259,8 @@ public class object_level_db {
             try {
                 server = new URL(server_string);
             }catch (MalformedURLException e){
-                throw new RuntimeException("Url in database is not a valid url. This should never happen as" +
+                throw new RuntimeException("Url in database is not a valid url. " +
+                        "This should never happen as" +
                         "we check the urls before we write them into the db!");
             }
         } else {
