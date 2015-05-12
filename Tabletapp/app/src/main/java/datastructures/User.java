@@ -3,6 +3,8 @@ import java.io.Serializable;
 import java.net.URL;
 import java.security.MessageDigest;
 
+import scon.RemoteUser;
+
 public class User implements Serializable{
     private String lastname;
     private String firstname;
@@ -12,6 +14,11 @@ public class User implements Serializable{
     private long id;
 
     //this method can be used if one has the unhashed password
+
+    public void update(RemoteUser remoteuser){
+        this.firstname = remoteuser.getFirstname();
+        this.lastname = remoteuser.getLastname();
+    }
 
     public static byte[] hashedPW(String password){
         byte[] resultb = null;

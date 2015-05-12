@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import scon.RemoteProject;
 
 
 public class Project implements Serializable{ //implements Comparable
@@ -25,6 +26,12 @@ public class Project implements Serializable{ //implements Comparable
         this.name = name;
         this.description = description;
         this.date_creation = date_creation;
+    }
+
+    public void update(RemoteProject remoteproject){
+        this.name = remoteproject.getName();
+        this.description = remoteproject.getDescription();
+        this.date_creation = remoteproject.getDate_creation();
     }
 
     /*

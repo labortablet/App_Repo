@@ -3,6 +3,9 @@ package datastructures;
 
 import java.io.Serializable;
 
+import scon.RemoteEntry;
+import scon.RemoteExperiment;
+
 public class Experiment implements Serializable{
     protected long project_id;
     protected long id;
@@ -22,6 +25,12 @@ public class Experiment implements Serializable{
         this.name = name;
         this.description = description;
         this.date_creation = date_creation;
+    }
+
+    public void update(RemoteExperiment remoteexperiment){
+        this.name = remoteexperiment.getName();
+        this.description = remoteexperiment.getDescription();
+        this.date_creation = remoteexperiment.getDate_creation();
     }
 
     public long get_id() {

@@ -2,6 +2,9 @@ package datastructures;
 
 import java.io.Serializable;
 
+import scon.RemoteEntry;
+import scon.RemoteUser;
+
 public class Entry implements Serializable{
     protected long id;
     protected long experiment_id;
@@ -41,6 +44,19 @@ public class Entry implements Serializable{
 
     public User getUser() {
         return this.user;
+    }
+
+    public void update(RemoteEntry remoteentry){
+        if(this.current_time !=remoteentry.getChange_time()){
+            this.title = remoteentry.getTitle();
+            this.attachment = AttachmentBase.deserialize(remoteentry.getAttachment_type(),
+                remoteentry.getAttachment_ser());
+            this.experiment_id = remoteentry.getExperiment_id();
+            this.user.update(remoteentry.getUser());
+            this.date = remoteentry.getSync_time();
+            this.date_user = remoteentry.getEntry_time();
+            this.current_time = remoteentry.getChange_time();
+        }
     }
 
     public Entry(long id, User user, long Experiment_id, String title, AttachmentBase attachment, Long entry_time, Long sync_time, Long change_time) {
