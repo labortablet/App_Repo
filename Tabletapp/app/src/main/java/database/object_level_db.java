@@ -35,7 +35,53 @@ public class object_level_db {
 
     public void insert_or_update_project(RemoteProject project) throws SBSBaseException{
         check_open();
-        throw new RuntimeException("Not Yet Implemented");
+        //first get the local id if it exists
+        Cursor c;
+        c = db.rawQuery("SELECT " + layout.projects.getField("id").getName()
+                + " FROM " + layout.projects.getName()
+                + " WHERE "
+                + layout.projects.getField("remote_id") + "="
+                + project.getId(), null);
+        long id;
+
+        if (c == null) {
+            //the remote project needs to be inserted
+            long result;
+            ContentValues initialValues = new ContentValues();
+            initialValues.put(layout.projects.getField("remote_Id").getName(), project.getId());
+            initialValues.put(layout.projects.getField("name").getName(), project.getName());
+            initialValues.put(layout.projects.getField("description").getName(), project.getDescription());
+            initialValues.put(layout.projects.getField("date_creation").getName(), project.getDate_creation());
+
+            result = this.db.insert(layout.projects.getName(), null, initialValues);
+            if(result == -1){
+                throw new RuntimeException("Could not insert a Remote Project, this should not happen");
+            }
+        }else{
+            //the local project exists already and needs to be updated
+            c.moveToFirst();
+            int index;
+            index = c.getColumnIndex(layout.projects.getField("id").getName());
+            id = c.getLong(index);
+            ContentValues newValues = new ContentValues();
+            newValues.put(layout.projects.getField("name").getName(), project.getName());
+            newValues.put(layout.projects.getField("description").getName(), project.getDescription());
+            newValues.put(layout.projects.getField("date_creation").getName(), project.getDate_creation());
+
+            db.update(layout.projects.getName(), newValues, "id="+id, null);
+            //it is now in the db, afterwards, check if it is already in memory
+            WeakReference<Project> ref = project_object_cache.get(id);
+            if (ref != null)
+            {
+                Project in_cache = ref.get();
+                if (in_cache != null)
+                {
+                    in_cache.update(project);
+                }
+            }
+
+        }
+
     }
 
     public void insert_or_update_experiment(RemoteExperiment experiment) throws SBSBaseException{
@@ -53,6 +99,9 @@ public class object_level_db {
         throw new RuntimeException("Not Yet Implemented");
     }
 
+    public Boolean is_entr_up_to_date(Entry_Remote_Identifier eri) throws SBSBaseException{
+        throw new RuntimeException("Not Yet Implemented");
+    }
 
     private long get_row_id(Cursor c){
         return c.getLong(c.getColumnIndex("id"));
@@ -390,12 +439,16 @@ public class object_level_db {
                 + layout.projects.getField("user_id") + "="
                 +  user.getId(), null);
         LinkedList<Project> tmp = new LinkedList<Project>();
-        Project cache;
+        Project cache=null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
-                cache = project_object_cache.get(id).get();
+                WeakReference<Project> ref = project_object_cache.get(id);
+                if (ref != null)
+                {
+                    cache = ref.get();
+                }
                 if(cache==null){
                     cache = this.convert_cursor_to_project(c);
                     project_object_cache.put(id, new WeakReference<Project>(cache));
@@ -415,12 +468,16 @@ public class object_level_db {
                 +  user.getId() + " AND "
                 + layout.experiments.getField("project_id") + "=" + project.get_id(), null);
         LinkedList<Experiment> tmp = new LinkedList<Experiment>();
-        Experiment cache;
+        Experiment cache=null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
-                cache = experiment_object_cache.get(id).get();
+                WeakReference<Experiment> ref = experiment_object_cache.get(id);
+                if (ref != null)
+                {
+                    cache = ref.get();
+                }
                 if(cache==null){
                     cache = this.convert_cursor_to_experiment(c);
                     experiment_object_cache.put(id, new WeakReference<Experiment>(cache));
@@ -450,12 +507,16 @@ public class object_level_db {
                 + layout.entries.getField("experiment_id") + "="
                 + experiment.get_id() + " LIMIT " + number, null);
         LinkedList<Entry> tmp = new LinkedList<Entry>();
-        Entry cache;
+        Entry cache=null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
-                cache = entry_object_cache.get(id).get();
+                WeakReference<Entry> ref = entry_object_cache.get(id);
+                if (ref != null)
+                {
+                    cache = ref.get();
+                }
                 if(cache==null){
                     cache = this.convert_cursor_to_entry(c);
                     entry_object_cache.put(id, new WeakReference<Entry>(cache));
@@ -476,12 +537,16 @@ public class object_level_db {
                 + layout.users.getField("hashed_pw")
                 + " IS NOT NULL", null);
         LinkedList<User> tmp = new LinkedList<User>();
-        User cache;
+        User cache=null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
-                cache = user_object_cache.get(id).get();
+                WeakReference<User> ref = user_object_cache.get(id);
+                if (ref != null)
+                {
+                    cache = ref.get();
+                }
                 if(cache==null){
                     cache = this.convert_cursor_to_user(c);
                     user_object_cache.put(id, new WeakReference<User>(cache));
