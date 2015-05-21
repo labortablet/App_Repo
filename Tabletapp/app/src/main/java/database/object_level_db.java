@@ -33,42 +33,57 @@ public class object_level_db {
     private static final HashMap<Long, WeakReference<Experiment>> experiment_object_cache = new HashMap<Long, WeakReference<Experiment>>();
     private static final HashMap<Long, WeakReference<Entry>> entry_object_cache = new HashMap<Long, WeakReference<Entry>>();
 
-    public void insert_or_update_project(RemoteProject project) throws SBSBaseException{
+    private Long resolve_remote_id_to_local_id(table table_for_resolve, long remote_id){
+        Cursor c;
+        c = this.db.rawQuery("SELECT " + table_for_resolve.getField("id").getName()
+                + " FROM " + table_for_resolve.getName()
+                + " WHERE "
+                + table_for_resolve.getField("remote_id") + "="
+                + remote_id, null);
+        if(c==null){
+            return null;
+        }
+        c.moveToFirst();
+        int index;
+        index = c.getColumnIndex(table_for_resolve.getField("id").getName());
+        return c.getLong(index);
+    }
+
+    private long insert_project(User user, RemoteProject project){
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(layout.projects.getField("remote_id").getName(), project.getId());
+        initialValues.put(layout.projects.getField("name").getName(), project.getName());
+        initialValues.put(layout.projects.getField("user_id").getName(), user.getId());
+        initialValues.put(layout.projects.getField("description").getName(), project.getDescription());
+        initialValues.put(layout.projects.getField("date_creation").getName(), project.getDate_creation());
+        return this.db.insert(layout.projects.getName(), null, initialValues);
+    }
+
+    private long update_project(long id, RemoteProject project){
+        ContentValues newValues = new ContentValues();
+        newValues.put(layout.projects.getField("name").getName(), project.getName());
+        newValues.put(layout.projects.getField("description").getName(), project.getDescription());
+        newValues.put(layout.projects.getField("date_creation").getName(), project.getDate_creation());
+        return db.update(layout.projects.getName(), newValues, "id=" + id, null);
+    }
+
+    public void insert_or_update_project(User user, RemoteProject project) throws SBSBaseException{
         check_open();
         //first get the local id if it exists
-        Cursor c;
-        c = db.rawQuery("SELECT " + layout.projects.getField("id").getName()
-                + " FROM " + layout.projects.getName()
-                + " WHERE "
-                + layout.projects.getField("remote_id") + "="
-                + project.getId(), null);
-        long id;
-
-        if (c == null) {
+        Long id = this.resolve_remote_id_to_local_id(layout.projects, project.getId());
+        long result;
+        if (id == null) {
             //the remote project needs to be inserted
-            long result;
-            ContentValues initialValues = new ContentValues();
-            initialValues.put(layout.projects.getField("remote_Id").getName(), project.getId());
-            initialValues.put(layout.projects.getField("name").getName(), project.getName());
-            initialValues.put(layout.projects.getField("description").getName(), project.getDescription());
-            initialValues.put(layout.projects.getField("date_creation").getName(), project.getDate_creation());
-
-            result = this.db.insert(layout.projects.getName(), null, initialValues);
+            result = this.insert_project(user, project);
             if(result == -1){
                 throw new RuntimeException("Could not insert a Remote Project, this should not happen");
             }
         }else{
             //the local project exists already and needs to be updated
-            c.moveToFirst();
-            int index;
-            index = c.getColumnIndex(layout.projects.getField("id").getName());
-            id = c.getLong(index);
-            ContentValues newValues = new ContentValues();
-            newValues.put(layout.projects.getField("name").getName(), project.getName());
-            newValues.put(layout.projects.getField("description").getName(), project.getDescription());
-            newValues.put(layout.projects.getField("date_creation").getName(), project.getDate_creation());
-
-            db.update(layout.projects.getName(), newValues, "id="+id, null);
+            result = update_project(id, project);
+            if(result == -1){
+                throw new RuntimeException("Could not update a Remote Project, this should not happen");
+            }
             //it is now in the db, afterwards, check if it is already in memory
             WeakReference<Project> ref = project_object_cache.get(id);
             if (ref != null)
@@ -81,26 +96,153 @@ public class object_level_db {
             }
 
         }
-
     }
 
-    public void insert_or_update_experiment(RemoteExperiment experiment) throws SBSBaseException{
+    private long insert_experiment(User user, RemoteExperiment experiment, long project_id){
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(layout.projects.getField("remote_id").getName(), experiment.getId());
+        initialValues.put(layout.projects.getField("user_id").getName(), user.getId());
+        initialValues.put(layout.projects.getField("name").getName(), experiment.getName());
+        initialValues.put(layout.projects.getField("description").getName(), experiment.getDescription());
+        initialValues.put(layout.projects.getField("date_creation").getName(), experiment.getDate_creation());
+        initialValues.put(layout.projects.getField("project_id").getName(), project_id);
+        return this.db.insert(layout.projects.getName(), null, initialValues);
+    }
+
+    private long update_experiment(long id, RemoteExperiment experiment, long project_id){
+        ContentValues newValues = new ContentValues();
+        newValues.put(layout.projects.getField("name").getName(), experiment.getName());
+        newValues.put(layout.projects.getField("description").getName(), experiment.getDescription());
+        newValues.put(layout.projects.getField("date_creation").getName(), experiment.getDate_creation());
+        newValues.put(layout.projects.getField("project_id").getName(), project_id);
+        return db.update(layout.projects.getName(), newValues, "id=" + id, null);
+    }
+
+    public void insert_or_update_experiment(User user, RemoteExperiment experiment) throws SBSBaseException{
         check_open();
-        throw new RuntimeException("Not Yet Implemented");
+        //first get the local id if it exists
+        Long id = this.resolve_remote_id_to_local_id(layout.experiments, experiment.getId());
+        Long tmp_project_id = this.resolve_remote_id_to_local_id(layout.projects, experiment.getProject_id());
+        if(tmp_project_id==null){
+            throw new RuntimeException("Experiment without a parent Project detected. This should never happen.");
+        }
+        long project_id = tmp_project_id;
+        long result;
+        if (id == null) {
+            //the remote experiment needs to be inserted
+            result = this.insert_experiment(user, experiment, project_id);
+            if(result == -1){
+                throw new RuntimeException("Could not insert a Remote Experiment, this should not happen");
+            }
+        }else{
+            //the local experiment exists already and needs to be updated
+            result = update_experiment(id, experiment, project_id);
+            if(result == -1){
+                throw new RuntimeException("Could not update a Remote Experiment, this should not happen");
+            }
+            //it is now in the db, afterwards, check if it is already in memory
+            WeakReference<Experiment> ref = experiment_object_cache.get(id);
+            if (ref != null)
+            {
+                Experiment in_cache = ref.get();
+                if (in_cache != null)
+                {
+                    in_cache.update(experiment, project_id);
+                }
+            }
+
+        }
     }
+
+    private long insert_user(RemoteUser user){
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(layout.users.getField("firstname").getName(), user.getFirstname());
+        initialValues.put(layout.users.getField("lastname").getName(), user.getLastname());
+        initialValues.put(layout.users.getField("remote_id").getName(), user.getId());
+        return this.db.insert(layout.users.getName(), null, initialValues);
+    }
+
+    private long update_user(long id, RemoteUser user){
+        ContentValues newValues = new ContentValues();
+        newValues.put(layout.users.getField("firstname").getName(), user.getFirstname());
+        newValues.put(layout.users.getField("lastname").getName(), user.getLastname());
+        newValues.put(layout.users.getField("remote_id").getName(), user.getId());
+        return db.update(layout.users.getName(), newValues, "id=" + id, null);
+    }
+
 
     public void insert_or_update_user(RemoteUser user) throws SBSBaseException{
         check_open();
-        throw new RuntimeException("Not Yet Implemented");
+        //first get the local id if it exists
+        Long id = this.resolve_remote_id_to_local_id(layout.users, user.getId());
+        long result;
+        if (id == null) {
+            //the remote user needs to be inserted
+            result = this.insert_user(user);
+            if(result == -1){
+                throw new RuntimeException("Could not insert a Remote User, this should not happen");
+            }
+        }else{
+            //the local user exists already and needs to be updated
+            result = update_user(id, user);
+            if(result == -1){
+                throw new RuntimeException("Could not update a Remote User, this should not happen");
+            }
+            //it is now in the db, afterwards, check if it is already in memory
+            WeakReference<User> ref = user_object_cache.get(id);
+            if (ref != null)
+            {
+                User in_cache = ref.get();
+                if (in_cache != null)
+                {
+                    in_cache.update(user);
+                }
+            }
+
+        }
     }
+
+    private long insert_entry(RemoteEntry entry) throws SBSBaseException{
+        throw new RuntimeException("Not Yet Implemented");
+    };
+
+    private long update_entry(RemoteEntry entry){
+        throw new RuntimeException("Not Yet Implemented");
+    };
 
     public void insert_or_update_entry(RemoteEntry entry) throws SBSBaseException{
         check_open();
         throw new RuntimeException("Not Yet Implemented");
     }
 
-    public Boolean is_entr_up_to_date(Entry_Remote_Identifier eri) throws SBSBaseException{
-        throw new RuntimeException("Not Yet Implemented");
+    public Boolean is_entry_up_to_date(Entry_Remote_Identifier eri) throws SBSBaseException{
+        check_open();
+        Long id =  this.resolve_remote_id_to_local_id(layout.entries, eri.getId());
+        if(id == null){
+            //entry is not in the db, therefore it cannot be up to date
+            return Boolean.FALSE;
+        };
+        //check if it is already in memory
+        WeakReference<Entry> ref = entry_object_cache.get(id);
+        Entry cache=null;
+        if (ref != null)
+        {
+            cache = ref.get();
+        }
+        if(cache!=null){
+            return cache.getChange_time() >= eri.getLast_change();
+        }
+        //it is not in memory, so we have to check the db
+
+        Cursor c = db.rawQuery("SELECT " + layout.entries.getField("current_time").getName()
+                + " FROM " + layout.entries.getName()
+                + " WHERE "
+                + layout.entries.getField("id") + "="
+                + id, null);
+        //c cannot be null as we alreay got the id in advance
+        c.moveToFirst();
+        int index = c.getColumnIndex(layout.entries.getField("current_time").getName());
+        return c.getLong(index) >= eri.getLast_change();
     }
 
     private long get_row_id(Cursor c){

@@ -27,10 +27,11 @@ public class Experiment implements Serializable{
         this.date_creation = date_creation;
     }
 
-    public void update(RemoteExperiment remoteexperiment){
+    public void update(RemoteExperiment remoteexperiment, long project_id){
         this.name = remoteexperiment.getName();
         this.description = remoteexperiment.getDescription();
         this.date_creation = remoteexperiment.getDate_creation();
+        this.project_id = project_id;
     }
 
     public long get_id() {

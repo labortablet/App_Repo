@@ -31,6 +31,7 @@ public abstract class AttachmentBase implements Serializable{
 
 
     public abstract String getContent();
+    //function used by the GUI to get the data for displaying
 
     public int getTypeNumber() {
         return -1;
