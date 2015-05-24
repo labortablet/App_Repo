@@ -33,6 +33,11 @@ public class object_level_db {
     private static final HashMap<Long, WeakReference<Experiment>> experiment_object_cache = new HashMap<Long, WeakReference<Experiment>>();
     private static final HashMap<Long, WeakReference<Entry>> entry_object_cache = new HashMap<Long, WeakReference<Entry>>();
 
+    /**
+     *  fügt ein neues Project ein in die Datenbank ein, oder updatet es
+     * @param project RemoteProject Welches geupdated oder eingefügt werden soll
+     * @throws SBSBaseException Exception falls einfügen oder updaten nicht möglich ist
+     */
     public void insert_or_update_project(RemoteProject project) throws SBSBaseException{
         //TODO: auskommentiert wegen noch nicht implementiert
         //check_open();
@@ -135,6 +140,16 @@ public class object_level_db {
         this.db_helper = null;
     }
 
+    /**
+     * Diese Funktion fügt einen Benutzer in die Datenbank ein
+     * @param login Email adresse
+     * @param password password des Benutzers
+     * @param server URL der Datenbank
+     * @return User Gibt ein User Object mit Local_id zurück
+     * @throws SBSBaseException Exception falls der User nicht in die Datenbank geschrieben wurde.
+     */
+
+
     public User register_user(String login, String password, URL server) throws SBSBaseException{
         //TODO:auskommentiert weil nicht implementiert
 //        check_open();
@@ -161,6 +176,14 @@ public class object_level_db {
         }
     }
 
+    /**
+     *  Schreibt ein Project in die Datenbank
+     * @param user Benutzer der zugriff auf das Project hat
+     * @param project_name Name des Projects
+     * @return Gibt ein Object des Typs Project zurück
+     * @throws SBSBaseException
+     */
+
     public Project register_project(User user, String project_name) throws SBSBaseException{
         check_open();
         long result;
@@ -176,8 +199,16 @@ public class object_level_db {
         }
     }
 
-    public Experiment register_experiment(User user, Project project, String experiment_name)
-            throws SBSBaseException{
+    /**
+     * Fügt ein Experiment in die Datenbank ein
+     * @param user benutzer dem das Experiment zugeordnet ist
+     * @param project Project zudem das Experiment gehört
+     * @param experiment_name Name des experiments
+     * @return Gimt ein Object des Typs Experiment zurück
+     * @throws SBSBaseException
+     */
+
+    public Experiment register_experiment(User user, Project project, String experiment_name) throws SBSBaseException{
         check_open();
         long id;
         ContentValues initialValues = new ContentValues();
@@ -192,6 +223,17 @@ public class object_level_db {
             return new Experiment(id, project.get_id(), experiment_name);
         }
     }
+
+    /**
+     * Fügt einen neuen Entry in die Datenbank ein
+     * @param user Benutzer, dem das Project zugeordnet ist
+     * @param experiment Experiment, dem der Entry zugeordnet ist
+     * @param title Titel des Entries
+     * @param attachment Attachment Object
+     * @param date_user Sync time
+     * @return Gibt ein Object des Typs Entry wieder
+     * @throws SBSBaseException
+     */
 
     public Entry new_Entry(User user, Experiment experiment, String title,
                            AttachmentBase attachment, long date_user) throws SBSBaseException{
