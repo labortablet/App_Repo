@@ -9,8 +9,8 @@ package database;
 
 
 public class layout {
-    public static final int VERSION = 1;
-    public static final String NAME = "LabletDB";
+    public static final int VERSION = 6;
+    public static final String NAME = "LableteDB";
 
     public static final table entries = new table("entries",
            new table.table_field("id", "INTEGER", "PRIMARY KEY AUTOINCREMENT NOT NULL"),

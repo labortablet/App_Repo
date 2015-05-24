@@ -34,7 +34,8 @@ public class object_level_db {
     private static final HashMap<Long, WeakReference<Entry>> entry_object_cache = new HashMap<Long, WeakReference<Entry>>();
 
     public void insert_or_update_project(RemoteProject project) throws SBSBaseException{
-        check_open();
+        //TODO: auskommentiert wegen noch nicht implementiert
+        //check_open();
         //first get the local id if it exists
         Cursor c;
         c = db.rawQuery("SELECT " + layout.projects.getField("id").getName()
@@ -127,7 +128,7 @@ public class object_level_db {
     }
 
     public void close()throws SBSBaseException{
-        check_open();
+        //check_open();
         this.opened = false;
         this.db.close();
         this.db_helper.close();
@@ -135,13 +136,16 @@ public class object_level_db {
     }
 
     public User register_user(String login, String password, URL server) throws SBSBaseException{
-        check_open();
+        //TODO:auskommentiert weil nicht implementiert
+//        check_open();
+        open();
         long result;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
         initialValues.put(layout.users.getField("hashed_pw").getName(), User.hashedPW(password));
         initialValues.put(layout.users.getField("server").getName(), server.toString());
         result = this.db.insert(layout.users.getName(), null, initialValues);
+
         if(result == -1){
             //TODO
             //what happens if the user already exists?
@@ -434,9 +438,9 @@ public class object_level_db {
 
     public LinkedList<Project> get_projects(User user)throws SBSBaseException {
         check_open();
-        Cursor c = db.rawQuery("SELECT * FROM " + layout.projects.getName()
+        Cursor c = db.rawQuery("SELECT * FROM " + layout.projects.getName() //:todo fix this compile error Caused by: android.database.sqlite.SQLiteException: near "@4110e268": syntax error: , while compiling: SELECT * FROM projects WHERE database.table$table_field@4110e268=1
                 + " WHERE "
-                + layout.projects.getField("user_id") + "="
+                + "user_id = "  //layout.projects.getField("user_id") + "="
                 +  user.getId(), null);
         LinkedList<Project> tmp = new LinkedList<Project>();
         Project cache=null;
@@ -531,10 +535,10 @@ public class object_level_db {
     public LinkedList<User> get_all_users_with_login()throws SBSBaseException{
         check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.users.getName()
-                + " WHERE "
-                + layout.users.getField("login")
+                + " WHERE " //TODO: had to change this it caused a sqllite compile error
+                + "login"  //layout.users.getField("login")
                 + " IS NOT NULL AND "
-                + layout.users.getField("hashed_pw")
+                + "hashed_pw"  //layout.users.getField("hashed_pw")
                 + " IS NOT NULL", null);
         LinkedList<User> tmp = new LinkedList<User>();
         User cache=null;

@@ -12,6 +12,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
@@ -53,7 +54,8 @@ public class LocalService extends Service {
     public static Timer alwaysTimer = new Timer();
     private ServersideDatabaseConnectionObject SDCO;
     static ServerDatabaseSession SDS;
-public static object_level_db objectlevel_db;
+    public WeakReference<object_level_db> objectlevel_db;
+    private URL url;
     public static DBAdapter myDb;//= Gui_StartActivity.myDb;
     static List<ProjectExperimentEntry> projectExperimentEntries;
 
@@ -73,16 +75,17 @@ public static object_level_db objectlevel_db;
 
     @Override
     public void onCreate() {
-       myDb = new DBAdapter(getApplicationContext());
-        objectlevel_db = new object_level_db(getApplicationContext());
+        myDb = new DBAdapter(getApplicationContext());
+        objectlevel_db = new WeakReference<object_level_db>(Gui_StartActivity.getObjectlevel_db());
         super.onCreate();
         deleteAllSynced();
     }
-    public object_level_db getObjectlevel_db()
+    public WeakReference<object_level_db> getObjectlevel_db()
     {return objectlevel_db;}
 
-    public void setUserAndURL(User user, String server) {
+    public void setUserAndURL(User user, String server) throws MalformedURLException {
         this.user = user;
+        this.url = new URL(server);
 
     }
     public DBAdapter getDB(){
@@ -173,7 +176,11 @@ public static object_level_db objectlevel_db;
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
-
+public LinkedList<scon.RemoteProject> getProjects() throws SBSBaseException {
+    SDS = new ServerDatabaseSession(url, user);
+    SDS.start_session();
+    return SDS.get_projects();
+}
 
     public class LocalBinder extends Binder {
         LocalService getService() {

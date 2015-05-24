@@ -23,6 +23,7 @@ import java.util.List;
 
 import datastructures.Experiment;
 import datastructures.Project;
+import exceptions.SBSBaseException;
 import imports.ActivityRegistry;
 import imports.ExpandableListAdapterProjectsAndExperiments;
 import datastructures.ProjectExperimentEntry;
@@ -58,9 +59,13 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
 
         public void onCreate(Bundle savedInstanceState) {
         LocalService service = mservice.get();
-        service.getDB().open();
-projects.addAll(service.getDB().getAllProjectRowsLinkedList());
-        service.getDB().close();
+
+        try {
+            projects.addAll(service.getObjectlevel_db().get().get_projects(service.getUser()));
+        } catch (SBSBaseException e) {
+            e.printStackTrace();
+        }
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_project_experiment_list);
