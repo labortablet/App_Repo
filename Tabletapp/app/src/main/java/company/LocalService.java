@@ -39,6 +39,7 @@ import datastructures.ProjectExperimentEntry;
 import imports.ServersideDatabaseConnectionObject;
 import datastructures.User;
 import scon.Entry_Remote_Identifier;
+import scon.RemoteExperiment;
 import scon.ServerDatabaseSession;
 
 
@@ -54,6 +55,7 @@ public class LocalService extends Service {
     private ServersideDatabaseConnectionObject SDCO;
     static ServerDatabaseSession SDS;
 public static object_level_db objectlevel_db;
+ private URL url;
     public static DBAdapter myDb;//= Gui_StartActivity.myDb;
     static List<ProjectExperimentEntry> projectExperimentEntries;
 
@@ -81,9 +83,19 @@ public static object_level_db objectlevel_db;
     public object_level_db getObjectlevel_db()
     {return objectlevel_db;}
 
-    public void setUserAndURL(User user, String server) {
-        this.user = user;
+    public void setUserAndURL(User user, String server) throws MalformedURLException {
 
+        this.user = user;
+            this.url = new URL(server);
+    }
+    public LinkedList<scon.RemoteProject> getProjects() throws SBSBaseException {
+            SDS = new ServerDatabaseSession(url, user);
+            SDS.start_session();
+            return SDS.get_projects();
+
+        }
+    public LinkedList<RemoteExperiment> getExperiments() throws SBSBaseException {
+        return SDS.get_experiments();
     }
     public DBAdapter getDB(){
         return myDb;

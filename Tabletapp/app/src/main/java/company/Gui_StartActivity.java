@@ -29,12 +29,14 @@ import com.example.test1.tabletapp.app.R;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+import database.object_level_db;
 import datastructures.Entry;
 import datastructures.Experiment;
 import datastructures.Project;
@@ -66,6 +68,10 @@ public class Gui_StartActivity extends Activity {
     CheckBox checkBox3;
     ProgressBar prgs;
     ProgressTask task;
+    String server;
+    String email;
+    String password;
+    private static object_level_db objectlevel_db;
     WeakReference<LocalService> mserviceweak = new WeakReference<LocalService>(mService);
     public static LocalService mService;
     static Context context;
@@ -86,6 +92,7 @@ public class Gui_StartActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_gui_start_activity);
+        objectlevel_db = new object_level_db(this);
         text = (EditText) findViewById(R.id.editText);
         text2 = (EditText) findViewById(R.id.editText4);
         text3 = (EditText) findViewById(R.id.editText3);
@@ -144,25 +151,38 @@ public class Gui_StartActivity extends Activity {
                 if (validate(text2.getText().toString())) { // abfrage der korrektheit der email
                 //    text2.setText("fredi@uni-siegen.de");
               //      text3.setText("test");
-                    String server = text.getText().toString();
-                    String email = text2.getText().toString();
-                    String password = text3.getText().toString();
-                    mService.getDB().open();
-                    mService.getDB().insertLoginUser(email, User.hashedPW(password),server);
-                    mService.setUserAndURL(mService.getDB().getLocalUser(email), server);
-                    try{
-                    Log.d("passwdhash2",  new String(mService.getUser().getPw_hash(), "UTF-8"));
-                    }catch (UnsupportedEncodingException e)
-                    {
-                        e.printStackTrace();
-                    }
-                        mService.getDB().close();
-                   int i =  mService.connect(server);
+                    server = text.getText().toString();
+
+                                         email = text2.getText().toString();
+
+                                         password = text3.getText().toString();
+
+                                 //      mService.getDB().open();
+
+                                          //      mService.getDB().insertLoginUser(email, User.hashedPW(password),server);
+
+                                                 //      mService.setUserAndURL(mService.getDB().getLocalUser(email), server);
+
+                                                            //    try{
+
+                                                                   //    Log.d("passwdhash2",  new String(mService.getUser().getPw_hash(), "UTF-8"));
+
+                                                                          //     }catch (UnsupportedEncodingException e)
+
+                                                                                  //     {
+
+                                                                                         //          e.printStackTrace();
+
+                                                                                                 //      }
+
+                                                                                                         //          mService.getDB().close();
+
+                                                                                                                     //  int i =  mService.connect(server);
                    showProgress();
 
 
-                  switch (i) {
-                       case 0:
+               //   switch (i) {
+                    //   case 0:
 
 
 
@@ -186,7 +206,7 @@ if(checkBox.isChecked())
 
                            edit.apply();
 
-                            break;
+                 /*           break;
                        case 1:
                             Popup popup = new Popup();
                             popup.set_String(R.string.MalformedURLException);
@@ -202,7 +222,7 @@ if(checkBox.isChecked())
                           popup3.set_String(R.string.SBSBaseException);
                           popup3.show(getFragmentManager(), "this");
                           break;
-                    }
+                    }*/
 
 
                 } else {
@@ -334,46 +354,43 @@ if(checkBox.isChecked())
         }
         protected Void doInBackground(Integer... params) {
 
-            ServerDatabaseSession SDS = mService.SDS;
-            LinkedList<Entry> entries = new LinkedList<Entry>() ;
+         //   ServerDatabaseSession SDS = mService.SDS;
+        //    LinkedList<Entry> entries = new LinkedList<Entry>() ;
             // try {
             try {
-                SDS.start_session();
-                mService.getObjectlevel_db().open();
-
-                mService.getDB().open();
-              //  long ll = mService.getDB().insertNewUser(mService.getUser());
-              //  mService.setUserID(mService.getDB().getUserByEmail(mService.getUser().getUser_email()));
-                projects = SDS.get_projects();
-                mService.getObjectlevel_db();
-                mService.getDB().deleteAllExperiments();
-                mService.getDB().deleteAllProjects();
-                mService.getDB().deleteAllEntries();
-                mService.getDB().deleteAllUsers();
-          //      mService.getDB().insertProject(projects);
-                publishProgress(30);
-                experiments = SDS.get_experiments();
-                mService.getDB().insertExperiments(experiments);
-                publishProgress(30);
-
-           LinkedList<RemoteEntry> remoteEntry = new LinkedList<RemoteEntry>();
-
-           for (int i = 0; experiments.size() > i; i++) {
-                LinkedList<Entry_Remote_Identifier> entry_remoteIdentifiers = SDS.get_last_entry_references(experiments.get(i).getId(), 10, null);
-                 for (int j = 0; entry_remoteIdentifiers.size() > j; j++) {
-                    remoteEntry.add(SDS.get_entry(entry_remoteIdentifiers.get(j)));
+                objectlevel_db.register_user(email,password,new URL(server));
+                LinkedList<RemoteProject> Projects = null;
+                LinkedList<RemoteExperiment> Experiments = null;
+                LinkedList<User> all_users_which_have_login_info = objectlevel_db.get_all_users_with_login();
+                mService.getUser();
+                mService.setUserAndURL(getActiveUser(all_users_which_have_login_info),server);
+                mService.setUserAndURL(getActiveUser(all_users_which_have_login_info),server);
+                for (int i = 0;all_users_which_have_login_info.size()>i;i++) {
+                    Projects = mService.getProjects();
                 }
-               mService.getDB().insertNewUserByRemoteEntry(remoteEntry);
-               mService.getDB().insertEntries(remoteEntry,mService.getUser());
+                for (int j = 0; j<Projects.size();j++ ) {
+                    objectlevel_db.insert_or_update_project(mService.getUser(),Projects.get((j)));}
+                publishProgress(20);
 
-               remoteEntry.clear();
-               if(i == experiments.size()/2)
-                   publishProgress(20);
-           }
-            }catch (SBSBaseException e) {
+                Experiments = mService.getExperiments();
+                for (int i = 0;i<Experiments.size();i++ ) {
+                    objectlevel_db.insert_or_update_experiment(mService.getUser(), Experiments.get(i));
+                }
+                }
+
+
+          //      experiments = SDS.get_experiments();
+          //      mService.getDB().insertExperiments(experiments);
+
+
+
+
+            catch (SBSBaseException e) {
             e.printStackTrace();
-        }
-            mService.getDB().close();
+        } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+          //  mService.getDB().close();
             publishProgress(20);
             return null;
         }
@@ -411,6 +428,27 @@ if(checkBox.isChecked())
     public static LocalService getmService() {
         return mService;
     }
+    public static object_level_db getObjectlevel_db() {
+
+       return objectlevel_db;
+
+           }
+    private User getActiveUser(LinkedList<User> users){
+
+              User user = null;
+
+            for(int i=0;i<users.size();i++){
+
+                   if (users.get(i).getUser_email().equals(email)){
+
+               user = users.get(i);
+
+                      break;}}
+
+                return user;
+
+            }
+
 }
 
 

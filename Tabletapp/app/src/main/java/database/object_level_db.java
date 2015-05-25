@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
@@ -35,16 +36,25 @@ public class object_level_db {
 
     private Long resolve_remote_id_to_local_id(table table_for_resolve, long remote_id){
         Cursor c;
-        c = this.db.rawQuery("SELECT " + table_for_resolve.getField("id").getName()
-                + " FROM " + table_for_resolve.getName()
+
+       // c = db.rawQuery(" SELECT "+table_for_resolve.getField("id").getName()+" FROM " + table_for_resolve.getName() + " WHERE " + "remote_id"+ " = ?", new String[]{String.valueOf(remote_id)});
+
+        c = this.db.rawQuery("SELECT " + " * "//table_for_resolve.getField("id").getName()
+                + " FROM " + table_for_resolve.getName()  //TODO fix this
                 + " WHERE "
-                + table_for_resolve.getField("remote_id") + "="
+                + "remote_id = "//table_for_resolve.getField("remote_id") + "=" //Caused by: android.database.sqlite.SQLiteException: near "@411093f8": syntax error: , while compiling: SELECT id FROM projects WHERE database.table$table_field@411093f8=1
                 + remote_id, null);
-        if(c==null){
+       for (int i=0;i<c.getColumnNames().length;i++)
+
+
+        if(c == null){
             return null;
         }
+        if (!c.moveToFirst())
+            return null;
         c.moveToFirst();
         int index;
+
         index = c.getColumnIndex(table_for_resolve.getField("id").getName());
         return c.getLong(index);
     }
@@ -68,7 +78,8 @@ public class object_level_db {
     }
 
     public void insert_or_update_project(User user, RemoteProject project) throws SBSBaseException{
-        check_open();
+     //   check_open();
+        open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.projects, project.getId());
         long result;
@@ -119,7 +130,8 @@ public class object_level_db {
     }
 
     public void insert_or_update_experiment(User user, RemoteExperiment experiment) throws SBSBaseException{
-        check_open();
+       // check_open(); //TODO implement if its ready
+        open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.experiments, experiment.getId());
         Long tmp_project_id = this.resolve_remote_id_to_local_id(layout.projects, experiment.getProject_id());
@@ -130,7 +142,11 @@ public class object_level_db {
         long result;
         if (id == null) {
             //the remote experiment needs to be inserted
+            //TODO find out why this bug happens  Caused by: java.lang.NullPointerException
+       //     at database.object_level_db.insert_experiment(object_level_db.java:119)
+         //   at database.object_level_db.insert_or_update_experiment(object_level_db.java:146)
             result = this.insert_experiment(user, experiment, project_id);
+
             if(result == -1){
                 throw new RuntimeException("Could not insert a Remote Experiment, this should not happen");
             }
@@ -277,7 +293,8 @@ public class object_level_db {
     }
 
     public User register_user(String login, String password, URL server) throws SBSBaseException{
-        check_open();
+       // check_open();
+        open();
         long result;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
@@ -575,10 +592,11 @@ public class object_level_db {
     }
 
     public LinkedList<Project> get_projects(User user)throws SBSBaseException {
-        check_open();
+//        check_open(); //TODO change if funktion is implemented
+  open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.projects.getName()
                 + " WHERE "
-                + layout.projects.getField("user_id") + "="
+                + "user_id = "  //layout.projects.getField("user_id") + "="   //:todo fix this compile error Caused by: android.database.sqlite.SQLiteException: near "@4110e268": syntax error: , while compiling: SELECT * FROM projects WHERE database.table$table_field@4110e268=1
                 +  user.getId(), null);
         LinkedList<Project> tmp = new LinkedList<Project>();
         Project cache=null;
@@ -673,10 +691,10 @@ public class object_level_db {
     public LinkedList<User> get_all_users_with_login()throws SBSBaseException{
         check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.users.getName()
-                + " WHERE "
-                + layout.users.getField("login")
+                + " WHERE "//TODO: fix this error   Caused by: android.database.sqlite.SQLiteException: near "@41110680": syntax error: , while compiling: SELECT * FROM users WHERE database.table$table_field@41110680 IS NOT NULL AND database.table$table_field@411106e0 IS NOT NULL
+                + "login"//layout.users.getField("login")
                 + " IS NOT NULL AND "
-                + layout.users.getField("hashed_pw")
+                + "hashed_pw"//layout.users.getField("hashed_pw")
                 + " IS NOT NULL", null);
         LinkedList<User> tmp = new LinkedList<User>();
         User cache=null;
