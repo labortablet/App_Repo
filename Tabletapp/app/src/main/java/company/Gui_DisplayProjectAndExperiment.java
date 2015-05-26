@@ -65,6 +65,9 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
         try {
 
                        projects.addAll(service.getObjectlevel_db().get_projects(service.getUser()));
+            for (int i = 0;projects.size() > i;i++){
+               Log.d("project NR." + i, projects.get(i).get_name());
+            }
 
                    } catch (SBSBaseException e) {
 

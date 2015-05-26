@@ -34,22 +34,22 @@ public class object_level_db {
     private static final HashMap<Long, WeakReference<Experiment>> experiment_object_cache = new HashMap<Long, WeakReference<Experiment>>();
     private static final HashMap<Long, WeakReference<Entry>> entry_object_cache = new HashMap<Long, WeakReference<Entry>>();
 
-    private Long resolve_remote_id_to_local_id(table table_for_resolve, long remote_id){
+    private Long resolve_remote_id_to_local_id(table table_for_resolve, long remote_id) {
         Cursor c;
 
-       // c = db.rawQuery(" SELECT "+table_for_resolve.getField("id").getName()+" FROM " + table_for_resolve.getName() + " WHERE " + "remote_id"+ " = ?", new String[]{String.valueOf(remote_id)});
+        // c = db.rawQuery(" SELECT "+table_for_resolve.getField("id").getName()+" FROM " + table_for_resolve.getName() + " WHERE " + "remote_id"+ " = ?", new String[]{String.valueOf(remote_id)});
 
         c = this.db.rawQuery("SELECT " + " * "//table_for_resolve.getField("id").getName()
                 + " FROM " + table_for_resolve.getName()  //TODO fix this
                 + " WHERE "
                 + "remote_id = "//table_for_resolve.getField("remote_id") + "=" //Caused by: android.database.sqlite.SQLiteException: near "@411093f8": syntax error: , while compiling: SELECT id FROM projects WHERE database.table$table_field@411093f8=1
                 + remote_id, null);
-       for (int i=0;i<c.getColumnNames().length;i++)
+        for (int i = 0; i < c.getColumnNames().length; i++)
 
 
-        if(c == null){
-            return null;
-        }
+            if (c == null) {
+                return null;
+            }
         if (!c.moveToFirst())
             return null;
         c.moveToFirst();
@@ -59,7 +59,7 @@ public class object_level_db {
         return c.getLong(index);
     }
 
-    private long insert_project(User user, RemoteProject project){
+    private long insert_project(User user, RemoteProject project) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.projects.getField("remote_id").getName(), project.getId());
         initialValues.put(layout.projects.getField("name").getName(), project.getName());
@@ -69,7 +69,7 @@ public class object_level_db {
         return this.db.insert(layout.projects.getName(), null, initialValues);
     }
 
-    private long update_project(long id, RemoteProject project){
+    private long update_project(long id, RemoteProject project) {
         ContentValues newValues = new ContentValues();
         newValues.put(layout.projects.getField("name").getName(), project.getName());
         newValues.put(layout.projects.getField("description").getName(), project.getDescription());
@@ -77,31 +77,30 @@ public class object_level_db {
         return db.update(layout.projects.getName(), newValues, "id=" + id, null);
     }
 
-    public void insert_or_update_project(User user, RemoteProject project) throws SBSBaseException{
-     //   check_open();
+    public void insert_or_update_project(User user, RemoteProject project) throws SBSBaseException {
+        //   check_open();
         open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.projects, project.getId());
+        Log.d("id des projectes", String.valueOf(id));
         long result;
         if (id == null) {
             //the remote project needs to be inserted
             result = this.insert_project(user, project);
-            if(result == -1){
+            if (result == -1) {
                 throw new RuntimeException("Could not insert a Remote Project, this should not happen");
             }
-        }else{
+        } else {
             //the local project exists already and needs to be updated
             result = update_project(id, project);
-            if(result == -1){
+            if (result == -1) {
                 throw new RuntimeException("Could not update a Remote Project, this should not happen");
             }
             //it is now in the db, afterwards, check if it is already in memory
             WeakReference<Project> ref = project_object_cache.get(id);
-            if (ref != null)
-            {
+            if (ref != null) {
                 Project in_cache = ref.get();
-                if (in_cache != null)
-                {
+                if (in_cache != null) {
                     in_cache.update(project);
                 }
             }
@@ -109,7 +108,7 @@ public class object_level_db {
         }
     }
 
-    private long insert_experiment(User user, RemoteExperiment experiment, long project_id){
+    private long insert_experiment(User user, RemoteExperiment experiment, long project_id) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.projects.getField("remote_id").getName(), experiment.getId());
         initialValues.put(layout.projects.getField("user_id").getName(), user.getId());
@@ -120,7 +119,7 @@ public class object_level_db {
         return this.db.insert(layout.projects.getName(), null, initialValues);
     }
 
-    private long update_experiment(long id, RemoteExperiment experiment, long project_id){
+    private long update_experiment(long id, RemoteExperiment experiment, long project_id) {
         ContentValues newValues = new ContentValues();
         newValues.put(layout.projects.getField("name").getName(), experiment.getName());
         newValues.put(layout.projects.getField("description").getName(), experiment.getDescription());
@@ -129,13 +128,13 @@ public class object_level_db {
         return db.update(layout.projects.getName(), newValues, "id=" + id, null);
     }
 
-    public void insert_or_update_experiment(User user, RemoteExperiment experiment) throws SBSBaseException{
-       // check_open(); //TODO implement if its ready
+    public void insert_or_update_experiment(User user, RemoteExperiment experiment) throws SBSBaseException {
+        // check_open(); //TODO implement if its ready
         open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.experiments, experiment.getId());
         Long tmp_project_id = this.resolve_remote_id_to_local_id(layout.projects, experiment.getProject_id());
-        if(tmp_project_id==null){
+        if (tmp_project_id == null) {
             throw new RuntimeException("Experiment without a parent Project detected. This should never happen.");
         }
         long project_id = tmp_project_id;
@@ -143,26 +142,24 @@ public class object_level_db {
         if (id == null) {
             //the remote experiment needs to be inserted
             //TODO find out why this bug happens  Caused by: java.lang.NullPointerException
-       //     at database.object_level_db.insert_experiment(object_level_db.java:119)
-         //   at database.object_level_db.insert_or_update_experiment(object_level_db.java:146)
+            //     at database.object_level_db.insert_experiment(object_level_db.java:119)
+            //   at database.object_level_db.insert_or_update_experiment(object_level_db.java:146)
             result = this.insert_experiment(user, experiment, project_id);
 
-            if(result == -1){
+            if (result == -1) {
                 throw new RuntimeException("Could not insert a Remote Experiment, this should not happen");
             }
-        }else{
+        } else {
             //the local experiment exists already and needs to be updated
             result = update_experiment(id, experiment, project_id);
-            if(result == -1){
+            if (result == -1) {
                 throw new RuntimeException("Could not update a Remote Experiment, this should not happen");
             }
             //it is now in the db, afterwards, check if it is already in memory
             WeakReference<Experiment> ref = experiment_object_cache.get(id);
-            if (ref != null)
-            {
+            if (ref != null) {
                 Experiment in_cache = ref.get();
-                if (in_cache != null)
-                {
+                if (in_cache != null) {
                     in_cache.update(experiment, project_id);
                 }
             }
@@ -170,7 +167,7 @@ public class object_level_db {
         }
     }
 
-    private long insert_user(RemoteUser user){
+    private long insert_user(RemoteUser user) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("firstname").getName(), user.getFirstname());
         initialValues.put(layout.users.getField("lastname").getName(), user.getLastname());
@@ -178,7 +175,7 @@ public class object_level_db {
         return this.db.insert(layout.users.getName(), null, initialValues);
     }
 
-    private long update_user(long id, RemoteUser user){
+    private long update_user(long id, RemoteUser user) {
         ContentValues newValues = new ContentValues();
         newValues.put(layout.users.getField("firstname").getName(), user.getFirstname());
         newValues.put(layout.users.getField("lastname").getName(), user.getLastname());
@@ -187,7 +184,7 @@ public class object_level_db {
     }
 
 
-    public void insert_or_update_user(RemoteUser user) throws SBSBaseException{
+    public void insert_or_update_user(RemoteUser user) throws SBSBaseException {
         check_open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.users, user.getId());
@@ -195,22 +192,20 @@ public class object_level_db {
         if (id == null) {
             //the remote user needs to be inserted
             result = this.insert_user(user);
-            if(result == -1){
+            if (result == -1) {
                 throw new RuntimeException("Could not insert a Remote User, this should not happen");
             }
-        }else{
+        } else {
             //the local user exists already and needs to be updated
             result = update_user(id, user);
-            if(result == -1){
+            if (result == -1) {
                 throw new RuntimeException("Could not update a Remote User, this should not happen");
             }
             //it is now in the db, afterwards, check if it is already in memory
             WeakReference<User> ref = user_object_cache.get(id);
-            if (ref != null)
-            {
+            if (ref != null) {
                 User in_cache = ref.get();
-                if (in_cache != null)
-                {
+                if (in_cache != null) {
                     in_cache.update(user);
                 }
             }
@@ -218,34 +213,38 @@ public class object_level_db {
         }
     }
 
-    private long insert_entry(RemoteEntry entry) throws SBSBaseException{
+    private long insert_entry(RemoteEntry entry) throws SBSBaseException {
         throw new RuntimeException("Not Yet Implemented");
-    };
+    }
 
-    private long update_entry(RemoteEntry entry){
+    ;
+
+    private long update_entry(RemoteEntry entry) {
         throw new RuntimeException("Not Yet Implemented");
-    };
+    }
 
-    public void insert_or_update_entry(RemoteEntry entry) throws SBSBaseException{
+    ;
+
+    public void insert_or_update_entry(RemoteEntry entry) throws SBSBaseException {
         check_open();
         throw new RuntimeException("Not Yet Implemented");
     }
 
-    public Boolean is_entry_up_to_date(Entry_Remote_Identifier eri) throws SBSBaseException{
+    public Boolean is_entry_up_to_date(Entry_Remote_Identifier eri) throws SBSBaseException {
         check_open();
-        Long id =  this.resolve_remote_id_to_local_id(layout.entries, eri.getId());
-        if(id == null){
+        Long id = this.resolve_remote_id_to_local_id(layout.entries, eri.getId());
+        if (id == null) {
             //entry is not in the db, therefore it cannot be up to date
             return Boolean.FALSE;
-        };
+        }
+        ;
         //check if it is already in memory
         WeakReference<Entry> ref = entry_object_cache.get(id);
-        Entry cache=null;
-        if (ref != null)
-        {
+        Entry cache = null;
+        if (ref != null) {
             cache = ref.get();
         }
-        if(cache!=null){
+        if (cache != null) {
             return cache.getChange_time() >= eri.getLast_change();
         }
         //it is not in memory, so we have to check the db
@@ -261,12 +260,12 @@ public class object_level_db {
         return c.getLong(index) >= eri.getLast_change();
     }
 
-    private long get_row_id(Cursor c){
+    private long get_row_id(Cursor c) {
         return c.getLong(c.getColumnIndex("id"));
     }
 
-    private void check_open()throws SBSBaseException{
-        if(!this.opened){
+    private void check_open() throws SBSBaseException {
+        if (!this.opened) {
             //TODO
             //check the interface is ready
             throw new RuntimeException("Check for interface open. Not implemented yet");
@@ -274,17 +273,17 @@ public class object_level_db {
     }
 
     public object_level_db(Context ctx) {
-        if(this.db_helper == null) {
+        if (this.db_helper == null) {
             this.db_helper = new low_level_adapter(ctx);
         }
     }
 
     public void open() {
-       this.opened = true;
-       this.db = this.db_helper.getWritableDatabase();
+        this.opened = true;
+        this.db = this.db_helper.getWritableDatabase();
     }
 
-    public void close()throws SBSBaseException{
+    public void close() throws SBSBaseException {
         check_open();
         this.opened = false;
         this.db.close();
@@ -292,8 +291,8 @@ public class object_level_db {
         this.db_helper = null;
     }
 
-    public User register_user(String login, String password, URL server) throws SBSBaseException{
-       // check_open();
+    public User register_user(String login, String password, URL server) throws SBSBaseException {
+        // check_open();
         open();
         long result;
         ContentValues initialValues = new ContentValues();
@@ -301,7 +300,7 @@ public class object_level_db {
         initialValues.put(layout.users.getField("hashed_pw").getName(), User.hashedPW(password));
         initialValues.put(layout.users.getField("server").getName(), server.toString());
         result = this.db.insert(layout.users.getName(), null, initialValues);
-        if(result == -1){
+        if (result == -1) {
             //TODO
             //what happens if the user already exists?
             //should we load it from db?
@@ -311,28 +310,28 @@ public class object_level_db {
             //or not
             throw new RuntimeException("Not yet implemented yet!");
             //return null;
-        }else{
+        } else {
             return new User(login, password, server, result);
         }
     }
 
-    public Project register_project(User user, String project_name) throws SBSBaseException{
+    public Project register_project(User user, String project_name) throws SBSBaseException {
         check_open();
         long result;
         ContentValues initialValues = new ContentValues();
-        initialValues.put(layout.projects.getField("user_id").getName(),user.getId());
+        initialValues.put(layout.projects.getField("user_id").getName(), user.getId());
         initialValues.put(layout.projects.getField("name").getName(), project_name);
         result = this.db.insert(layout.projects.getName(), null, initialValues);
-        if(result == -1){
+        if (result == -1) {
             throw new RuntimeException("Registering a new project failed," +
                     " this should never happen");
-        }else{
+        } else {
             return new Project(result, project_name);
         }
     }
 
     public Experiment register_experiment(User user, Project project, String experiment_name)
-            throws SBSBaseException{
+            throws SBSBaseException {
         check_open();
         long id;
         ContentValues initialValues = new ContentValues();
@@ -340,16 +339,16 @@ public class object_level_db {
         initialValues.put(layout.experiments.getField("project_id").getName(), project.get_id());
         initialValues.put(layout.experiments.getField("name").getName(), experiment_name);
         id = this.db.insert(layout.experiments.getName(), null, initialValues);
-        if(id == -1){
+        if (id == -1) {
             throw new RuntimeException("Registering a new experiment failed," +
                     " this should never happen");
-        }else{
+        } else {
             return new Experiment(id, project.get_id(), experiment_name);
         }
     }
 
     public Entry new_Entry(User user, Experiment experiment, String title,
-                           AttachmentBase attachment, long date_user) throws SBSBaseException{
+                           AttachmentBase attachment, long date_user) throws SBSBaseException {
         check_open();
         long current_time = (System.currentTimeMillis() / 1000);
         long id;
@@ -365,9 +364,9 @@ public class object_level_db {
         initialValues.put(layout.entries.getField("attachment_type").getName(),
                 attachment.getTypeNumber());
         id = this.db.insert(layout.entries.getName(), null, initialValues);
-        if(id == -1){
+        if (id == -1) {
             throw new RuntimeException("Registering a new entry failed, this should never happen");
-        }else{
+        } else {
             return new Entry(id, user, experiment.get_id(), title, attachment, current_time);
         }
     }
@@ -377,16 +376,15 @@ public class object_level_db {
             table upper_table,
             table underlying_table_with_references,
             String field_name_for_reference_in_underlying_table
-    )
-    {
+    ) {
         int index;
         Cursor c;
         //first, check that the to be merged row does not have a remote_id
-        c = db.rawQuery("SELECT "+ upper_table.getField("remote_id").getName()
+        c = db.rawQuery("SELECT " + upper_table.getField("remote_id").getName()
                 + " FROM " + upper_table.getName()
                 + " WHERE "
                 + upper_table.getField("id") + "="
-                +  id_to_be_merged , null);
+                + id_to_be_merged, null);
         c.moveToFirst();
         index = c.getColumnIndex(upper_table.getField("remote_id").getName());
         if (!c.isNull(index)) {
@@ -402,7 +400,7 @@ public class object_level_db {
         int deleted_rows;
         deleted_rows = db.delete(upper_table.getName(), upper_table.getField("id") + "="
                 + id_to_be_merged, null);
-        if(deleted_rows!=1){
+        if (deleted_rows != 1) {
             throw new RuntimeException(
                     "During a merge, mor then or less " +
                             "than 1 row was deleted! This should never happen!");
@@ -410,7 +408,7 @@ public class object_level_db {
     }
 
 
-    public void merge_project_into(Project project, Project real_project)throws SBSBaseException {
+    public void merge_project_into(Project project, Project real_project) throws SBSBaseException {
         check_open();
         this.merge_experiment_or_project_with_underlying_references(project.get_id(),
                 real_project.get_id(),
@@ -420,7 +418,7 @@ public class object_level_db {
         );
     }
 
-    public void merge_experiment_into(Experiment experiment, Experiment real_experiment) throws SBSBaseException{
+    public void merge_experiment_into(Experiment experiment, Experiment real_experiment) throws SBSBaseException {
         check_open();
         this.merge_experiment_or_project_with_underlying_references(experiment.get_id(),
                 real_experiment.get_id(),
@@ -430,7 +428,7 @@ public class object_level_db {
         );
     }
 
-    private User convert_cursor_to_user(Cursor c){
+    private User convert_cursor_to_user(Cursor c) {
         int index;
         String firstname, lastname, login, server_string;
         byte[] hashed_pw;
@@ -466,7 +464,7 @@ public class object_level_db {
             server_string = c.getString(index);
             try {
                 server = new URL(server_string);
-            }catch (MalformedURLException e){
+            } catch (MalformedURLException e) {
                 throw new RuntimeException("Url in database is not a valid url. " +
                         "This should never happen as" +
                         "we check the urls before we write them into the db!");
@@ -484,7 +482,7 @@ public class object_level_db {
         return new User(login, hashed_pw, server, id, firstname, lastname);
     }
 
-    private Project convert_cursor_to_project(Cursor c){
+    private Project convert_cursor_to_project(Cursor c) {
         int index;
         Long date_creation;
         long id;
@@ -510,7 +508,7 @@ public class object_level_db {
         return new Project(id, name, description, date_creation);
     }
 
-    private Experiment convert_cursor_to_experiment(Cursor c){
+    private Experiment convert_cursor_to_experiment(Cursor c) {
         int index;
         Long date_creation;
         long id, project_id;
@@ -538,7 +536,7 @@ public class object_level_db {
         return new Experiment(id, project_id, name, description, date_creation);
     }
 
-    private Entry convert_cursor_to_entry(Cursor c){
+    private Entry convert_cursor_to_entry(Cursor c) {
         long id;
         long experiment_id;
         String title;
@@ -591,25 +589,24 @@ public class object_level_db {
                 change_time);
     }
 
-    public LinkedList<Project> get_projects(User user)throws SBSBaseException {
+    public LinkedList<Project> get_projects(User user) throws SBSBaseException {
 //        check_open(); //TODO change if funktion is implemented
-  open();
+        open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.projects.getName()
                 + " WHERE "
                 + "user_id = "  //layout.projects.getField("user_id") + "="   //:todo fix this compile error Caused by: android.database.sqlite.SQLiteException: near "@4110e268": syntax error: , while compiling: SELECT * FROM projects WHERE database.table$table_field@4110e268=1
-                +  user.getId(), null);
+                + user.getId(), null);
         LinkedList<Project> tmp = new LinkedList<Project>();
-        Project cache=null;
+        Project cache = null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
                 WeakReference<Project> ref = project_object_cache.get(id);
-                if (ref != null)
-                {
+                if (ref != null) {
                     cache = ref.get();
                 }
-                if(cache==null){
+                if (cache == null) {
                     cache = this.convert_cursor_to_project(c);
                     project_object_cache.put(id, new WeakReference<Project>(cache));
                 }
@@ -620,25 +617,24 @@ public class object_level_db {
         return tmp;
     }
 
-    public LinkedList<Experiment> get_experiments(User user, Project project)throws SBSBaseException {
+    public LinkedList<Experiment> get_experiments(User user, Project project) throws SBSBaseException {
         check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.experiments.getName()
                 + " WHERE "
                 + layout.experiments.getField("user_id") + "="
-                +  user.getId() + " AND "
+                + user.getId() + " AND "
                 + layout.experiments.getField("project_id") + "=" + project.get_id(), null);
         LinkedList<Experiment> tmp = new LinkedList<Experiment>();
-        Experiment cache=null;
+        Experiment cache = null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
                 WeakReference<Experiment> ref = experiment_object_cache.get(id);
-                if (ref != null)
-                {
+                if (ref != null) {
                     cache = ref.get();
                 }
-                if(cache==null){
+                if (cache == null) {
                     cache = this.convert_cursor_to_experiment(c);
                     experiment_object_cache.put(id, new WeakReference<Experiment>(cache));
                 }
@@ -649,7 +645,7 @@ public class object_level_db {
         return tmp;
     }
 
-    private User get_user_by_local_id(long user_id){
+    private User get_user_by_local_id(long user_id) {
         Cursor c = db.rawQuery("SELECT * FROM " + layout.users.getName()
                 + " WHERE "
                 + layout.users.getField("id") + "="
@@ -658,7 +654,7 @@ public class object_level_db {
         return this.convert_cursor_to_user(c);
     }
 
-    public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) throws SBSBaseException{
+    public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) throws SBSBaseException {
         check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.entries.getName()
                 + " WHERE "
@@ -667,17 +663,16 @@ public class object_level_db {
                 + layout.entries.getField("experiment_id") + "="
                 + experiment.get_id() + " LIMIT " + number, null);
         LinkedList<Entry> tmp = new LinkedList<Entry>();
-        Entry cache=null;
+        Entry cache = null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
                 WeakReference<Entry> ref = entry_object_cache.get(id);
-                if (ref != null)
-                {
+                if (ref != null) {
                     cache = ref.get();
                 }
-                if(cache==null){
+                if (cache == null) {
                     cache = this.convert_cursor_to_entry(c);
                     entry_object_cache.put(id, new WeakReference<Entry>(cache));
                 }
@@ -688,8 +683,9 @@ public class object_level_db {
         return tmp;
     }
 
-    public LinkedList<User> get_all_users_with_login()throws SBSBaseException{
-        check_open();
+    public LinkedList<User> get_all_users_with_login() throws SBSBaseException {
+        //check_open();
+        open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.users.getName()
                 + " WHERE "//TODO: fix this error   Caused by: android.database.sqlite.SQLiteException: near "@41110680": syntax error: , while compiling: SELECT * FROM users WHERE database.table$table_field@41110680 IS NOT NULL AND database.table$table_field@411106e0 IS NOT NULL
                 + "login"//layout.users.getField("login")
@@ -697,17 +693,16 @@ public class object_level_db {
                 + "hashed_pw"//layout.users.getField("hashed_pw")
                 + " IS NOT NULL", null);
         LinkedList<User> tmp = new LinkedList<User>();
-        User cache=null;
+        User cache = null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
                 WeakReference<User> ref = user_object_cache.get(id);
-                if (ref != null)
-                {
+                if (ref != null) {
                     cache = ref.get();
                 }
-                if(cache==null){
+                if (cache == null) {
                     cache = this.convert_cursor_to_user(c);
                     user_object_cache.put(id, new WeakReference<User>(cache));
                 }

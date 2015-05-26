@@ -362,20 +362,14 @@ if(checkBox.isChecked())
                 LinkedList<RemoteProject> Projects = null;
                 LinkedList<RemoteExperiment> Experiments = null;
                 LinkedList<User> all_users_which_have_login_info = objectlevel_db.get_all_users_with_login();
-                mService.getUser();
                 mService.setUserAndURL(getActiveUser(all_users_which_have_login_info),server);
-                mService.setUserAndURL(getActiveUser(all_users_which_have_login_info),server);
-                for (int i = 0;all_users_which_have_login_info.size()>i;i++) {
-                    Projects = mService.getProjects();
-                }
-                for (int j = 0; j<Projects.size();j++ ) {
-                    objectlevel_db.insert_or_update_project(mService.getUser(),Projects.get((j)));}
+                mService.getProjects();
                 publishProgress(20);
 
-                Experiments = mService.getExperiments();
+            /*    Experiments = mService.getExperiments();
                 for (int i = 0;i<Experiments.size();i++ ) {
                     objectlevel_db.insert_or_update_experiment(mService.getUser(), Experiments.get(i));
-                }
+                }*/
                 }
 
 

@@ -12,34 +12,26 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.WeakHashMap;
 import java.util.concurrent.ExecutionException;
 
-
 import database.object_level_db;
-import exceptions.NoInternetAvailable;
-import exceptions.SBSBaseException;
 import datastructures.AttachmentBase;
 import datastructures.AttachmentTable;
 import datastructures.AttachmentText;
-import imports.DBAdapter;
-import datastructures.Entry;
-import datastructures.Experiment;
-import datastructures.Project;
 import datastructures.ProjectExperimentEntry;
-import imports.ServersideDatabaseConnectionObject;
 import datastructures.User;
+import exceptions.SBSBaseException;
+import imports.DBAdapter;
+import imports.ServersideDatabaseConnectionObject;
 import scon.Entry_Remote_Identifier;
 import scon.RemoteExperiment;
+import scon.RemoteProject;
 import scon.ServerDatabaseSession;
 
 
@@ -54,50 +46,64 @@ public class LocalService extends Service {
     public static Timer alwaysTimer = new Timer();
     private ServersideDatabaseConnectionObject SDCO;
     static ServerDatabaseSession SDS;
-public static object_level_db objectlevel_db;
- private URL url;
+    public static object_level_db objectlevel_db;
+    private URL url;
     public static DBAdapter myDb;//= Gui_StartActivity.myDb;
     static List<ProjectExperimentEntry> projectExperimentEntries;
 
     //Hashmaps so we can cache the objects and can update them easily.
     //also, the same entry will only exist as a unique object and will therefore be
     //updated correctly!
-  //  private HashMap<Integer, SoftReference<User>> user_local_id2user_object = new HashMap<Integer, SoftReference<User>>();
-   // private HashMap<Integer, SoftReference<Project>> project_local_id2project_object = new HashMap<Integer, SoftReference<Project>>();
-   // private HashMap<Integer, SoftReference<Experiment>> experiment_local_id2experiment_object = new HashMap<Integer, SoftReference<Experiment>>();
- //   private HashMap<Integer, SoftReference<Entry>> entry_local_id2entry_object = new HashMap<Integer, SoftReference<Entry>>();
+    //  private HashMap<Integer, SoftReference<User>> user_local_id2user_object = new HashMap<Integer, SoftReference<User>>();
+    // private HashMap<Integer, SoftReference<Project>> project_local_id2project_object = new HashMap<Integer, SoftReference<Project>>();
+    // private HashMap<Integer, SoftReference<Experiment>> experiment_local_id2experiment_object = new HashMap<Integer, SoftReference<Experiment>>();
+    //   private HashMap<Integer, SoftReference<Entry>> entry_local_id2entry_object = new HashMap<Integer, SoftReference<Entry>>();
 
-  //  private WeakHashMap<User, WeakReference<LinkedList<Project>>> project_list_cache = new WeakHashMap<User, WeakReference<LinkedList<Project>>>();
-  //  private WeakHashMap<User, WeakHashMap<Project, WeakReference<LinkedList<Experiment>>>> experiment_list_cache = new WeakHashMap<User, WeakHashMap<Project, WeakReference<LinkedList<Experiment>>>>();
-  //  private WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<Entry>>>> entry_list_cache = new WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<Entry>>>>();
+    //  private WeakHashMap<User, WeakReference<LinkedList<Project>>> project_list_cache = new WeakHashMap<User, WeakReference<LinkedList<Project>>>();
+    //  private WeakHashMap<User, WeakHashMap<Project, WeakReference<LinkedList<Experiment>>>> experiment_list_cache = new WeakHashMap<User, WeakHashMap<Project, WeakReference<LinkedList<Experiment>>>>();
+    //  private WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<Entry>>>> entry_list_cache = new WeakHashMap<User, WeakHashMap<Experiment, WeakReference<LinkedList<Entry>>>>();
 
-    public LocalService() {}
+    public LocalService() {
+    }
 
     @Override
     public void onCreate() {
-       myDb = new DBAdapter(getApplicationContext());
+        myDb = new DBAdapter(getApplicationContext());
         objectlevel_db = new object_level_db(getApplicationContext());
         super.onCreate();
         deleteAllSynced();
     }
-    public object_level_db getObjectlevel_db()
-    {return objectlevel_db;}
+
+    public object_level_db getObjectlevel_db() {
+        return objectlevel_db;
+    }
 
     public void setUserAndURL(User user, String server) throws MalformedURLException {
 
         this.user = user;
-            this.url = new URL(server);
+        this.url = new URL(server);
     }
-    public LinkedList<scon.RemoteProject> getProjects() throws SBSBaseException {
-            SDS = new ServerDatabaseSession(url, user);
-            SDS.start_session();
-            return SDS.get_projects();
+
+    public void getProjects() throws SBSBaseException {
+        LinkedList<RemoteProject> Projects = null;
+        SDS = new ServerDatabaseSession(url, user);
+        SDS.start_session();
+        LinkedList<User> all_users_which_have_login_info = objectlevel_db.get_all_users_with_login();
+        for (int i = 0; all_users_which_have_login_info.size() > i; i++) {
+            Projects = SDS.get_projects();
 
         }
+        for (int j = 0; j < Projects.size(); j++) {
+            objectlevel_db.insert_or_update_project(user, Projects.get((j)));
+        }
+
+    }
+
     public LinkedList<RemoteExperiment> getExperiments() throws SBSBaseException {
         return SDS.get_experiments();
     }
-    public DBAdapter getDB(){
+
+    public DBAdapter getDB() {
         return myDb;
     }
 
@@ -144,7 +150,7 @@ public static object_level_db objectlevel_db;
 
         if (isOnline()) {
             SDS = new ServerDatabaseSession(url, user);
-           // SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
+            // SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
             //int i = new StartUpAsyncTask().execute(SDCO).get();
 
             myTimer.schedule(new MyTask(), 60000);
@@ -152,6 +158,7 @@ public static object_level_db objectlevel_db;
             return 0;
         } else return 2;
     }
+
     @Override
     public IBinder onBind(Intent intent) {
 
@@ -184,7 +191,6 @@ public static object_level_db objectlevel_db;
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
-
 
 
     public class LocalBinder extends Binder {
@@ -222,10 +228,10 @@ public static object_level_db objectlevel_db;
                             int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
                             Entry_Remote_Identifier new_entry_info;
 
-                            if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
-                            new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
+                            if (cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
+                                new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
                             else
-                            new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)));
+                                new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)));
 
 
                             AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
@@ -262,10 +268,10 @@ public static object_level_db objectlevel_db;
                             try {
                                 int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
                                 Entry_Remote_Identifier new_entry_info;
-if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
-                                new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
-                            else
-                                new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)));
+                                if (cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
+                                    new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
+                                else
+                                    new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)));
 
                                 AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
 
@@ -288,8 +294,6 @@ if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
     }
 
 
-
-
     private class DownloadFilesTask extends AsyncTask<Void, Integer, Void> {
 
 
@@ -299,21 +303,21 @@ if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
             if (c.moveToFirst()) {
                 do {
                     // Process the data:
-              //  project_local_id2project_object.put(c.getInt(DBAdapter.COL_ProjectRemoteID), new SoftReference<Project>(new Project(c.getInt(DBAdapter.COL_ProjectRemoteID),c.getInt(DBAdapter.COL_EntryRemoteID),c.getString(DBAdapter.COL_ProjectName),c.getString(DBAdapter.COL_ProjectDescription))));
+                    //  project_local_id2project_object.put(c.getInt(DBAdapter.COL_ProjectRemoteID), new SoftReference<Project>(new Project(c.getInt(DBAdapter.COL_ProjectRemoteID),c.getInt(DBAdapter.COL_EntryRemoteID),c.getString(DBAdapter.COL_ProjectName),c.getString(DBAdapter.COL_ProjectDescription))));
                 } while (c.moveToNext());
             }
             c = myDb.getAllExperimentRows();
             if (c.moveToFirst()) {
                 do {
                     // Process the data:
-                //    experiment_local_id2experiment_object.put(c.getInt(DBAdapter.COL_ExperimentID), new SoftReference<Experiment>(new Experiment(c.getInt(DBAdapter.COL_ExperimentID),c.getInt(DBAdapter.COL_ExperimentRemoteID),c.getInt(DBAdapter.COL_ExperimentProjectID),c.getString(DBAdapter.COL_ExperimentName),c.getString(DBAdapter.COL_ExperimentDescription))));
+                    //    experiment_local_id2experiment_object.put(c.getInt(DBAdapter.COL_ExperimentID), new SoftReference<Experiment>(new Experiment(c.getInt(DBAdapter.COL_ExperimentID),c.getInt(DBAdapter.COL_ExperimentRemoteID),c.getInt(DBAdapter.COL_ExperimentProjectID),c.getString(DBAdapter.COL_ExperimentName),c.getString(DBAdapter.COL_ExperimentDescription))));
                 } while (c.moveToNext());
             }
             c = myDb.getAllEntryRows();
             if (c.moveToFirst()) {
                 do {
                     // Process the data:
-              //    entry_local_id2entry_object.put(c.getInt(DBAdapter.COL_EntryID), new SoftReference<Entry>(new Entry(c.getInt(DBAdapter.COL_EntryID),new User(c.getString(DBAdapter.COL_EntryUserID),c.getString(DBAdapter.COL_EntryUserID)),c.getInt(DBAdapter.COL_EntryExperimentID),c.getString(DBAdapter.COL_EntryTitle),new AttachmentText(c.getString(DBAdapter.COL_EntryContent)),true,c.getLong(DBAdapter.COL_EntryCreationDate),c.getLong(DBAdapter.COL_EntrySyncDate),c.getLong(DBAdapter.COL_EntryChangeDate))));
+                    //    entry_local_id2entry_object.put(c.getInt(DBAdapter.COL_EntryID), new SoftReference<Entry>(new Entry(c.getInt(DBAdapter.COL_EntryID),new User(c.getString(DBAdapter.COL_EntryUserID),c.getString(DBAdapter.COL_EntryUserID)),c.getInt(DBAdapter.COL_EntryExperimentID),c.getString(DBAdapter.COL_EntryTitle),new AttachmentText(c.getString(DBAdapter.COL_EntryContent)),true,c.getLong(DBAdapter.COL_EntryCreationDate),c.getLong(DBAdapter.COL_EntrySyncDate),c.getLong(DBAdapter.COL_EntryChangeDate))));
                 } while (c.moveToNext());
             }
 
@@ -325,11 +329,11 @@ if(cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
         }
 
         protected void onProgressUpdate(Integer... progress) {
-           // setProgressPercent(progress[0]);
+            // setProgressPercent(progress[0]);
         }
 
         protected void onPostExecute(Long result) {
-         //   showDialog("Downloaded " + result + " bytes");
+            //   showDialog("Downloaded " + result + " bytes");
         }
     }
 
