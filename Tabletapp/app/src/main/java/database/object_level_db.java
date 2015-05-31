@@ -37,12 +37,12 @@ public class object_level_db {
     private Long resolve_remote_id_to_local_id(table table_for_resolve, long remote_id) {
         Cursor c;
 
-        // c = db.rawQuery(" SELECT "+table_for_resolve.getField("id").getName()+" FROM " + table_for_resolve.getName() + " WHERE " + "remote_id"+ " = ?", new String[]{String.valueOf(remote_id)});
+        //c = db.rawQuery(" SELECT "+table_for_resolve.getField("id").getName()+" FROM " + table_for_resolve.getName() + " WHERE " + "remote_id"+ " = ?", new String[]{String.valueOf(remote_id)});
 
-        c = this.db.rawQuery("SELECT " + " * "//table_for_resolve.getField("id").getName()
-                + " FROM " + table_for_resolve.getName()  //TODO fix this
+        c = this.db.rawQuery("SELECT " + table_for_resolve.getField("id").getName()
+                + " FROM " + table_for_resolve.getName()
                 + " WHERE "
-                + "remote_id = "//table_for_resolve.getField("remote_id") + "=" //Caused by: android.database.sqlite.SQLiteException: near "@411093f8": syntax error: , while compiling: SELECT id FROM projects WHERE database.table$table_field@411093f8=1
+                + table_for_resolve.getField("remote_id").getName() + "="
                 + remote_id, null);
         for (int i = 0; i < c.getColumnNames().length; i++)
 
@@ -78,8 +78,8 @@ public class object_level_db {
     }
 
     public void insert_or_update_project(User user, RemoteProject project) throws SBSBaseException {
-        //   check_open();
-        open();
+        this.get_lock();
+        this.check_open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.projects, project.getId());
         Log.d("id des projectes", String.valueOf(id));
@@ -104,7 +104,7 @@ public class object_level_db {
                     in_cache.update(project);
                 }
             }
-
+            this.release_lock();
         }
     }
 
@@ -129,8 +129,8 @@ public class object_level_db {
     }
 
     public void insert_or_update_experiment(User user, RemoteExperiment experiment) throws SBSBaseException {
-        // check_open(); //TODO implement if its ready
-        open();
+        this.get_lock();
+        this.check_open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.experiments, experiment.getId());
         Long tmp_project_id = this.resolve_remote_id_to_local_id(layout.projects, experiment.getProject_id());
@@ -144,8 +144,11 @@ public class object_level_db {
             //TODO find out why this bug happens  Caused by: java.lang.NullPointerException
             //     at database.object_level_db.insert_experiment(object_level_db.java:119)
             //   at database.object_level_db.insert_or_update_experiment(object_level_db.java:146)
+            System.out.println("Debug info for crash in insert experiment");
+            System.out.println(user);
+            System.out.println(experiment);
+            System.out.println(project_id);
             result = this.insert_experiment(user, experiment, project_id);
-
             if (result == -1) {
                 throw new RuntimeException("Could not insert a Remote Experiment, this should not happen");
             }
@@ -163,7 +166,7 @@ public class object_level_db {
                     in_cache.update(experiment, project_id);
                 }
             }
-
+            this.release_lock();
         }
     }
 
@@ -185,7 +188,8 @@ public class object_level_db {
 
 
     public void insert_or_update_user(RemoteUser user) throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.users, user.getId());
         long result;
@@ -209,29 +213,28 @@ public class object_level_db {
                     in_cache.update(user);
                 }
             }
-
+            this.release_lock();
         }
     }
 
     private long insert_entry(RemoteEntry entry) throws SBSBaseException {
         throw new RuntimeException("Not Yet Implemented");
-    }
-
-    ;
+    };
 
     private long update_entry(RemoteEntry entry) {
         throw new RuntimeException("Not Yet Implemented");
-    }
-
-    ;
+    };
 
     public void insert_or_update_entry(RemoteEntry entry) throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
+        this.release_lock();
         throw new RuntimeException("Not Yet Implemented");
-    }
+    };
 
     public Boolean is_entry_up_to_date(Entry_Remote_Identifier eri) throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
         Long id = this.resolve_remote_id_to_local_id(layout.entries, eri.getId());
         if (id == null) {
             //entry is not in the db, therefore it cannot be up to date
@@ -254,9 +257,10 @@ public class object_level_db {
                 + " WHERE "
                 + layout.entries.getField("id") + "="
                 + id, null);
-        //c cannot be null as we alreay got the id in advance
+        //c cannot be null as we already got the id in advance
         c.moveToFirst();
         int index = c.getColumnIndex(layout.entries.getField("current_time").getName());
+        this.release_lock();
         return c.getLong(index) >= eri.getLast_change();
     }
 
@@ -266,11 +270,18 @@ public class object_level_db {
 
     private void check_open() throws SBSBaseException {
         if (!this.opened) {
-            //TODO
-            //check the interface is ready
-            throw new RuntimeException("Check for interface open. Not implemented yet");
+            throw new RuntimeException("Interface not opened yet, " +
+                    "call open before using the interface");
         }
     }
+
+    private void get_lock() throws SBSBaseException{
+        //FIXME, not doing anything yet, lockign loging needs to go here
+    };
+
+    private void release_lock() throws SBSBaseException{
+        //FIXME, not doing anything yet, lockign loging needs to go here
+    };
 
     public object_level_db(Context ctx) {
         if (this.db_helper == null) {
@@ -278,22 +289,29 @@ public class object_level_db {
         }
     }
 
-    public void open() {
-        this.opened = true;
-        this.db = this.db_helper.getWritableDatabase();
+    public void open() throws SBSBaseException {
+        this.get_lock();
+        if(!this.opened){
+            this.opened = true;
+            this.db = this.db_helper.getWritableDatabase();
+        }
+        this.release_lock();
     }
 
     public void close() throws SBSBaseException {
-        check_open();
-        this.opened = false;
-        this.db.close();
-        this.db_helper.close();
-        this.db_helper = null;
+        this.get_lock();
+        if(this.opened) {
+            this.opened = false;
+            this.db.close();
+            this.db_helper.close();
+            this.db_helper = null;
+        }
+        this.release_lock();
     }
 
     public User register_user(String login, String password, URL server) throws SBSBaseException {
-        // check_open();
-        open();
+        this.get_lock();
+        this.check_open();
         long result;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
@@ -308,31 +326,41 @@ public class object_level_db {
             //should the compare the password?
             //because we need a way to check if a user is using a offline pw
             //or not
+            this.release_lock();
             throw new RuntimeException("Not yet implemented yet!");
             //return null;
         } else {
+            this.release_lock();
             return new User(login, password, server, result);
         }
     }
 
     public Project register_project(User user, String project_name) throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
         long result;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.projects.getField("user_id").getName(), user.getId());
         initialValues.put(layout.projects.getField("name").getName(), project_name);
         result = this.db.insert(layout.projects.getName(), null, initialValues);
+        this.release_lock();
         if (result == -1) {
+            this.release_lock();
             throw new RuntimeException("Registering a new project failed," +
                     " this should never happen");
         } else {
-            return new Project(result, project_name);
+            Project tmp = new Project(result, project_name);
+            project_object_cache.put(result, new WeakReference<Project>(tmp));
+            this.release_lock();
+            return tmp;
         }
+
     }
 
     public Experiment register_experiment(User user, Project project, String experiment_name)
             throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
         long id;
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.experiments.getField("user_id").getName(), user.getId());
@@ -340,16 +368,21 @@ public class object_level_db {
         initialValues.put(layout.experiments.getField("name").getName(), experiment_name);
         id = this.db.insert(layout.experiments.getName(), null, initialValues);
         if (id == -1) {
+            this.release_lock();
             throw new RuntimeException("Registering a new experiment failed," +
                     " this should never happen");
         } else {
-            return new Experiment(id, project.get_id(), experiment_name);
+            Experiment tmp = new Experiment(id, project.get_id(), experiment_name);
+            experiment_object_cache.put(id, new WeakReference<Experiment>(tmp));
+            this.release_lock();
+            return tmp;
         }
     }
 
     public Entry new_Entry(User user, Experiment experiment, String title,
                            AttachmentBase attachment, long date_user) throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
         long current_time = (System.currentTimeMillis() / 1000);
         long id;
         ContentValues initialValues = new ContentValues();
@@ -365,9 +398,13 @@ public class object_level_db {
                 attachment.getTypeNumber());
         id = this.db.insert(layout.entries.getName(), null, initialValues);
         if (id == -1) {
+            this.release_lock();
             throw new RuntimeException("Registering a new entry failed, this should never happen");
         } else {
-            return new Entry(id, user, experiment.get_id(), title, attachment, current_time);
+            Entry tmp = new Entry(id, user, experiment.get_id(), title, attachment, current_time);
+            entry_object_cache.put(id, new WeakReference<Entry>(tmp));
+            this.release_lock();
+            return tmp;
         }
     }
 
@@ -409,23 +446,30 @@ public class object_level_db {
 
 
     public void merge_project_into(Project project, Project real_project) throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
         this.merge_experiment_or_project_with_underlying_references(project.get_id(),
                 real_project.get_id(),
                 layout.projects,
                 layout.experiments,
                 layout.experiments.getField("project_id").getName()
         );
+        project_object_cache.remove(project.get_id());
+        this.release_lock();
     }
 
-    public void merge_experiment_into(Experiment experiment, Experiment real_experiment) throws SBSBaseException {
-        check_open();
+    public void merge_experiment_into(Experiment experiment, Experiment real_experiment)
+            throws SBSBaseException {
+        this.get_lock();
+        this.check_open();
         this.merge_experiment_or_project_with_underlying_references(experiment.get_id(),
                 real_experiment.get_id(),
                 layout.experiments,
                 layout.entries,
                 layout.entries.getField("experiment_id").getName()
         );
+        experiment_object_cache.remove(experiment.get_id());
+        this.release_lock();
     }
 
     private User convert_cursor_to_user(Cursor c) {
@@ -590,11 +634,12 @@ public class object_level_db {
     }
 
     public LinkedList<Project> get_projects(User user) throws SBSBaseException {
-//        check_open(); //TODO change if funktion is implemented
-        open();
+        this.get_lock();
+        this.check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.projects.getName()
                 + " WHERE "
-                + "user_id = "  //layout.projects.getField("user_id") + "="   //:todo fix this compile error Caused by: android.database.sqlite.SQLiteException: near "@4110e268": syntax error: , while compiling: SELECT * FROM projects WHERE database.table$table_field@4110e268=1
+                + layout.projects.getField("user_id").getName()
+                + "="
                 + user.getId(), null);
         LinkedList<Project> tmp = new LinkedList<Project>();
         Project cache = null;
@@ -614,11 +659,13 @@ public class object_level_db {
             }
             c.close();
         }
+        this.release_lock();
         return tmp;
     }
 
     public LinkedList<Experiment> get_experiments(User user, Project project) throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.experiments.getName()
                 + " WHERE "
                 + layout.experiments.getField("user_id") + "="
@@ -642,6 +689,7 @@ public class object_level_db {
             }
             c.close();
         }
+        this.release_lock();
         return tmp;
     }
 
@@ -655,7 +703,8 @@ public class object_level_db {
     }
 
     public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.entries.getName()
                 + " WHERE "
                 + layout.entries.getField("user_id") + "="
@@ -680,17 +729,18 @@ public class object_level_db {
             }
             c.close();
         }
+        this.release_lock();
         return tmp;
     }
 
     public LinkedList<User> get_all_users_with_login() throws SBSBaseException {
-        //check_open();
-        open();
+        this.get_lock();
+        this.check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.users.getName()
-                + " WHERE "//TODO: fix this error   Caused by: android.database.sqlite.SQLiteException: near "@41110680": syntax error: , while compiling: SELECT * FROM users WHERE database.table$table_field@41110680 IS NOT NULL AND database.table$table_field@411106e0 IS NOT NULL
-                + "login"//layout.users.getField("login")
+                + " WHERE "
+                + layout.users.getField("login").getName()
                 + " IS NOT NULL AND "
-                + "hashed_pw"//layout.users.getField("hashed_pw")
+                + layout.users.getField("hashed_pw").getName()
                 + " IS NOT NULL", null);
         LinkedList<User> tmp = new LinkedList<User>();
         User cache = null;
@@ -710,6 +760,7 @@ public class object_level_db {
             }
             c.close();
         }
+        this.release_lock();
         return tmp;
     }
 
@@ -717,7 +768,9 @@ public class object_level_db {
     //Not sure if we need this for the gui, I guess we only need it for the background service
     public LinkedList<Entry_Remote_Identifier> get_all_entry_timestamps(User user)
             throws SBSBaseException {
-        check_open();
+        this.get_lock();
+        this.check_open();
+        this.release_lock();
         throw new RuntimeException("Not Implemented yet");
     }
 
