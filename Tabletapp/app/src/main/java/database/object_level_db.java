@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
@@ -60,13 +61,21 @@ public class object_level_db {
     }
 
     private long insert_project(User user, RemoteProject project) {
-        ContentValues initialValues = new ContentValues();
-        initialValues.put(layout.projects.getField("remote_id").getName(), project.getId());
-        initialValues.put(layout.projects.getField("name").getName(), project.getName());
-        initialValues.put(layout.projects.getField("user_id").getName(), user.getId());
-        initialValues.put(layout.projects.getField("description").getName(), project.getDescription());
-        initialValues.put(layout.projects.getField("date_creation").getName(), project.getDate_creation());
-        return this.db.insert(layout.projects.getName(), null, initialValues);
+   //     ContentValues initialValues = new ContentValues();
+       // initialValues.put(layout.projects.getField("remote_id").getName(), project.getId());
+      //  initialValues.put(layout.projects.getField("name").getName(), project.getName());
+     //   initialValues.put(layout.projects.getField("user_id").getName(), user.getId());
+    //    initialValues.put(layout.projects.getField("description").getName(), project.getDescription());
+   //     initialValues.put(layout.projects.getField("date_creation").getName(), project.getDate_creation());
+
+        SQLiteStatement sqLiteStatement = db.compileStatement("" + "INSERT INTO " +" projects " + " ( remote_id  ,name ,user_id , description ) " + "VALUES (?,?,?,?)");
+        sqLiteStatement.bindLong(1, project.getId());
+        sqLiteStatement.bindString(2, project.getName());
+        sqLiteStatement.bindLong(3, user.getId());
+        sqLiteStatement.bindString(4, project.getDescription());
+
+        return sqLiteStatement.executeInsert();
+        //return this.db.insert(layout.projects.getName(), null, initialValues);
     }
 
     private long update_project(long id, RemoteProject project) {
@@ -77,16 +86,46 @@ public class object_level_db {
         return db.update(layout.projects.getName(), newValues, "id=" + id, null);
     }
 
+    /**
+     * deleting projects
+     * @return
+     */
+    private Cursor getProjectRow() {
+        Cursor c = db.rawQuery(" SELECT id FROM "+ layout.projects.getName() +" WHERE 1",new String[]{});
+        c.moveToFirst();
+        return c;
+    }
+
+    public void deleteAllSyncedProjects(){
+        Cursor c = getProjectRow();
+        long rowId = c.getColumnIndexOrThrow(layout.projects.getField("id").getName());
+        if (c.moveToFirst()) {
+            do {
+                deleteProjectByID(c.getLong((int) rowId));
+            } while (c.moveToNext());
+        }
+        c.close();
+
+    }
+    private boolean deleteProjectByID(long rowId) {
+        String where =  "id" + " = " + rowId;
+        return db.delete(layout.projects.getName(), where, null) != 0;
+    }
+//**************
+
     public void insert_or_update_project(User user, RemoteProject project) throws SBSBaseException {
         this.get_lock();
         this.check_open();
         //first get the local id if it exists
         Long id = this.resolve_remote_id_to_local_id(layout.projects, project.getId());
-        Log.d("id des projectes", String.valueOf(id));
         long result;
         if (id == null) {
             //the remote project needs to be inserted
+
+
             result = this.insert_project(user, project);
+
+            Log.d("name des remote",project.getName());
             if (result == -1) {
                 throw new RuntimeException("Could not insert a Remote Project, this should not happen");
             }
@@ -97,13 +136,13 @@ public class object_level_db {
                 throw new RuntimeException("Could not update a Remote Project, this should not happen");
             }
             //it is now in the db, afterwards, check if it is already in memory
-            WeakReference<Project> ref = project_object_cache.get(id);
-            if (ref != null) {
-                Project in_cache = ref.get();
-                if (in_cache != null) {
-                    in_cache.update(project);
-                }
-            }
+         //   WeakReference<Project> ref = project_object_cache.get(id);
+          //  if (ref != null) {
+           //     Project in_cache = ref.get();
+            //    if (in_cache != null) {
+             //       in_cache.update(project);
+             //   }
+           // }
             this.release_lock();
         }
     }
@@ -270,9 +309,13 @@ public class object_level_db {
 
     private void check_open() throws SBSBaseException {
         if (!this.opened) {
-            throw new RuntimeException("Interface not opened yet, " +
-                    "call open before using the interface");
+            this.open();
+
+      //      throw new RuntimeException("Interface not opened yet, " +
+        //            "call open before using the interface");
         }
+
+
     }
 
     private void get_lock() throws SBSBaseException{
@@ -313,6 +356,7 @@ public class object_level_db {
         this.get_lock();
         this.check_open();
         long result;
+        deleteAllSyncedProjects();
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
         initialValues.put(layout.users.getField("hashed_pw").getName(), User.hashedPW(password));
@@ -549,6 +593,7 @@ public class object_level_db {
         } else {
             date_creation = null;
         }
+        Log.d("local project",name);
         return new Project(id, name, description, date_creation);
     }
 
@@ -647,15 +692,20 @@ public class object_level_db {
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
-                WeakReference<Project> ref = project_object_cache.get(id);
-                if (ref != null) {
-                    cache = ref.get();
-                }
-                if (cache == null) {
-                    cache = this.convert_cursor_to_project(c);
-                    project_object_cache.put(id, new WeakReference<Project>(cache));
+                cache = this.convert_cursor_to_project(c);
+                Log.d("id local Project1", String.valueOf(id));
+                Log.d("id local Project", String.valueOf(cache.get_id()));
+              //  WeakReference<Project> ref = project_object_cache.get(id);
+             //   if (ref != null) {
+             //       cache = ref.get();
+             //   }
+                if (cache == null) { // this made the bug it not resseted the cache why ever
+
+
+                //   project_object_cache.put(id, new WeakReference<Project>(cache));
                 }
                 tmp.add(cache);
+
             }
             c.close();
         }
