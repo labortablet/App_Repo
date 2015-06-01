@@ -365,11 +365,10 @@ if(checkBox.isChecked())
                 mService.setUserAndURL(getActiveUser(all_users_which_have_login_info),server);
                 mService.getProjects();
                 publishProgress(20);
+                mService.getExperiments();
+                publishProgress(20);
+                mService.getEntry();
 
-            /*    Experiments = mService.getExperiments();
-                for (int i = 0;i<Experiments.size();i++ ) {
-                    objectlevel_db.insert_or_update_experiment(mService.getUser(), Experiments.get(i));
-                }*/
                 }
 
 

@@ -10,6 +10,7 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -107,10 +108,34 @@ public class object_level_db {
         c.close();
 
     }
+    private boolean deleteExperimentByID(long rowId) {
+        String where =  "id" + " = " + rowId;
+        return db.delete(layout.experiments.getName(), where, null) != 0;
+    }
+
+    private Cursor getExperimentRow() {
+        Cursor c = db.rawQuery(" SELECT id FROM "+ layout.experiments.getName() +" WHERE 1",new String[]{});
+        c.moveToFirst();
+        return c;
+    }
+
+    public void deleteAllSyncedExperiments(){
+        Cursor c = getExperimentRow();
+        long rowId = c.getColumnIndexOrThrow(layout.experiments.getField("id").getName());
+        if (c.moveToFirst()) {
+            do {
+                deleteExperimentByID(c.getLong((int) rowId));
+            } while (c.moveToNext());
+        }
+        c.close();
+
+    }
     private boolean deleteProjectByID(long rowId) {
         String where =  "id" + " = " + rowId;
         return db.delete(layout.projects.getName(), where, null) != 0;
     }
+
+
 //**************
 
     public void insert_or_update_project(User user, RemoteProject project) throws SBSBaseException {
@@ -149,22 +174,22 @@ public class object_level_db {
 
     private long insert_experiment(User user, RemoteExperiment experiment, long project_id) {
         ContentValues initialValues = new ContentValues();
-        initialValues.put(layout.projects.getField("remote_id").getName(), experiment.getId());
-        initialValues.put(layout.projects.getField("user_id").getName(), user.getId());
-        initialValues.put(layout.projects.getField("name").getName(), experiment.getName());
-        initialValues.put(layout.projects.getField("description").getName(), experiment.getDescription());
-        initialValues.put(layout.projects.getField("date_creation").getName(), experiment.getDate_creation());
-        initialValues.put(layout.projects.getField("project_id").getName(), project_id);
-        return this.db.insert(layout.projects.getName(), null, initialValues);
+        initialValues.put(layout.experiments.getField("remote_id").getName(), experiment.getId());
+        initialValues.put(layout.experiments.getField("user_id").getName(), user.getId());
+        initialValues.put(layout.experiments.getField("name").getName(), experiment.getName());
+        initialValues.put(layout.experiments.getField("description").getName(), experiment.getDescription());
+        initialValues.put(layout.experiments.getField("date_creation").getName(), experiment.getDate_creation());
+        initialValues.put(layout.experiments.getField("project_id").getName(), project_id);
+        return this.db.insert(layout.experiments.getName(), null, initialValues);
     }
 
     private long update_experiment(long id, RemoteExperiment experiment, long project_id) {
         ContentValues newValues = new ContentValues();
-        newValues.put(layout.projects.getField("name").getName(), experiment.getName());
-        newValues.put(layout.projects.getField("description").getName(), experiment.getDescription());
-        newValues.put(layout.projects.getField("date_creation").getName(), experiment.getDate_creation());
-        newValues.put(layout.projects.getField("project_id").getName(), project_id);
-        return db.update(layout.projects.getName(), newValues, "id=" + id, null);
+        newValues.put(layout.experiments.getField("name").getName(), experiment.getName());
+        newValues.put(layout.experiments.getField("description").getName(), experiment.getDescription());
+        newValues.put(layout.experiments.getField("date_creation").getName(), experiment.getDate_creation());
+        newValues.put(layout.experiments.getField("project_id").getName(), project_id);
+        return db.update(layout.experiments.getName(), newValues, "id=" + id, null);
     }
 
     public void insert_or_update_experiment(User user, RemoteExperiment experiment) throws SBSBaseException {
@@ -357,6 +382,7 @@ public class object_level_db {
         this.check_open();
         long result;
         deleteAllSyncedProjects();
+        deleteAllSyncedExperiments();
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
         initialValues.put(layout.users.getField("hashed_pw").getName(), User.hashedPW(password));
@@ -593,7 +619,7 @@ public class object_level_db {
         } else {
             date_creation = null;
         }
-        Log.d("local project",name);
+
         return new Project(id, name, description, date_creation);
     }
 
@@ -602,21 +628,21 @@ public class object_level_db {
         Long date_creation;
         long id, project_id;
         String name, description;
-        index = c.getColumnIndex(layout.projects.getField("id").getName());
+        index = c.getColumnIndex(layout.experiments.getField("id").getName());
         id = c.getLong(index);
-        index = c.getColumnIndex(layout.projects.getField("name").getName());
+        index = c.getColumnIndex(layout.experiments.getField("name").getName());
         name = c.getString(index);
-        index = c.getColumnIndex(layout.projects.getField("project_id").getName());
+        index = c.getColumnIndex(layout.experiments.getField("project_id").getName());
         project_id = c.getLong(index);
 
-        index = c.getColumnIndex(layout.projects.getField("description").getName());
+        index = c.getColumnIndex(layout.experiments.getField("description").getName());
         if (!c.isNull(index)) {
             description = c.getString(index);
         } else {
             description = null;
         }
 
-        index = c.getColumnIndex(layout.projects.getField("date_creation").getName());
+        index = c.getColumnIndex(layout.experiments.getField("date_creation").getName());
         if (!c.isNull(index)) {
             date_creation = c.getLong(index);
         } else {
@@ -693,8 +719,7 @@ public class object_level_db {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
                 cache = this.convert_cursor_to_project(c);
-                Log.d("id local Project1", String.valueOf(id));
-                Log.d("id local Project", String.valueOf(cache.get_id()));
+
               //  WeakReference<Project> ref = project_object_cache.get(id);
              //   if (ref != null) {
              //       cache = ref.get();
@@ -713,28 +738,63 @@ public class object_level_db {
         return tmp;
     }
 
+    public int getExperimentCountByProjectLocalID(Long id) throws SBSBaseException {
+        check_open();
+
+        Cursor c = db.rawQuery("SELECT COUNT(*)"
+                + " FROM " + layout.experiments.getName()
+                + " WHERE "
+                + layout.experiments.getField("project_id").getName() + "="
+                + id, null);
+
+if (c == null)
+    return 0;
+else {
+    c.moveToFirst();
+    return c.getInt(0);
+}
+    }
+
+    public ArrayList<Long> getExperiment_ids_by_user(User user){
+        Cursor c = db.rawQuery("SELECT distinct remote_id FROM " + layout.experiments.getName()
+                + " WHERE "
+                + layout.experiments.getField("user_id").getName() + "="
+                + user.getId(), null);
+      return ExperimentId_cursor_to_longArray(c);
+    }
+    private ArrayList<Long> ExperimentId_cursor_to_longArray(Cursor c){
+        c.moveToFirst();
+        ArrayList<Long> longs = new ArrayList<Long>();
+        do{
+         longs.add(c.getLong(c.getColumnIndex("remote_id")));
+        }while (c.moveToNext());
+return longs;
+    }
     public LinkedList<Experiment> get_experiments(User user, Project project) throws SBSBaseException {
         this.get_lock();
         this.check_open();
         Cursor c = db.rawQuery("SELECT * FROM " + layout.experiments.getName()
                 + " WHERE "
-                + layout.experiments.getField("user_id") + "="
+                + layout.experiments.getField("user_id").getName() + "="
                 + user.getId() + " AND "
-                + layout.experiments.getField("project_id") + "=" + project.get_id(), null);
+                + layout.experiments.getField("project_id").getName() + "=" + project.get_id(), null);
         LinkedList<Experiment> tmp = new LinkedList<Experiment>();
         Experiment cache = null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+
                 id = this.get_row_id(c);
+                cache = this.convert_cursor_to_experiment(c);
+                /*
                 WeakReference<Experiment> ref = experiment_object_cache.get(id);
                 if (ref != null) {
                     cache = ref.get();
                 }
                 if (cache == null) {
                     cache = this.convert_cursor_to_experiment(c);
-                    experiment_object_cache.put(id, new WeakReference<Experiment>(cache));
-                }
+                 //   experiment_object_cache.put(id, new WeakReference<Experiment>(cache));
+                }*/
                 tmp.add(cache);
             }
             c.close();

@@ -14,6 +14,7 @@ import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
@@ -24,12 +25,14 @@ import database.object_level_db;
 import datastructures.AttachmentBase;
 import datastructures.AttachmentTable;
 import datastructures.AttachmentText;
+import datastructures.Experiment;
 import datastructures.ProjectExperimentEntry;
 import datastructures.User;
 import exceptions.SBSBaseException;
 import imports.DBAdapter;
 import imports.ServersideDatabaseConnectionObject;
 import scon.Entry_Remote_Identifier;
+import scon.RemoteEntry;
 import scon.RemoteExperiment;
 import scon.RemoteProject;
 import scon.ServerDatabaseSession;
@@ -42,6 +45,7 @@ public class LocalService extends Service {
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
     private User user;
+    private Long[] remoteExperimentid;
     public static Timer myTimer = new Timer();
     public static Timer alwaysTimer = new Timer();
     private ServersideDatabaseConnectionObject SDCO;
@@ -99,8 +103,34 @@ public class LocalService extends Service {
 
     }
 
-    public LinkedList<RemoteExperiment> getExperiments() throws SBSBaseException {
-        return SDS.get_experiments();
+    public void getExperiments() throws SBSBaseException {
+        LinkedList<RemoteExperiment> experiments = SDS.get_experiments();
+
+        for (int i = 0;i<experiments.size();i++ ) {
+            objectlevel_db.insert_or_update_experiment(user, experiments.get(i));
+        }
+
+    }
+
+    public void getEntry() throws SBSBaseException {
+      //  LinkedList<RemoteEntry> entries = SDS.get_last_entry_references();
+        ArrayList<Long> longs =  this.getObjectlevel_db().getExperiment_ids_by_user(user);
+        LinkedList<Entry_Remote_Identifier> entries = new LinkedList<Entry_Remote_Identifier>();
+        for (int i = 0;i<longs.size();i++ ) {
+         entries = SDS.get_last_entry_references(longs.get(i), 5, null);
+        }
+        LinkedList<RemoteEntry> SDS_entry = new LinkedList<RemoteEntry>();
+        for (int i = 0;i<entries.size();i++ ) {
+             SDS_entry.add(SDS.get_entry(entries.get(i)));
+        }
+        for (int i = 0;i<SDS_entry.size();i++ ) {
+            objectlevel_db.insert_or_update_entry(SDS_entry.get(i));
+        }
+      //  for (int i = 0;i<experiments.size();i++ ) {
+     //       Log.d("experiment nr. "+i,experiments.get(i).getName());
+     //       objectlevel_db.insert_or_update_experiment(user, experiments.get(i));
+     //   }
+
     }
 
     public DBAdapter getDB() {

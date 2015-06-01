@@ -60,8 +60,14 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-     //  final int i = groupPosition;
+        Log.d("test1","test");
+
+        try {
+            final List<Experiment> list = service.getObjectlevel_db().get_experiments(service.getUser(), _listDataHeader.get(groupPosition));
+
+        //  final int i = groupPosition;
       //  final String childText = (String) getChild(groupPosition, childPosition);
+        /*
 if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
 
 
@@ -94,15 +100,14 @@ if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
             .findViewById(R.id.lblListItem);
 
     txtListChild.setText(childText);
-}else{
-            service.getDB().open();
+}else{*/
 
-    try {
-        final List<Experiment> list = service.getObjectlevel_db().get_experiments(service.getUser(), _listDataHeader.get(groupPosition));
-        service.getDB().close();
+
+
         _listDataChild.put(_listDataHeader.get(groupPosition).get_id(),list);
-        child = _listDataChild.get(_listDataHeader.get(groupPosition).get_id()).get(childPosition);
+       child = _listDataChild.get(_listDataHeader.get(groupPosition).get_id()).get(childPosition);
 
+        //  child = list.get(childPosition);
         String childText = child.get_name();
 
 
@@ -132,31 +137,33 @@ if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
     } catch (SBSBaseException e) {
         e.printStackTrace();
     }
+        catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     // final List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(groupPosition)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
 
 
-        }
+       // }
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
+        int i = 0;
         try {
+          //  List<Experiment> list = service.getObjectlevel_db().get_experiments(service.getUser(),_listDataHeader.get(groupPosition)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
+    i = service.getObjectlevel_db().getExperimentCountByProjectLocalID(_listDataHeader.get(groupPosition).get_id());
+    Log.d("experiment anzahl", String.valueOf(i));
 
-            service.getDB().open();
-            List<Experiment> list = service.getDB().getExperimentByLocalProjectID(_listDataHeader.get(groupPosition)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
-for (int j =0;list.size() > j ; j++)
-
-            service.getDB().close();
-            service.getDB().open();
-           int i = service.getDB().getExperimentCountByProjectLocalID(_listDataHeader.get(groupPosition).get_id());
-
-            service.getDB().close();
-            return i;
         }catch (Exception E){
             E.printStackTrace();
             return 0;
         }
+
+        return i;
     }
 
     @Override
