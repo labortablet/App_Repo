@@ -45,10 +45,10 @@ public class LocalService extends Service {
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
     private User user;
-    private Long[] remoteExperimentid;
+
     public static Timer myTimer = new Timer();
     public static Timer alwaysTimer = new Timer();
-    private ServersideDatabaseConnectionObject SDCO;
+
     static ServerDatabaseSession SDS;
     public static object_level_db objectlevel_db;
     private URL url;
@@ -75,7 +75,7 @@ public class LocalService extends Service {
         myDb = new DBAdapter(getApplicationContext());
         objectlevel_db = new object_level_db(getApplicationContext());
         super.onCreate();
-        deleteAllSynced();
+       // deleteAllSynced();
     }
 
     public object_level_db getObjectlevel_db() {
@@ -83,55 +83,43 @@ public class LocalService extends Service {
     }
 
     public void setUserAndURL(User user, String server) throws MalformedURLException {
-
         this.user = user;
         this.url = new URL(server);
     }
 
     public void getProjects() throws SBSBaseException {
-        LinkedList<RemoteProject> Projects = null;
         SDS = new ServerDatabaseSession(url, user);
         SDS.start_session();
-        LinkedList<User> all_users_which_have_login_info = objectlevel_db.get_all_users_with_login();
-        for (int i = 0; all_users_which_have_login_info.size() > i; i++) {
-            Projects = SDS.get_projects();
-
-        }
-        for (int j = 0; j < Projects.size(); j++) {
+        LinkedList<RemoteProject> Projects = SDS.get_projects();
+        int len = Projects.size();
+        for (int j = 0; j < len; j++) {
             objectlevel_db.insert_or_update_project(user, Projects.get((j)));
         }
-
     }
 
     public void getExperiments() throws SBSBaseException {
         LinkedList<RemoteExperiment> experiments = SDS.get_experiments();
-
-        for (int i = 0;i<experiments.size();i++ ) {
+        int len = experiments.size();
+        for (int i = 0;i<len;i++ ) {
             objectlevel_db.insert_or_update_experiment(user, experiments.get(i));
         }
-
     }
 
     public void getEntry() throws SBSBaseException {
-      //  LinkedList<RemoteEntry> entries = SDS.get_last_entry_references();
-        ArrayList<Long> longs =  this.getObjectlevel_db().getExperiment_ids_by_user(user);
-        LinkedList<Entry_Remote_Identifier> entries = new LinkedList<Entry_Remote_Identifier>();
-        for (int i = 0;i<longs.size();i++ ) {
-         entries = SDS.get_last_entry_references(longs.get(i), 5, null);
-        }
-        LinkedList<RemoteEntry> SDS_entry = new LinkedList<RemoteEntry>();
-        for (int i = 0;i<entries.size();i++ ) {
-             SDS_entry.add(SDS.get_entry(entries.get(i)));
-        }
-        for (int i = 0;i<SDS_entry.size();i++ ) {
-            objectlevel_db.insert_or_update_entry(SDS_entry.get(i));
-        }
-      //  for (int i = 0;i<experiments.size();i++ ) {
-     //       Log.d("experiment nr. "+i,experiments.get(i).getName());
-     //       objectlevel_db.insert_or_update_experiment(user, experiments.get(i));
-     //   }
+        ArrayList<Long> longs =  objectlevel_db.getExperiment_ids_by_user(user);
 
-    }
+        LinkedList<Entry_Remote_Identifier> entries;
+        int len =longs.size();
+        long userid= user.getId();
+        for (int i = 0;i < len;i++ ) {
+         entries = SDS.get_last_entry_references(longs.get(i), 5, null);
+            for(Entry_Remote_Identifier entry_remote_identifier : entries){
+                objectlevel_db.insert_or_update_entry(SDS.get_entry(entry_remote_identifier),userid);
+
+            }
+           }
+        }
+
 
     public DBAdapter getDB() {
         return myDb;

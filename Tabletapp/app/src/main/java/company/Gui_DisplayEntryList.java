@@ -35,6 +35,7 @@ import datastructures.AttachmentTable;
 import datastructures.AttachmentText;
 import datastructures.Entry;
 import datastructures.Experiment;
+import exceptions.SBSBaseException;
 import imports.ActivityRegistry;
 import imports.App_Methodes;
 import imports.ExpandableListAdapterEntries;
@@ -66,12 +67,16 @@ public class Gui_DisplayEntryList extends Activity {
         assert b != null;
         experiment = (Experiment) b.getSerializable("experiment");
         service.getDB().open();
-        entries = service.getDB().getGetEntryByExperiment(experiment);
+        try {
+            entries = service.getObjectlevel_db().get_entries(service.getUser(), experiment, 5);
+        } catch (SBSBaseException e) {
+            e.printStackTrace();
+        }
         service.getDB().close();
         textview1 = (TextView)findViewById(R.id.textview1);
         textview1.setText(experiment.get_name());
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
-        listAdapter = new ExpandableListAdapterEntries(this, entries);
+        listAdapter = new ExpandableListAdapterEntries(this,entries );
 
         try {
             expListView.setAdapter(listAdapter);

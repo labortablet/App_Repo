@@ -359,8 +359,6 @@ if(checkBox.isChecked())
             // try {
             try {
                 objectlevel_db.register_user(email,password,new URL(server));
-                LinkedList<RemoteProject> Projects = null;
-                LinkedList<RemoteExperiment> Experiments = null;
                 LinkedList<User> all_users_which_have_login_info = objectlevel_db.get_all_users_with_login();
                 mService.setUserAndURL(getActiveUser(all_users_which_have_login_info),server);
                 mService.getProjects();

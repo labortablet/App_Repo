@@ -135,7 +135,28 @@ public class object_level_db {
         return db.delete(layout.projects.getName(), where, null) != 0;
     }
 
+    private boolean deleteEntryByID(long rowId) {
+        String where =  "id" + " = " + rowId;
+        return db.delete(layout.entries.getName(), where, null) != 0;
+    }
 
+    private Cursor getEntryRow() {
+        Cursor c = db.rawQuery(" SELECT id FROM "+ layout.entries.getName() +" WHERE 1",new String[]{});
+        c.moveToFirst();
+        return c;
+    }
+
+    public void deleteAllSyncedEntry(){
+        Cursor c = getEntryRow();
+        long rowId = c.getColumnIndexOrThrow(layout.entries.getField("id").getName());
+        if (c.moveToFirst()) {
+            do {
+                deleteEntryByID(c.getLong((int) rowId));
+            } while (c.moveToNext());
+        }
+        c.close();
+
+    }
 //**************
 
     public void insert_or_update_project(User user, RemoteProject project) throws SBSBaseException {
@@ -150,7 +171,6 @@ public class object_level_db {
 
             result = this.insert_project(user, project);
 
-            Log.d("name des remote",project.getName());
             if (result == -1) {
                 throw new RuntimeException("Could not insert a Remote Project, this should not happen");
             }
@@ -281,20 +301,62 @@ public class object_level_db {
         }
     }
 
-    private long insert_entry(RemoteEntry entry) throws SBSBaseException {
-        throw new RuntimeException("Not Yet Implemented");
-    };
+    private long insert_entry(RemoteEntry entry,long id) throws SBSBaseException {
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(layout.entries.getField("remote_id").getName(),entry.getId());
+        initialValues.put(layout.entries.getField("experiment_id").getName(), this.resolve_remote_id_to_local_id(layout.experiments, entry.getExperiment_id()));
+        initialValues.put(layout.entries.getField("user_id").getName(), id);
+        initialValues.put(layout.entries.getField("title").getName(),entry.getTitle());
+        initialValues.put(layout.entries.getField("current_time").getName(), entry.getSync_time());
+        initialValues.put(layout.entries.getField("date_user").getName(), entry.getEntry_time());
+        initialValues.put(layout.entries.getField("date").getName(), entry.getChange_time());
+        initialValues.put(layout.entries.getField("attachment_ref").getName(), entry.getAttachment_ser());
+        initialValues.put(layout.entries.getField("attachment_type").getName(), entry.getAttachment_type());
+        return db.insert(layout.entries.getName(), null, initialValues);
 
-    private long update_entry(RemoteEntry entry) {
-        throw new RuntimeException("Not Yet Implemented");
-    };
+    }
 
-    public void insert_or_update_entry(RemoteEntry entry) throws SBSBaseException {
+    private long update_entry(long id,RemoteEntry entry,long userid) {
+        ContentValues newValues = new ContentValues();
+        newValues.put(layout.entries.getField("remote_id").getName(),entry.getId());
+        newValues.put(layout.entries.getField("experiment_id").getName(), this.resolve_remote_id_to_local_id(layout.experiments, entry.getExperiment_id()));
+        newValues.put(layout.entries.getField("user_id").getName(), userid);
+        newValues.put(layout.entries.getField("title").getName(),entry.getTitle());
+        newValues.put(layout.entries.getField("current_time").getName(), entry.getSync_time());
+        newValues.put(layout.entries.getField("date_user").getName(), entry.getEntry_time());
+        newValues.put(layout.entries.getField("date").getName(), entry.getChange_time());
+        newValues.put(layout.entries.getField("attachment_ref").getName(), entry.getAttachment_ser());
+        newValues.put(layout.entries.getField("attachment_type").getName(), entry.getAttachment_type());
+        return db.update(layout.entries.getName(), newValues, "id=" + id, null);
+    }
+
+    public void insert_or_update_entry(RemoteEntry entry,Long userid) throws SBSBaseException {
         this.get_lock();
         this.check_open();
+        //first get the local id if it exists
+        Long id = this.resolve_remote_id_to_local_id(layout.entries, entry.getId());
+
+        long result;
+        if (id == null) {
+            //the remote project needs to be inserted
+            result = this.insert_entry(entry,userid);
+            System.out.println("neue Entryid"+result);
+            if (result == -1) {
+                throw new RuntimeException("Could not insert a Remote Project, this should not happen");
+            }
+        } else {
+            //the local project exists already and needs to be updated
+           // result = update_project(id, project);
+            result = update_entry(id,entry,userid);
+            if (result == -1) {
+                throw new RuntimeException("Could not update a Remote Project, this should not happen");
+            }
+            this.release_lock();
         this.release_lock();
-        throw new RuntimeException("Not Yet Implemented");
-    };
+
+    }
+
+    }
 
     public Boolean is_entry_up_to_date(Entry_Remote_Identifier eri) throws SBSBaseException {
         this.get_lock();
@@ -383,6 +445,7 @@ public class object_level_db {
         long result;
         deleteAllSyncedProjects();
         deleteAllSyncedExperiments();
+        deleteAllSyncedEntry();
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
         initialValues.put(layout.users.getField("hashed_pw").getName(), User.hashedPW(password));
@@ -666,40 +729,39 @@ public class object_level_db {
 
         int index;
 
-        index = c.getColumnIndex(layout.users.getField("id").getName());
+        index = c.getColumnIndex(layout.entries.getField("id").getName());
         id = c.getLong(index);
 
-        index = c.getColumnIndex(layout.users.getField("experiment_id").getName());
+        index = c.getColumnIndex(layout.entries.getField("experiment_id").getName());
         experiment_id = c.getLong(index);
 
-        index = c.getColumnIndex(layout.users.getField("user_id").getName());
+        index = c.getColumnIndex(layout.entries.getField("user_id").getName());
         user_id = c.getLong(index);
 
-        index = c.getColumnIndex(layout.users.getField("entry_time").getName());
+        index = c.getColumnIndex(layout.entries.getField("date_user").getName());
         entry_time = c.getLong(index);
 
-        index = c.getColumnIndex(layout.users.getField("change_time").getName());
+        index = c.getColumnIndex(layout.entries.getField("current_time").getName());
         change_time = c.getLong(index);
 
-        index = c.getColumnIndex(layout.users.getField("attachment_type").getName());
+        index = c.getColumnIndex(layout.entries.getField("attachment_type").getName());
         attachment_type = c.getInt(index);
 
-        index = c.getColumnIndex(layout.users.getField("title").getName());
+        index = c.getColumnIndex(layout.entries.getField("title").getName());
         title = c.getString(index);
 
-        index = c.getColumnIndex(layout.users.getField("attachment_ref").getName());
+        index = c.getColumnIndex(layout.entries.getField("attachment_ref").getName());
         attachment_ref = c.getString(index);
 
         user = this.get_user_by_local_id(user_id);
         attachment = AttachmentBase.dereference(attachment_type, attachment_ref);
 
-        index = c.getColumnIndex(layout.users.getField("sync_time").getName());
+        index = c.getColumnIndex(layout.entries.getField("date").getName());
         if (!c.isNull(index)) {
             sync_time = c.getLong(index);
         } else {
             sync_time = null;
         }
-
         return new Entry(id, user, experiment_id, title, attachment, entry_time, sync_time,
                 change_time);
     }
@@ -806,7 +868,7 @@ return longs;
     private User get_user_by_local_id(long user_id) {
         Cursor c = db.rawQuery("SELECT * FROM " + layout.users.getName()
                 + " WHERE "
-                + layout.users.getField("id") + "="
+                + layout.users.getField("id").getName() + "="
                 + user_id, null);
         c.moveToFirst();
         return this.convert_cursor_to_user(c);
@@ -815,26 +877,41 @@ return longs;
     public LinkedList<Entry> get_entries(User user, Experiment experiment, int number) throws SBSBaseException {
         this.get_lock();
         this.check_open();
-        Cursor c = db.rawQuery("SELECT * FROM " + layout.entries.getName()
-                + " WHERE "
-                + layout.entries.getField("user_id") + "="
-                + user.getId() + " AND "
-                + layout.entries.getField("experiment_id") + "="
-                + experiment.get_id() + " LIMIT " + number, null);
+
+
+
+ Cursor c = db.rawQuery("SELECT * FROM " + layout.entries.getName()
+ + " WHERE "
+ + layout.entries.getField("user_id").getName() + " = "
+ + user.getId()+" AND "
+ + layout.entries.getField("experiment_id").getName() + " = "
+ + experiment.get_id()+" Limit "+number, null);
+
+
+    //Cursor c = db.rawQuery(" SELECT * FROM " + layout.entries.getName() + " WHERE " +layout.entries.getField("user_id").getName()+" = ? AND "+layout.entries.getField("experiment_id").getName()+" = ? LIMIT ?", new String[]{String.valueOf(user.getId()), String.valueOf(experiment.get_id()), String.valueOf(number)});
+
+    //  Cursor c = db.rawQuery("SELECT * FROM " + layout.entries.getName()  , new String[]{});
+
+
         LinkedList<Entry> tmp = new LinkedList<Entry>();
         Entry cache = null;
         long id;
         if (c != null) {
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 id = this.get_row_id(c);
-                WeakReference<Entry> ref = entry_object_cache.get(id);
-                if (ref != null) {
-                    cache = ref.get();
-                }
-                if (cache == null) {
+               // WeakReference<Entry> ref = entry_object_cache.get(id);
+            //    if (ref != null) {
+                 //   cache = ref.get();
+              //  }
+        //        if (cache == null) {
                     cache = this.convert_cursor_to_entry(c);
-                    entry_object_cache.put(id, new WeakReference<Entry>(cache));
-                }
+                System.out.println("Debug info for crash in insert entries");
+                System.out.println(user.getId());
+                System.out.println(experiment.get_name());
+                System.out.println(cache.getTitle());
+
+            //        entry_object_cache.put(id, new WeakReference<Entry>(cache));
+            //    }
                 tmp.add(cache);
             }
             c.close();
