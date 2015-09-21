@@ -399,7 +399,7 @@ if(checkBox.isChecked())
             intent = new Intent(getApplicationContext(), Gui_DisplayProjectAndExperiment.class);
             startActivity(intent);
 
-            Log.v("Progress", "Finished");
+
         }
 
     }
@@ -413,7 +413,7 @@ if(checkBox.isChecked())
     }
 
     public void stopProgress() {
-       // dialog.incrementProgressBy(progress[0]);
+      // dialog.incrementProgressBy(progress[0]);
     }
 
     public static LocalService getmService() {

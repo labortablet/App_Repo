@@ -46,6 +46,10 @@ public class Entry implements Serializable{
         return this.user;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public void update(RemoteEntry remoteentry){
         if(this.current_time !=remoteentry.getChange_time()){
             this.title = remoteentry.getTitle();

@@ -225,13 +225,13 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
     private void start_New_ActionKeyboard(){
         Intent intent;
         intent = new Intent(this, Gui_NewKeyboardEntry.class);
-        intent.putExtra("id",experiment.get_id());
+        intent.putExtra("experiment",experiment);
         startActivity(intent);
     }
     private void start_New_ActionTable(){
         Intent intent;
         intent = new Intent(this, RowAndColumnPopup.class);
-        intent.putExtra("id",experiment.get_id());
+        intent.putExtra("experiment",experiment);
         startActivity(intent);
     }
 
@@ -241,7 +241,7 @@ expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
     private void start_New_ActionImage(){
         Intent intent;
         intent = new Intent(this, Gui_NewImageEntry.class);
-        intent.putExtra("id",experiment.get_id());
+        intent.putExtra("experiment",experiment);
         startActivity(intent);
     }
 

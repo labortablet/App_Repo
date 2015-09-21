@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import datastructures.AttachmentImage;
+import datastructures.AttachmentTable;
+import datastructures.AttachmentText;
+import datastructures.Experiment;
+import imports.ActivityRegistry;
+import imports.App_Methodes;
 import imports.PhotoHandler;
 
 /**
@@ -34,11 +41,22 @@ public class Gui_NewImageEntry extends Activity {
     String photoFile;
     Bitmap bitmap;
     ImageView imageView;
+    Experiment experiment;
+    EditText editText;
+    File file;
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_gui_new_image_entry);
         imageView = (ImageView)findViewById(R.id.imageView);
+        editText = (EditText) findViewById(R.id.editText);
+        ActivityRegistry.register(this);
+
+        Intent intent = getIntent();
+        Bundle b = intent.getExtras();
+        assert b != null;
+
+        experiment = (Experiment) b.getSerializable("experiment");
     }
     public static final int CAPTURE_IMAGE_FULLSIZE_ACTIVITY_REQUEST_CODE = 1777;
 
@@ -47,13 +65,23 @@ public class Gui_NewImageEntry extends Activity {
         switch (v.getId()) {  // switch ID button
 
             case R.id.button:
+                if (!(editText.getText().toString().trim().isEmpty())) {
+                    try {
+                        long time = App_Methodes.generateTimestamp();
+                        Gui_StartActivity.mService.getObjectlevel_db().new_Entry(Gui_StartActivity.mService.getUser(), experiment, editText.getText().toString().trim(), new AttachmentImage(file.getName()), time);
+                        this.finish();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 break;
             case R.id.button2:
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
                 String date = dateFormat.format(new Date());
                 photoFile = "Picture_" + date + ".jpg";
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                File file = new File(Environment.getExternalStorageDirectory()+File.separator + photoFile);
+                file = new File(Environment.getExternalStorageDirectory()+File.separator + photoFile);
+
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
                 startActivityForResult(intent, CAPTURE_IMAGE_FULLSIZE_ACTIVITY_REQUEST_CODE);
 

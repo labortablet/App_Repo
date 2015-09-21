@@ -1,5 +1,7 @@
 package imports;
 
+import android.os.Environment;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -21,6 +23,10 @@ public static String[][] return2DArray(String string){
         }
         return stringreturn;
     }
+
+public String getFullPathWithFileName(String Filename){
+    return Environment.getExternalStorageDirectory()+File.separator + Filename;
+}
 
     public static void appendLog(String text)
     {

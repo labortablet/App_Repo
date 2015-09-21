@@ -329,6 +329,19 @@ public class object_level_db {
         newValues.put(layout.entries.getField("attachment_type").getName(), entry.getAttachment_type());
         return db.update(layout.entries.getName(), newValues, "id=" + id, null);
     }
+    private long update_entry(long id,Entry_Remote_Identifier entry_remote_identifier) {
+        ContentValues newValues = new ContentValues();
+        newValues.put(layout.entries.getField("remote_id").getName(),entry_remote_identifier.getId());
+        newValues.put(layout.entries.getField("date").getName(), entry_remote_identifier.getLast_change());
+        return db.update(layout.entries.getName(), newValues, "id=" + id, null);
+    }
+
+    public void updateEntryAfterSync(long LocalID,Entry_Remote_Identifier entry_remote_identifier) throws SBSBaseException {
+        this.get_lock();
+        this.check_open();
+        update_entry(LocalID,entry_remote_identifier);
+        this.release_lock();
+    }
 
     public void insert_or_update_entry(RemoteEntry entry,Long userid) throws SBSBaseException {
         this.get_lock();
@@ -352,7 +365,6 @@ public class object_level_db {
                 throw new RuntimeException("Could not update a Remote Project, this should not happen");
             }
             this.release_lock();
-        this.release_lock();
 
     }
 
@@ -443,9 +455,9 @@ public class object_level_db {
         this.get_lock();
         this.check_open();
         long result;
-        deleteAllSyncedProjects();
-        deleteAllSyncedExperiments();
-        deleteAllSyncedEntry();
+      //  deleteAllSyncedProjects();
+    //    deleteAllSyncedExperiments();
+   //     deleteAllSyncedEntry();
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
         initialValues.put(layout.users.getField("hashed_pw").getName(), User.hashedPW(password));
@@ -518,13 +530,15 @@ public class object_level_db {
         this.check_open();
         long current_time = (System.currentTimeMillis() / 1000);
         long id;
+
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.entries.getField("experiment_id").getName(), experiment.get_id());
         initialValues.put(layout.entries.getField("user_id").getName(), user.getId());
         initialValues.put(layout.entries.getField("title").getName(), title);
-        initialValues.put(layout.entries.getField("date_creation").getName(), current_time);
+
+        initialValues.put(layout.entries.getField("current_time").getName(), date_user);
         initialValues.put(layout.entries.getField("date_user").getName(), date_user);
-        initialValues.put(layout.entries.getField("date_current").getName(), current_time);
+        initialValues.put(layout.entries.getField("date").getName(), false);
         initialValues.put(layout.entries.getField("attachment_ref").getName(),
                 attachment.getReference());
         initialValues.put(layout.entries.getField("attachment_type").getName(),
@@ -832,6 +846,28 @@ else {
         }while (c.moveToNext());
 return longs;
     }
+
+    public Long get_Remote_ExperimentID(Long id) throws SBSBaseException {
+        this.get_lock();
+        this.check_open();
+        long l = 0;
+        Cursor c = db.rawQuery("SELECT * FROM " + layout.experiments.getName()
+                + " WHERE "
+                + layout.experiments.getField("id").getName() + "="
+                + id , null);
+        if (c != null) {
+
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+
+               l = c.getLong(c.getColumnIndex("remote_id"));
+            }
+    }
+        c.close();
+
+    this.release_lock();
+    return l;
+    }
+
     public LinkedList<Experiment> get_experiments(User user, Project project) throws SBSBaseException {
         this.get_lock();
         this.check_open();
@@ -960,5 +996,30 @@ return longs;
         this.release_lock();
         throw new RuntimeException("Not Implemented yet");
     }
+
+    public LinkedList<Entry> get_unsynced_entries() throws SBSBaseException {
+        this.get_lock();
+        this.check_open();
+
+
+
+        Cursor c = db.rawQuery("SELECT * FROM " + layout.entries.getName()
+                + " WHERE "
+                + layout.entries.getField("date").getName() + " = "
+                + "0",null) ;
+
+
+
+        LinkedList<Entry> tmp = new LinkedList<Entry>();
+        if (c != null) {
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                tmp.add(this.convert_cursor_to_entry(c));
+            }
+            c.close();
+        }
+        this.release_lock();
+        return tmp;
+    }
+
 
 }

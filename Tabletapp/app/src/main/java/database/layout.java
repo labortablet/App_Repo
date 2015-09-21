@@ -18,9 +18,9 @@ public class layout {
            new table.table_field("experiment_id", "INTEGER", "NOT NULL"),
            new table.table_field("user_id", "INTEGER NOT NULL"),
            new table.table_field("title", "STRING", "NOT NULL"),
-           new table.table_field("current_time", "INTEGER", "NOT NULL"),
-           new table.table_field("date_user", "INTEGER", "NOT NULL"),
-           new table.table_field("date", "INTEGER"),
+           new table.table_field("current_time", "INTEGER", "NOT NULL"), // änderungsdatum
+           new table.table_field("date_user", "INTEGER", "NOT NULL"), // einfüge datum
+           new table.table_field("date", "INTEGER"),                  //sync datum
            new table.table_field("attachment_ref", "STRING", "NOT NULL"),
            new table.table_field("attachment_type", "INTEGER", "NOT NULL")
     );

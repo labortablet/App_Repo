@@ -17,6 +17,7 @@ import java.lang.ref.WeakReference;
 
 import datastructures.AttachmentText;
 import datastructures.Entry;
+import datastructures.Experiment;
 import imports.ActivityRegistry;
 import imports.App_Methodes;
 import imports.Popup;
@@ -28,7 +29,7 @@ public class Gui_NewKeyboardEntry extends Activity {
     EditText content; // inhalt des entries
     EditText title;
     private WeakReference<LocalService> mSerive = new WeakReference<LocalService>(Gui_StartActivity.mService);
-    Long experimentID;
+    Experiment experiment;
     Reference<LocalService> ref = new WeakReference<LocalService>(Gui_StartActivity.getmService());
     LocalService service;
     @Override
@@ -43,7 +44,7 @@ public class Gui_NewKeyboardEntry extends Activity {
         Bundle b = intent.getExtras();
         assert b != null;
 
-        experimentID = b.getLong("id");
+        experiment = (Experiment) b.getSerializable("experiment");
 
         title = (EditText) findViewById(R.id.editText);
         content = (EditText) findViewById(R.id.editText1);
@@ -60,9 +61,7 @@ public class Gui_NewKeyboardEntry extends Activity {
                         try {
                             long time = App_Methodes.generateTimestamp();
 
-                            service.getDB().open();
-                            service.getDB().insertLocalEntry(service.getUser().getId(),experimentID,title.getText().toString(),(long) 1 ,content.getText().toString().trim(),time);
-                            service.getDB().close();
+                            service.getObjectlevel_db().new_Entry(service.getUser(),experiment,title.getText().toString(),new AttachmentText(content.getText().toString().trim()),time);
 
                             this.finish();
                         } catch (Exception e) {

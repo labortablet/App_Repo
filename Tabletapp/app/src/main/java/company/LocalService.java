@@ -9,8 +9,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,6 +27,7 @@ import database.object_level_db;
 import datastructures.AttachmentBase;
 import datastructures.AttachmentTable;
 import datastructures.AttachmentText;
+import datastructures.Entry;
 import datastructures.Experiment;
 import datastructures.ProjectExperimentEntry;
 import datastructures.User;
@@ -46,9 +49,9 @@ public class LocalService extends Service {
     private final IBinder mBinder = new LocalBinder();
     private User user;
 
-    public static Timer myTimer = new Timer();
-    public static Timer alwaysTimer = new Timer();
-
+    Timer timer;
+    TimerTask timerTask;
+    final Handler handler = new Handler();
     static ServerDatabaseSession SDS;
     public static object_level_db objectlevel_db;
     private URL url;
@@ -75,8 +78,11 @@ public class LocalService extends Service {
         myDb = new DBAdapter(getApplicationContext());
         objectlevel_db = new object_level_db(getApplicationContext());
         super.onCreate();
-       // deleteAllSynced();
+
+        // deleteAllSynced();
     }
+
+
 
     public object_level_db getObjectlevel_db() {
         return objectlevel_db;
@@ -100,25 +106,37 @@ public class LocalService extends Service {
     public void getExperiments() throws SBSBaseException {
         LinkedList<RemoteExperiment> experiments = SDS.get_experiments();
         int len = experiments.size();
-        for (int i = 0;i<len;i++ ) {
+        for (int i = 0; i < len; i++) {
             objectlevel_db.insert_or_update_experiment(user, experiments.get(i));
         }
     }
 
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+      //  initializeTimerTask();
+
+        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
+
+       // timer.schedule(timerTask,0, 10000); //
+
+    }
+
     public void getEntry() throws SBSBaseException {
-        ArrayList<Long> longs =  objectlevel_db.getExperiment_ids_by_user(user);
+        ArrayList<Long> longs = objectlevel_db.getExperiment_ids_by_user(user);
 
         LinkedList<Entry_Remote_Identifier> entries;
-        int len =longs.size();
-        long userid= user.getId();
-        for (int i = 0;i < len;i++ ) {
-         entries = SDS.get_last_entry_references(longs.get(i), 5, null);
-            for(Entry_Remote_Identifier entry_remote_identifier : entries){
-                objectlevel_db.insert_or_update_entry(SDS.get_entry(entry_remote_identifier),userid);
+        int len = longs.size();
+        long userid = user.getId();
+        for (int i = 0; i < len; i++) {
+            entries = SDS.get_last_entry_references(longs.get(i), 5, null);
+            for (Entry_Remote_Identifier entry_remote_identifier : entries) {
+                objectlevel_db.insert_or_update_entry(SDS.get_entry(entry_remote_identifier), userid);
 
             }
-           }
         }
+        new LongOperation().execute("");
+    }
 
 
     public DBAdapter getDB() {
@@ -171,7 +189,7 @@ public class LocalService extends Service {
             // SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
             //int i = new StartUpAsyncTask().execute(SDCO).get();
 
-            myTimer.schedule(new MyTask(), 60000);
+
             //return i;
             return 0;
         } else return 2;
@@ -218,271 +236,89 @@ public class LocalService extends Service {
         }
     }
 
-    private static class MyTask extends TimerTask {
-
-        public void run() {
-            myDb.open();
-            Cursor cursor = myDb.getAllUnsyncedEntries();
-            Log.d("TimerStarted", String.valueOf(System.currentTimeMillis()));
-            //TODO This is for getting the hashmap for Experiments and Projects
-            /*
-            projectExperimentEntries = Project_show.getProjectExperimentEntries();
-
-            try {
-                new AsyncTaskProjectExperimentHashtable().execute(projectExperimentEntries).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
-
-            if (cursor.getCount() > 0) {
+   /* public void initializeTimerTask() {
 
 
-                if (cursor.moveToFirst()) {
-                    do {
-                        // Process the data:
+        timerTask = new TimerTask() {
+
+            public void run() {
+
+
+                //use a handler to run a toast that shows the current timestamp
+
+                handler.post(new Runnable() {
+
+                    public void run() {
                         try {
-                            int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
-                            Entry_Remote_Identifier new_entry_info;
-
-                            if (cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
-                                new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
-                            else
-                                new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)));
-
-
-                            AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
-                            myDb.updateEntryAfterSync(new_entry_info, cursor.getLong(DBAdapter.COL_EntryCreationDate));
-                            //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
-                            // projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntriesList().get(projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntryIDByCreationTimestamp(cursor.getLong(DBAdapter.COL_EntryCreationDate))).setSync(true);
-                            //- Project_show.setProjectExperimentEntries(projectExperimentEntries);
+                            LinkedList<Entry> entryLinkedList = objectlevel_db.get_unsynced_entries();
+                            Entry_Remote_Identifier remote_identifier = new Entry_Remote_Identifier(0, (long) 0);
+                            for (Entry entry : entryLinkedList) {
+                                Log.d("Entrie infos:", objectlevel_db.get_Remote_ExperimentID(entry.getExperiment_id()) +" , "+ entry.getEntry_time() +" , "+ entry.getTitle() +" , "+ entry.getAttachment());
+                                remote_identifier = SDS.send_entry(entry.getExperiment_id(), entry.getEntry_time(), entry.getTitle(), entry.getAttachment());
+                               // objectlevel_db.updateEntryAfterSync(entry.getId(), remote_identifier);
+                                int duration = Toast.LENGTH_SHORT;
+                                Toast toast = Toast.makeText(getApplicationContext(), "Entry " + entry.getTitle() + " was successfully synchronized", duration);
+                                toast.show();
+                            }
                         } catch (SBSBaseException e) {
                             e.printStackTrace();
+                        }catch (Exception e){
+                            e.printStackTrace();
+
                         }
-
-                    } while (cursor.moveToNext());
-                }
-            }
-
-            myDb.close();
-            alwaysTimer.scheduleAtFixedRate(new MyTaskAlwaysRunning(), 1200000, 1200000);
-            this.cancel();
-        }
-
-    }
-
-    private static class MyTaskAlwaysRunning extends TimerTask {
-
-        public void run() {
-            if (isOnline()) {
-                myDb.open();
-                Cursor cursor = myDb.getAllUnsyncedEntries();
-                Log.d("TimerStarted", String.valueOf(System.currentTimeMillis()));
-                if (cursor.getCount() > 0) {
-                    if (cursor.moveToFirst()) {
-                        do {
-                            // Process the data:
-                            try {
-                                int experiment_ID = cursor.getInt(DBAdapter.COL_EntryExperimentID);
-                                Entry_Remote_Identifier new_entry_info;
-                                if (cursor.getInt(DBAdapter.COL_EntryTyp) == 1)
-                                    new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent)));
-                                else
-                                    new_entry_info = SDS.send_entry(experiment_ID, cursor.getLong(DBAdapter.COL_EntryCreationDate), cursor.getString(DBAdapter.COL_EntryTitle), new AttachmentTable(cursor.getString(DBAdapter.COL_EntryContent)));
-
-                                AttachmentBase attachmentBase = new AttachmentText(cursor.getString(DBAdapter.COL_EntryContent));
-
-                                myDb.updateEntryAfterSync(new_entry_info, cursor.getLong(DBAdapter.COL_EntryCreationDate));
-                                // TODO: ADD The update in the listview here
-                                //   projectExperimentEntries = Project_show.getProjectExperimentEntries();
-                                // projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntriesList().get(projectExperimentEntries.get(myDb.getProjectIDByExperimentID(experiment_ID)).getExperimentEntry().get(cursor.getInt(experiment_ID)).getEntryIDByCreationTimestamp(cursor.getLong(DBAdapter.COL_EntryCreationDate))).setSync(true);
-                                //- Project_show.setProjectExperimentEntries(projectExperimentEntries);
-                            } catch (SBSBaseException e) {
-                                e.printStackTrace();
-                            }
-
-                        } while (cursor.moveToNext());
                     }
-                }
-                myDb.close();
+
+                });
+
             }
-        }
 
-    }
+        };
 
+    }*/
 
-    private class DownloadFilesTask extends AsyncTask<Void, Integer, Void> {
-
+    private class LongOperation extends AsyncTask<String, Void, String> {
 
         @Override
-        protected Void doInBackground(Void... params) {
-            Cursor c = myDb.getAllProjectRows();
-            if (c.moveToFirst()) {
-                do {
-                    // Process the data:
-                    //  project_local_id2project_object.put(c.getInt(DBAdapter.COL_ProjectRemoteID), new SoftReference<Project>(new Project(c.getInt(DBAdapter.COL_ProjectRemoteID),c.getInt(DBAdapter.COL_EntryRemoteID),c.getString(DBAdapter.COL_ProjectName),c.getString(DBAdapter.COL_ProjectDescription))));
-                } while (c.moveToNext());
-            }
-            c = myDb.getAllExperimentRows();
-            if (c.moveToFirst()) {
-                do {
-                    // Process the data:
-                    //    experiment_local_id2experiment_object.put(c.getInt(DBAdapter.COL_ExperimentID), new SoftReference<Experiment>(new Experiment(c.getInt(DBAdapter.COL_ExperimentID),c.getInt(DBAdapter.COL_ExperimentRemoteID),c.getInt(DBAdapter.COL_ExperimentProjectID),c.getString(DBAdapter.COL_ExperimentName),c.getString(DBAdapter.COL_ExperimentDescription))));
-                } while (c.moveToNext());
-            }
-            c = myDb.getAllEntryRows();
-            if (c.moveToFirst()) {
-                do {
-                    // Process the data:
-                    //    entry_local_id2entry_object.put(c.getInt(DBAdapter.COL_EntryID), new SoftReference<Entry>(new Entry(c.getInt(DBAdapter.COL_EntryID),new User(c.getString(DBAdapter.COL_EntryUserID),c.getString(DBAdapter.COL_EntryUserID)),c.getInt(DBAdapter.COL_EntryExperimentID),c.getString(DBAdapter.COL_EntryTitle),new AttachmentText(c.getString(DBAdapter.COL_EntryContent)),true,c.getLong(DBAdapter.COL_EntryCreationDate),c.getLong(DBAdapter.COL_EntrySyncDate),c.getLong(DBAdapter.COL_EntryChangeDate))));
-                } while (c.moveToNext());
-            }
+        protected String doInBackground(String... params) {
+            for (int i = 0; i < 5; i++) {
+                try {
 
-            // Close the cursor to avoid a resource leak.
-            c.close();
+                    LinkedList<Entry> entryLinkedList = objectlevel_db.get_unsynced_entries();
+                    Entry_Remote_Identifier remote_identifier = new Entry_Remote_Identifier(0, (long) 0);
+                    for (Entry entry : entryLinkedList) {
+                        Log.d("Entrie infos:", objectlevel_db.get_Remote_ExperimentID(entry.getExperiment_id()) +" , "+ entry.getEntry_time() +" , "+ entry.getTitle() +" , "+ entry.getAttachment());
+                        SDS.send_entry(entry.getExperiment_id(), entry.getEntry_time(), entry.getTitle(), entry.getAttachment());
+                        // objectlevel_db.updateEntryAfterSync(entry.getId(), remote_identifier);
+                        int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(getApplicationContext(), "Entry " + entry.getTitle() + " was successfully synchronized", duration);
+                        toast.show();
+                    }
+                } catch (SBSBaseException e) {
+                    e.printStackTrace();
+                } catch (Exception e){
+                    e.printStackTrace();
 
+                }
 
-            return null;
+            }
+            return "Executed";
         }
 
-        protected void onProgressUpdate(Integer... progress) {
-            // setProgressPercent(progress[0]);
+        @Override
+        protected void onPostExecute(String result) {
+
+       // txt.setText(result);
+            // might want to change "executed" for the returned string passed
+            // into onPostExecute() but that is upto you
         }
 
-        protected void onPostExecute(Long result) {
-            //   showDialog("Downloaded " + result + " bytes");
-        }
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
-
 }
-/*
-    //Define Sqlite Statements for later use in Prepared Statements
-    These are more of an idea and a basis for discussion right now and should not yet be used
-    private static final String DATABASE_updateFooString = "SELECT * FROM TEST WHERE id = ?";
-    private static final String DATABASE_CREATE_Entries =
-            "CREATE TABLE IF NOT EXISTS entries(" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    "remote_id INTEGER UNIQUE," +
-                    "experiment_id INTEGER NOT NULL," +
-                    "user_id INTEGER NOT NULL," +
-                    "title STRING NOT NULL," +
-                    "date_creation INTEGER NOT NULL," +
-                    "date_user INTEGER NOT NULL," +
-                    "date_current INTEGER," +
-                    "attachment_ref STRING NOT NULL," +
-                    "attachment_type INTEGER NOT NULL" +
-                    ");";
 
 
-    private static final String DATABASE_CREATE_USER =
-            "CREATE TABLE IF NOT EXISTS users(" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    "remote_id INTEGER UNIQUE," +
-                    "lastname STRING," +
-                    "firstname STRING," +
-                    "login STRING," +
-                    "hashed_pw STRING" +
-                    ");";
 
-    private static final String DATABASE_CREATE_EXPERIMENT =
-            "CREATE TABLE IF NOT EXISTS experiments(" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    "remote_id INTEGER," +
-                    "user_id INTEGER NOT NULL," +
-                    "name STRING NOT NULL," +
-                    "description STRING," +
-                    "date_creation INTEGER" +
-
-                    ");";
-
-    private static final String DATABASE_CREATE_PROJECT =
-            "CREATE TABLE IF NOT EXISTS projects(" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    "remote_id INTEGER," +
-                    "user_id INTEGER NOT NULL," +
-                    "name STRING NOT NULL," +
-                    "description STRING," +
-                    "date_creation INTEGER" +
-                    ");";
-    *
-
-    // Interface to be used by the GUi after binding
-
-    User register_user(String login, String password, URL server){
-        return null;
-    };
-
-Project register_project(User user, String project_name){
-        return null;
-        };
-
-        Experiment register_experiment(User user, Project project, String experiment_name){
-        return null;
-        };
-
-        //FIXME Local Entry??? We should either call them all Local or all without a prefix
-        Entry new_Entry(User user, Experiment experiment, String title, AttachmentBase attachment){
-        return null;
-        };
-
-        LinkedList<Project> match_project(Project project){
-        return null;
-        };
-
-        LinkedList<Project> match_project(Project project, Project real_project){
-        return null;
-        };
-
-        LinkedList<Project> match_project(Project project, boolean force_sync) throws NoInternetAvailable {
-        return null;
-        };
-
-        LinkedList<Project> match_project(Project project, Project real_project, boolean force_sync) throws NoInternetAvailable{
-        return null;
-        };
-
-        LinkedList<Experiment> merge_experiment_into(Experiment experiment){
-        return null;
-        };
-
-        LinkedList<Experiment> merge_experiment_into(Experiment experiment, Experiment real_experiment){
-        return null;
-        };
-
-        LinkedList<Experiment> merge_experiment_into(Experiment experiment, boolean force_sync) throws NoInternetAvailable{
-        return null;
-        };
-
-        LinkedList<Experiment> merge_experiment_into(Experiment experiment, Experiment real_experiment, boolean force_sync) throws NoInternetAvailable{
-        return null;
-        };
-
-        Boolean check_user(User user) throws NoInternetAvailable{
-        return null;
-        };
-
-        LinkedList<Project> get_projects(User user){
-        return null;
-        };
-
-        LinkedList<Project> get_projects(User user, boolean force_sync) throws NoInternetAvailable{
-        return null;
-        };
-
-        LinkedList<Experiment> get_experiments(User user, Project project){
-        return null;
-        };
-
-        LinkedList<Experiment> get_experiments(User user, Project project, boolean force_sync) throws NoInternetAvailable{
-        return null;
-        };
-
-        LinkedList<Entry> get_entries(User user, Experiment experiment, int number){
-        return null;
-        };
-
-        LinkedList<Entry> get_entries(User user, Experiment experiment, int number, boolean force_sync) throws NoInternetAvailable{
-        return null;
-        };
-        */

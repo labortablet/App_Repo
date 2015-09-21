@@ -62,6 +62,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
    //     service.getDB().open();
 //projects.addAll(service.getDB().getAllProjectRowsLinkedList());
      //   service.getDB().close();
+
         try {
 
                        projects.addAll(service.getObjectlevel_db().get_projects(service.getUser()));

@@ -18,6 +18,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import datastructures.AttachmentTable;
+import datastructures.Experiment;
 import imports.ActivityRegistry;
 import imports.App_Methodes;
 import imports.Popup;
@@ -34,7 +36,7 @@ public class Gui_NewTableEntry extends Activity {
     EditText text2;
     private int cols;
     private int rows;
-    long experimentID;
+    Experiment experiment;
     private String[][] string_array;
     Reference<LocalService> ref = new WeakReference<LocalService>(Gui_StartActivity.getmService());
     LocalService service;
@@ -52,7 +54,7 @@ public class Gui_NewTableEntry extends Activity {
         Intent intent= getIntent();
         Bundle b = intent.getExtras();
         assert b != null;
-        experimentID = b.getLong("id");
+        experiment = (Experiment) b.getSerializable("experiment");
         rows = b.getInt("row");
         cols = b.getInt("column");
         // Receiving the Data
@@ -105,11 +107,9 @@ public class Gui_NewTableEntry extends Activity {
                     try {
 
 
-//TODO: Fix table entry String title, AttachmentTable attachment,int attachmentTyp,Long  entry_time, User user, boolean sync,int Experiment_id
+
                         long time = App_Methodes.generateTimestamp();
-                        service.getDB().open();
-                        service.getDB().insertLocalEntry(service.getUser().getId(),experimentID,text.getText().toString(),(long) 2 ,App_Methodes.twoDArray2String(string_array).trim(),time);
-                        service.getDB().close();
+                        service.getObjectlevel_db().new_Entry(service.getUser(),experiment,text.getText().toString(),new AttachmentTable(App_Methodes.twoDArray2String(string_array).trim()),time);
                         this.finish();
                     } catch (Exception e) {
                         e.printStackTrace();
