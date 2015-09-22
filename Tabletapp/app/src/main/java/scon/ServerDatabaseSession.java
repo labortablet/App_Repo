@@ -9,6 +9,8 @@ package scon;
 //so I just added a copy of the android base64 file to our source for now
 //should be removed once we ship this.
 
+import android.util.Log;
+
 import org.json_pc.JSONArray;
 import org.json_pc.JSONException;
 import org.json_pc.JSONObject;
@@ -139,6 +141,7 @@ public class ServerDatabaseSession {
 
     private void check_for_success(JSONObject result) throws SBSBaseException {
         //check if we succeeded
+        //TODO: Kostet 8 ms rechenzeit warum keine ahnung
         try {
             if (!result.getString("status").toLowerCase().equals("success")) {
                 System.out.println(result);
@@ -209,6 +212,7 @@ public class ServerDatabaseSession {
     }
 
     private void auth_session(byte[] response) throws SBSBaseException{
+
         this.check_for_session();
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "auth_session");
@@ -219,20 +223,21 @@ public class ServerDatabaseSession {
         }
 
     public void start_session() throws SBSBaseException{
-        byte[] challenge = this.get_challenge();
-        byte[] response = this.calculate_response(challenge);
-        this.auth_session(response);
+        //byte[] challenge = this.get_challenge();
+        //byte[] response = this.calculate_response(challenge);
+        this.auth_session(this.calculate_response(this.get_challenge()));
     };
 
     public LinkedList<RemoteProject> get_projects() throws SBSBaseException {
+
         this.check_for_session();
         JSONObject request = new JSONObject();
         this.put_wrapper(request, "action", "get_projects");
         this.put_wrapper(request, "session_id", this.session_id);
         JSONObject result = this.send_json(request);
         this.check_for_success(result);
-
         JSONArray project_json_array = null;
+        // getestet kein geschwindigkeits verlust bis hier
         try {
             project_json_array = result.getJSONArray("projects");
         } catch (JSONException e) {
@@ -242,12 +247,13 @@ public class ServerDatabaseSession {
         }
 
         LinkedList<RemoteProject> remoteProject_list = new LinkedList<RemoteProject>();
-        for (int i = 0; i < project_json_array.length(); i++) {
-            JSONArray project_json = null;
-            Long id = null;
-            String name = null;
-            String description = null;
-            Long date = null;
+        int len = project_json_array.length();
+        for (int i = 0; i < len; i++) {
+            JSONArray project_json;
+            Long id;
+            String name;
+            String description;
+           // Long date = null;
             try {
                 project_json = project_json_array.getJSONArray(i);
                 id = project_json.getLong(0);

@@ -75,13 +75,13 @@ public class Gui_StartActivity extends Activity {
     WeakReference<LocalService> mserviceweak = new WeakReference<LocalService>(mService);
     public static LocalService mService;
     static Context context;
-    boolean mBound = false;
+    static boolean mBound = false;
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private Pattern pattern;
     boolean mIsBound;
-
+    public static Integer NumberOfEntries = 10;
     public Gui_StartActivity() {
         super();
         mIsBound = false;
@@ -102,6 +102,12 @@ public class Gui_StartActivity extends Activity {
         context = getApplicationContext();
 
         try {
+
+            SharedPreferences appDetails = context.getSharedPreferences("com.lablet.PREFERENCE_APP_KEY", MODE_PRIVATE);
+            if (appDetails.getInt("NumberOfEntries",10) != 10){
+            NumberOfEntries = appDetails.getInt("NumberOfEntries",10);
+            }
+
             SharedPreferences userDetails = context.getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
             if(userDetails.getString("ServerIP", null) != null)
                 text.setText(userDetails.getString("ServerIP", null));

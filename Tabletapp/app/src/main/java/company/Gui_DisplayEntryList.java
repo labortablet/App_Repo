@@ -55,20 +55,26 @@ public class Gui_DisplayEntryList extends Activity {
     Experiment experiment;
     TextView textview1;
     Reference<LocalService> mservice = new WeakReference<LocalService>(Gui_StartActivity.getmService());
+    LocalService service;
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_gui_entry_list);
-        LinkedList<Entry> entries = new LinkedList<Entry>();
-        LocalService service = mservice.get();
-
+        service = mservice.get();
         Intent intent = getIntent();
         Bundle b = intent.getExtras();
         assert b != null;
         experiment = (Experiment) b.getSerializable("experiment");
+        prepareList();
+
+        ActivityRegistry.register(this);
+    }
+
+    private void prepareList(){
+        LinkedList<Entry> entries = new LinkedList<Entry>();
         service.getDB().open();
         try {
-            entries = service.getObjectlevel_db().get_entries(service.getUser(), experiment, 5);
+            entries = service.getObjectlevel_db().get_entries(service.getUser(), experiment, Gui_StartActivity.NumberOfEntries);
         } catch (SBSBaseException e) {
             e.printStackTrace();
         }
@@ -85,79 +91,14 @@ public class Gui_DisplayEntryList extends Activity {
             e.printStackTrace();
         }
 
-// get the listview
-
-
-
-        ActivityRegistry.register(this);
     }
-         /*
-         * Preparing the list data
-         */
-    /*
-    private void prepareListData() {
 
-        listDataHeader = new ArrayList<String>();
-        listDataDate   = new ArrayList<String>();
-        listDataChild  = new HashMap<String, List<String>>();
-        debugList = new ArrayList<String>();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        prepareList();
+    }
 
-        // Adding child data
-        try {
-            for (int i = 0; i < projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().size(); i++) {
-                img.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).isSync());
-                listDataHeader.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getTitle());
-           /*    if(!projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getEntry_time()) {
-                   Long long1 = projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getEntry_time()*1000;
-                   listDataDate.add("   entry date:  " + new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getEntry_time()*1000))); // ("dd/MM/yyyy HH:mm:ss") Für minuten stunden etc ...
-               }
-                else {
-                   listDataDate.add("empty");
-               }
-
-                List<String> list = new ArrayList<String>();
-                switch (projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getTypeNumber()) {
-                    case 1:
-                        list.add(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getContent().toString());
-
-                  break;
-                    case 2:
-                     Collections.addAll(list, App_Methodes.StringToArray(projectExperimentEntries.get(project_Selected).getExperimentEntry().get(experiment_Selected).getEntriesList().get(i).getAttachment().getContent().toString()));
-                  break;
-                }
-
-expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        long packedPosition = expListView.getExpandableListPosition(position);
-                        if (ExpandableListView.getPackedPositionType(packedPosition) ==
-                                ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-
-                            entry_Selected = position;
-                            startnew_action1();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-
-                expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-                    @Override
-                    public boolean onChildClick(ExpandableListView parent, View v,
-                                                int groupPosition, int childPosition, long id) { // Setting the onclick listener for a Child obj.
-                        entry_Selected = groupPosition;
-                        startnew_action1();
-                        return false;
-                    }
-                });
-
-                listDataChild.put(listDataHeader.get(i), list);
-            }
-        } catch (Exception ignored) {
-        }
-    }*/
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.

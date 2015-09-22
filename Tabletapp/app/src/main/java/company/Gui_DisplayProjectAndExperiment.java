@@ -109,8 +109,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
               //  Toast.makeText(getApplicationContext(), "Settings Clicked", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.settings:
-                // refresh
-                Toast.makeText(getApplicationContext(), "settings", Toast.LENGTH_SHORT).show();
+                settings();
                 return true;
             case R.id.sync:
                 // refresh
@@ -120,5 +119,8 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private void settings(){
+        startActivity(new Intent(getApplicationContext(), Gui_Settings.class));
     }
 }

@@ -46,18 +46,20 @@ import scon.ServerDatabaseSession;
  */
 public class LocalService extends Service {
     // Binder given to clients
+
     private final IBinder mBinder = new LocalBinder();
     private User user;
 
-    Timer timer;
-    TimerTask timerTask;
-    final Handler handler = new Handler();
+
     static ServerDatabaseSession SDS;
     public static object_level_db objectlevel_db;
     private URL url;
     public static DBAdapter myDb;//= Gui_StartActivity.myDb;
-    static List<ProjectExperimentEntry> projectExperimentEntries;
-
+    LinkedList<RemoteProject> Projects;
+    LinkedList<RemoteExperiment> experiments;
+    LinkedList<Entry_Remote_Identifier> entries;
+    ArrayList<Long> longs;
+    int len = 0;
     //Hashmaps so we can cache the objects and can update them easily.
     //also, the same entry will only exist as a unique object and will therefore be
     //updated correctly!
@@ -79,7 +81,6 @@ public class LocalService extends Service {
         objectlevel_db = new object_level_db(getApplicationContext());
         super.onCreate();
 
-        // deleteAllSynced();
     }
 
 
@@ -94,39 +95,30 @@ public class LocalService extends Service {
     }
 
     public void getProjects() throws SBSBaseException {
+        Log.e("von hier wurden projecte gelesen","x");
         SDS = new ServerDatabaseSession(url, user);
         SDS.start_session();
-        LinkedList<RemoteProject> Projects = SDS.get_projects();
-        int len = Projects.size();
+        Projects = SDS.get_projects();
+        len = Projects.size();
         for (int j = 0; j < len; j++) {
-            objectlevel_db.insert_or_update_project(user, Projects.get((j)));
+        objectlevel_db.insert_or_update_project(user, Projects.get((j)));
         }
+        Log.e("bis hier wurden Projecte gelesen","x");
     }
 
     public void getExperiments() throws SBSBaseException {
-        LinkedList<RemoteExperiment> experiments = SDS.get_experiments();
-        int len = experiments.size();
+        experiments = SDS.get_experiments();
+         len = experiments.size();
         for (int i = 0; i < len; i++) {
             objectlevel_db.insert_or_update_experiment(user, experiments.get(i));
         }
     }
 
-    public void startTimer() {
-        //set a new Timer
-        timer = new Timer();
-      //  initializeTimerTask();
 
-        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
-
-       // timer.schedule(timerTask,0, 10000); //
-
-    }
 
     public void getEntry() throws SBSBaseException {
-        ArrayList<Long> longs = objectlevel_db.getExperiment_ids_by_user(user);
-
-        LinkedList<Entry_Remote_Identifier> entries;
-        int len = longs.size();
+        longs = objectlevel_db.getExperiment_ids_by_user(user);
+        len = longs.size();
         long userid = user.getId();
         for (int i = 0; i < len; i++) {
             entries = SDS.get_last_entry_references(longs.get(i), 5, null);
@@ -186,18 +178,12 @@ public class LocalService extends Service {
 
         if (isOnline()) {
             SDS = new ServerDatabaseSession(url, user);
-            // SDCO = new ServersideDatabaseConnectionObject(SDS, myDb);
-            //int i = new StartUpAsyncTask().execute(SDCO).get();
-
-
-            //return i;
             return 0;
         } else return 2;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-
         return mBinder;
     }
 
@@ -236,55 +222,20 @@ public class LocalService extends Service {
         }
     }
 
-   /* public void initializeTimerTask() {
 
-
-        timerTask = new TimerTask() {
-
-            public void run() {
-
-
-                //use a handler to run a toast that shows the current timestamp
-
-                handler.post(new Runnable() {
-
-                    public void run() {
-                        try {
-                            LinkedList<Entry> entryLinkedList = objectlevel_db.get_unsynced_entries();
-                            Entry_Remote_Identifier remote_identifier = new Entry_Remote_Identifier(0, (long) 0);
-                            for (Entry entry : entryLinkedList) {
-                                Log.d("Entrie infos:", objectlevel_db.get_Remote_ExperimentID(entry.getExperiment_id()) +" , "+ entry.getEntry_time() +" , "+ entry.getTitle() +" , "+ entry.getAttachment());
-                                remote_identifier = SDS.send_entry(entry.getExperiment_id(), entry.getEntry_time(), entry.getTitle(), entry.getAttachment());
-                               // objectlevel_db.updateEntryAfterSync(entry.getId(), remote_identifier);
-                                int duration = Toast.LENGTH_SHORT;
-                                Toast toast = Toast.makeText(getApplicationContext(), "Entry " + entry.getTitle() + " was successfully synchronized", duration);
-                                toast.show();
-                            }
-                        } catch (SBSBaseException e) {
-                            e.printStackTrace();
-                        }catch (Exception e){
-                            e.printStackTrace();
-
-                        }
-                    }
-
-                });
-
-            }
-
-        };
-
-    }*/
 
     private class LongOperation extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
-            for (int i = 0; i < 5; i++) {
+
                 try {
 
                     LinkedList<Entry> entryLinkedList = objectlevel_db.get_unsynced_entries();
-                    Entry_Remote_Identifier remote_identifier = new Entry_Remote_Identifier(0, (long) 0);
+                    if (entryLinkedList.size() == 0 && !Gui_StartActivity.mBound){
+                       stopSelf();
+                    }
+                    Entry_Remote_Identifier remote_identifier;
                     for (Entry entry : entryLinkedList) {
                         Log.d("Entrie infos:", objectlevel_db.get_Remote_ExperimentID(entry.getExperiment_id()) +" , "+ entry.getEntry_time() +" , "+ entry.getTitle() +" , "+ entry.getAttachment());
                         SDS.send_entry(entry.getExperiment_id(), entry.getEntry_time(), entry.getTitle(), entry.getAttachment());
@@ -292,6 +243,7 @@ public class LocalService extends Service {
                         int duration = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(getApplicationContext(), "Entry " + entry.getTitle() + " was successfully synchronized", duration);
                         toast.show();
+                        Thread.sleep(10000,0);
                     }
                 } catch (SBSBaseException e) {
                     e.printStackTrace();
@@ -300,7 +252,7 @@ public class LocalService extends Service {
 
                 }
 
-            }
+
             return "Executed";
         }
 

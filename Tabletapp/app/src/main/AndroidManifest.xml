@@ -15,7 +15,7 @@
     <application
 
         android:allowBackup="true"
-        android:icon="@drawable/lablet"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/MyTheme">
 
@@ -40,6 +40,10 @@
         </activity>
         <activity
             android:name="company.SmplExpandable"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="company.Gui_Settings"
             android:label="@string/app_name" >
         </activity>
         <activity
