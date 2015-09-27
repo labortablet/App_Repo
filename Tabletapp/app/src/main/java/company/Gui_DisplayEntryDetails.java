@@ -138,32 +138,36 @@ private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_Displ
 
                 textView.setText(entry.getTitle());
                 textView2.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date (entry.getEntry_time()*1000)));
-                //TODO: FIX HERE THE DISPLAY FUNKTION WITH VARIABLE VIEW
                 textView3.setText(entry.getUser().display("  ",false));
-                String[][] strings =  return2DArray(entry.getAttachment().getContent());
-                for(String[] s: strings) { // Starting Table output
+                try {
 
-                                      TableRow row = new TableRow(this);
-                                      row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-                                                    TableRow.LayoutParams.WRAP_CONTENT));
 
-                                          for (String string : s) {
-                                            EditText tv = new EditText(this);
-                                              tv.setInputType(0);
+                    String[][] strings = return2DArray(entry.getAttachment().getContent());
+                    for (String[] s : strings) { // Starting Table output
 
-                                            tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                            TableRow.LayoutParams.WRAP_CONTENT));
+                        TableRow row = new TableRow(this);
+                        row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                                TableRow.LayoutParams.WRAP_CONTENT));
 
-                                            tv.setPadding(5, 5, 5, 5);
-                                            tv.setText(string);
-                                            row.addView(tv);
-                                           row.setGravity(Gravity.CENTER);
-                                      }
+                        for (String string : s) {
+                            EditText tv = new EditText(this);
+                            tv.setInputType(0);
 
-                table.addView(row);
+                            tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                                    TableRow.LayoutParams.WRAP_CONTENT));
 
-                                 } // End Table output
+                            tv.setPadding(5, 5, 5, 5);
+                            tv.setText(string);
+                            row.addView(tv);
+                            row.setGravity(Gravity.CENTER);
+                        }
 
+                        table.addView(row);
+
+                    } // End Table output
+                }catch (IndexOutOfBoundsException Exc){
+                    Exc.printStackTrace();
+                }
                               break;
 
 

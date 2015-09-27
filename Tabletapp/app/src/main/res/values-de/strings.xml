@@ -70,6 +70,13 @@
     <string name="acntivproject">Active Project:</string>
     <string name="creationdate">Creation Date</string>
     <string name="sync">Time till Sync</string>
-
+<string name="english">Englisch</string>
+    <string name="deutsch">Deutsch</string>
     <string name="syncimage">status Bild</string>
+    <string name="language">Sprache:</string>
+    <string-array name="languages">
+    <item>Deutsch</item>
+    <item>English</item>
+    </string-array>
+
 </resources>

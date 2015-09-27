@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class App_Methodes {
 
-public static String[][] return2DArray(String string){
+public static String[][] return2DArray(String string)throws IndexOutOfBoundsException{
         String[] strings = string.split(";");
         String[][] stringreturn = new String[strings.length][strings[0].split(",").length];
         for (int i=0; i < strings.length;i++) {

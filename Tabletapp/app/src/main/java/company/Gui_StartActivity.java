@@ -32,6 +32,7 @@ import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,6 +83,7 @@ public class Gui_StartActivity extends Activity {
     private Pattern pattern;
     boolean mIsBound;
     public static Integer NumberOfEntries = 10;
+    static Locale myLocale;
     public Gui_StartActivity() {
         super();
         mIsBound = false;

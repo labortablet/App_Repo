@@ -123,9 +123,7 @@ public class Gui_DisplayEntryList extends Activity {
             case R.id.action_refresh:
                 return true;
             case R.id.settings:
-
-                Toast.makeText(getApplicationContext(), "settings", Toast.LENGTH_SHORT).show();
-                return true;
+                startActivity(new Intent(getApplicationContext(), Gui_Settings.class));
             case R.id.sync:
 
                 Toast.makeText(getApplicationContext(), "sync", Toast.LENGTH_SHORT).show();

@@ -10,41 +10,68 @@
         android:id="@+id/textView14"
         android:layout_gravity="center_horizontal" />
 
-    <TableLayout
+    <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <TableRow
+        <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center">
+            android:layout_height="fill_parent">
 
-            <TextView
-                android:layout_width="178dp"
-                android:layout_height="wrap_content"
-                android:text="@string/anzahlentries"
-                android:id="@+id/textView15" />
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center">
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/editText7" />
-        </TableRow>
+                <TextView
+                    android:layout_width="178dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anzahlentries"
+                    android:id="@+id/textView15" />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center">
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/editText7" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/finished"
-                android:id="@+id/button6"
-                android:layout_span="2" />
-        </TableRow>
-    </TableLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/language"
+                    android:id="@+id/textView16" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/languages"
+                    android:id="@+id/spinner"
+                    android:spinnerMode="dropdown" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/finished"
+                    android:id="@+id/button6"
+                    android:layout_span="2" />
+
+            </TableRow>
+
+        </TableLayout>
+    </RadioGroup>
 
 </LinearLayout>

@@ -28,7 +28,7 @@ public class Gui_DisplayNewEntrySelection extends Activity{
         //doBindService();
         ActivityRegistry.register(this);
        column = (EditText) findViewById(R.id.editText);
-       row = (EditText) findViewById(R.id.editText);
+       row = (EditText) findViewById(R.id.editText1);
 
 
     } // Standart Android Methoden für apps
