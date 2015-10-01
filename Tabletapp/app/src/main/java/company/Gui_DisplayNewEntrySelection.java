@@ -64,7 +64,7 @@ public class Gui_DisplayNewEntrySelection extends Activity{
                 System.exit(0);
                 break;
             case R.id.button3: // new Keyboard
-      start_NewActionKeyboard();
+                start_NewActionKeyboard();
                 this.finish();
                 break;
             case R.id.button4: // new Table

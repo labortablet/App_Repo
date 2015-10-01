@@ -368,6 +368,7 @@ public class ServerDatabaseSession {
         this.put_wrapper(request, "attachment_type", attachment.getTypeNumber());
         this.put_wrapper(request, "experiment_id", experiment_id);
         JSONObject result = this.send_json(request);
+        Log.e("result from send",request.toString());
         this.check_for_success(result);
         Long entry_current_time;
         Integer entry_id;

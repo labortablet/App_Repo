@@ -30,17 +30,17 @@ import datastructures.Experiment;
 public class RowAndColumnPopup extends Activity {
 EditText text;
 EditText text2;
-float experimentID;
+Experiment experiment;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prompts);
         text = (EditText) findViewById(R.id.editText5);
         text2 = (EditText)findViewById(R.id.editText6);
         ActivityRegistry.register(this);
-        Intent intent= getIntent();
+        Intent intent = getIntent();
         Bundle b = intent.getExtras();
         assert b != null;
-        experimentID = b.getFloat("id");
+        experiment = (Experiment) b.getSerializable("experiment");
     }
 
     public void buttonEventHandler(View v) {  // butten events
@@ -55,7 +55,7 @@ float experimentID;
                 Intent intent;
                 intent = new Intent(this, Gui_NewTableEntry.class);
 
-                    intent.putExtra("id",experimentID);
+                    intent.putExtra("experiment",experiment);
                     intent.putExtra("row",row);
                     intent.putExtra("column",column);
                     startActivity(intent);

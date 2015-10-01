@@ -1,13 +1,8 @@
 package company;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
@@ -24,15 +20,19 @@ import java.util.Locale;
 /**
  * Created by Grit on 22.09.2015.
  */
-public class Gui_Settings extends Activity{
+public class Gui_Settings extends Activity {
 
     EditText editText;
     Spinner spinner;
+    Locale myLocale;
+    TextView textView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_gui_settings);
+        getBaseContext().getResources().updateConfiguration(Gui_StartActivity.config, getBaseContext().getResources().getDisplayMetrics());
         editText = (EditText) findViewById(R.id.editText7);
+        textView = (TextView) findViewById(R.id.textView14);
         editText.setText(Gui_StartActivity.NumberOfEntries.toString());
         spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -40,18 +40,18 @@ public class Gui_Settings extends Activity{
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int pos, long id) {
 
-                if (pos == 1) {
+                if (pos == 0) {
 
                     Toast.makeText(parent.getContext(),
                             "You have selected German", Toast.LENGTH_SHORT)
                             .show();
-                    setLocale("de");
-                }  else if (pos == 2) {
+                    changeLang("de");
+                } else if (pos == 1) {
 
                     Toast.makeText(parent.getContext(),
                             "You have selected English", Toast.LENGTH_SHORT)
                             .show();
-                    setLocale("en");
+                    changeLang("en");
                 }
 
             }
@@ -62,6 +62,27 @@ public class Gui_Settings extends Activity{
 
         });
     }
+
+    public void changeLang(String lang) {
+        if (lang.equalsIgnoreCase(""))
+            return;
+        myLocale = new Locale(lang);
+        saveLocale(lang);
+        Locale.setDefault(myLocale);
+        android.content.res.Configuration config = new android.content.res.Configuration();
+        config.locale = myLocale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        textView.setText(R.string.settings);
+    }
+
+    public void saveLocale(String lang) {
+        String langPref = "Language";
+        SharedPreferences prefs = Gui_StartActivity.context.getSharedPreferences("com.lablet.PREFERENCE_APP_KEY", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(langPref, lang);
+        editor.apply();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,17 +102,6 @@ public class Gui_Settings extends Activity{
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }  // Standart Android Methoden für apps
 
-    public void setLocale(String lang) {
-
-        Gui_StartActivity.myLocale = new Locale(lang);
-        Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        Configuration conf = res.getConfiguration();
-        conf.locale = Gui_StartActivity.myLocale;
-        res.updateConfiguration(conf, dm);
-
-    }
-
 
     public void buttonEventHandler(View v) {  // butten events
 
@@ -99,20 +109,16 @@ public class Gui_Settings extends Activity{
 
             case R.id.button6:
                 if (editText.getText().length() != 0) {
-
                     Integer number = Integer.parseInt(editText.getText().toString());
                     Gui_StartActivity.NumberOfEntries = number;
                     SharedPreferences appDetails = Gui_StartActivity.context.getSharedPreferences("com.lablet.PREFERENCE_APP_KEY", MODE_PRIVATE);
                     SharedPreferences.Editor editor = appDetails.edit();
-                    editor.putInt("NumberOfEntries",number);
+                    editor.putInt("NumberOfEntries", number);
                     editor.apply();
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(getApplicationContext(),"changes saved", duration);
-                    toast.show();
-
                 }
                 break;
-        }}
+        }
+    }
 
 
 }

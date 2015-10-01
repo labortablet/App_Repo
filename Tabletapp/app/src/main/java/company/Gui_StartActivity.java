@@ -12,7 +12,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
@@ -83,7 +85,9 @@ public class Gui_StartActivity extends Activity {
     private Pattern pattern;
     boolean mIsBound;
     public static Integer NumberOfEntries = 10;
+    public static android.content.res.Configuration config;
     static Locale myLocale;
+    static Runnable runnable;
     public Gui_StartActivity() {
         super();
         mIsBound = false;
@@ -94,6 +98,8 @@ public class Gui_StartActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_gui_start_activity);
+        loadLocale();
+
         objectlevel_db = new object_level_db(this);
         text = (EditText) findViewById(R.id.editText);
         text2 = (EditText) findViewById(R.id.editText4);
@@ -411,6 +417,27 @@ if(checkBox.isChecked())
         }
 
     }
+/*
+
+     runnable = new Runnable() {
+            public void run() {
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, "Entry " + string + " was successfully synchronized", duration);
+        toast.show();
+            }
+        };*/
+
+
+
+
+    final static Handler handler = new Handler() {
+        @Override
+        public void handleMessage(final Message msgs) {
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, "Entry " + msgs + " was successfully synchronized", duration);
+            toast.show();
+        }
+    };
 
     public void showProgress() {
         task = new ProgressTask();
@@ -447,6 +474,26 @@ if(checkBox.isChecked())
                 return user;
 
             }
+
+    public void changeLang(String lang)
+    {
+        if (lang.equalsIgnoreCase(""))
+            return;
+        Locale myLocale = new Locale(lang);
+        Locale.setDefault(myLocale);
+        android.content.res.Configuration config = new android.content.res.Configuration();
+        config.locale = myLocale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+    }
+
+
+    public void loadLocale()
+    {
+        String langPref = "Language";
+        SharedPreferences prefs = getSharedPreferences("com.lablet.PREFERENCE_APP_KEY", MODE_PRIVATE);
+        String language = prefs.getString(langPref, "");
+        changeLang(language);
+    }
 
 }
 

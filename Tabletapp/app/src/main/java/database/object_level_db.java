@@ -455,9 +455,9 @@ public class object_level_db {
         this.get_lock();
         this.check_open();
         long result;
-      //  deleteAllSyncedProjects();
-    //    deleteAllSyncedExperiments();
-   //     deleteAllSyncedEntry();
+     //   deleteAllSyncedProjects();
+     //   deleteAllSyncedExperiments();
+    //    deleteAllSyncedEntry();
         ContentValues initialValues = new ContentValues();
         initialValues.put(layout.users.getField("login").getName(), login);
         initialValues.put(layout.users.getField("hashed_pw").getName(), User.hashedPW(password));
@@ -847,7 +847,7 @@ else {
 return longs;
     }
 
-    public Long get_Remote_ExperimentID(Long id) throws SBSBaseException {
+    public long get_Remote_ExperimentID(Long id) throws SBSBaseException {
         this.get_lock();
         this.check_open();
         long l = 0;

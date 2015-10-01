@@ -29,6 +29,7 @@ import java.util.List;
 import datastructures.AttachmentImage;
 import datastructures.AttachmentTable;
 import datastructures.AttachmentText;
+import datastructures.Entry;
 import datastructures.Experiment;
 import imports.ActivityRegistry;
 import imports.App_Methodes;
@@ -68,7 +69,8 @@ public class Gui_NewImageEntry extends Activity {
                 if (!(editText.getText().toString().trim().isEmpty())) {
                     try {
                         long time = App_Methodes.generateTimestamp();
-                        Gui_StartActivity.mService.getObjectlevel_db().new_Entry(Gui_StartActivity.mService.getUser(), experiment, editText.getText().toString().trim(), new AttachmentImage(file.getName()), time);
+                     Entry entry  =  Gui_StartActivity.mService.getObjectlevel_db().new_Entry(Gui_StartActivity.mService.getUser(), experiment, editText.getText().toString(), new AttachmentImage(file.getName()), time);
+                        Log.e("ID_des IMAGE entries", String.valueOf(entry.getAttachment().getTypeNumber()));
                         this.finish();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -87,6 +89,7 @@ public class Gui_NewImageEntry extends Activity {
 
                 break;
         }}
+
     public void onResume() {
         super.onResume();  // Always call the superclass method first
     imageView.setImageBitmap(bitmap);

@@ -1,11 +1,13 @@
 package imports;
 
+import android.content.SharedPreferences;
 import android.os.Environment;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Created by Grit on 19.06.2014.
@@ -23,6 +25,7 @@ public static String[][] return2DArray(String string)throws IndexOutOfBoundsExce
         }
         return stringreturn;
     }
+
 
 public String getFullPathWithFileName(String Filename){
     return Environment.getExternalStorageDirectory()+File.separator + Filename;

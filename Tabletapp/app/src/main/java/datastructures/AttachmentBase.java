@@ -9,8 +9,8 @@ public abstract class AttachmentBase implements Serializable{
                 return new AttachmentText(attachment_serialized);
             case 2:
                 return new AttachmentTable(attachment_serialized);
-            /*case 3:  return new AttachmentImage(attachment_serialized);
-            */
+            case 3:
+                return new AttachmentImage(attachment_serialized);
             default:
                 return new AttachmentText(attachment_serialized);
         }
@@ -22,8 +22,8 @@ public abstract class AttachmentBase implements Serializable{
                 return new AttachmentText(attachment_serialized, 0);
             case 2:
                 return new AttachmentTable(attachment_serialized, 0);
-            /*case 3:  return new AttachmentImage(attachment_serialized);
-            */
+            case 3:
+                return new AttachmentImage(attachment_serialized);
             default:
                 return new AttachmentText(attachment_serialized, 0);
         }

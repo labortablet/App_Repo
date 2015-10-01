@@ -8,5 +8,5 @@ public class AttachmentImage extends AttachmentText {
         super(titel);
     }
     @Override
-    public int getTypeNumber(){return 3;};
+    public int getTypeNumber(){return 3;}
 }

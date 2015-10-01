@@ -67,7 +67,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/finished"
                     android:id="@+id/button6"
-                    android:layout_span="2" />
+                    android:layout_span="2"
+                    android:onClick="buttonEventHandler" />
 
             </TableRow>
 

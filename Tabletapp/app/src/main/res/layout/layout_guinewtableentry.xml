@@ -45,7 +45,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tableLayout1"
-            android:baselineAligned="false">
+            android:baselineAligned="false"
+            android:gravity="center">
         </TableLayout>
     </ScrollView>
 

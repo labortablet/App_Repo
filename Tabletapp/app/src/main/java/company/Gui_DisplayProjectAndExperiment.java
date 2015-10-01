@@ -112,8 +112,11 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
                 startActivity(new Intent(getApplicationContext(), Gui_Settings.class));
                 return true;
             case R.id.sync:
-                // refresh
-                Toast.makeText(getApplicationContext(), "sync", Toast.LENGTH_SHORT).show();
+                long tenMinutes = 600000;
+                long millis = System.currentTimeMillis() - Gui_StartActivity.mService.getTimeTillSync();
+                long secs = (tenMinutes - millis) / 1000;
+                long mins = secs / 60;
+                Toast.makeText(getApplicationContext(),"Next Sync in"+mins+" Minutes", Toast.LENGTH_SHORT).show();
                 return true;
             // help action
             default:

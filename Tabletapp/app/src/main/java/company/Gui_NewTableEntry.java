@@ -3,7 +3,9 @@ package company;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +57,7 @@ public class Gui_NewTableEntry extends Activity {
         Bundle b = intent.getExtras();
         assert b != null;
         experiment = (Experiment) b.getSerializable("experiment");
+     //   Log.e("Experiment name",experiment.get_name());
         rows = b.getInt("row");
         cols = b.getInt("column");
         // Receiving the Data
@@ -62,7 +65,7 @@ public class Gui_NewTableEntry extends Activity {
 
 
 
-        text = (EditText)findViewById(R.id.editText);
+        text = (EditText)findViewById(R.id.editText2);
 
         text1 = (EditText)findViewById(R.id.editText1);
 
@@ -153,18 +156,19 @@ public class Gui_NewTableEntry extends Activity {
             for (int j = 0; j < cols; j++) {
 
                 EditText tv = new EditText(this);
+
                 textView_array[i][j] = tv;
                 tv.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
                         LayoutParams.WRAP_CONTENT));
-
+                tv.setRawInputType(InputType.TYPE_CLASS_NUMBER);
                 tv.setPadding(15, 15, 15, 15);
               //  tv.setText("R " + i + ". C" + j); // TODO Delete this to get empty textfields in the table
                 tv.isInEditMode();
                 row.addView(tv);
-
+                row.setGravity(Gravity.CENTER);
 
             }
-
+        //  table.setGravity(Gravity.CENTER);
             table.addView(row);
 
         }}
