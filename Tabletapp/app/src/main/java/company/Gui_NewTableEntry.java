@@ -22,10 +22,10 @@ import java.util.List;
 
 import datastructures.AttachmentTable;
 import datastructures.Experiment;
+
 import imports.ActivityRegistry;
 import imports.App_Methodes;
 import imports.Popup;
-import datastructures.ProjectExperimentEntry;
 
 /**
  * Created by Grit on 03.08.2014.
@@ -43,9 +43,7 @@ public class Gui_NewTableEntry extends Activity {
     Reference<LocalService> ref = new WeakReference<LocalService>(Gui_StartActivity.getmService());
     LocalService service;
     private EditText[][] textView_array;
-    private Integer project_Selected = Gui_DisplayProjectAndExperiment.getProject_Selected();
-    private Integer experiment_Selected = Gui_DisplayProjectAndExperiment.getExperiment_Selected();
-    private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_DisplayProjectAndExperiment.getProjectExperimentEntries();
+
 
 
     protected void onCreate(Bundle savedInstanceState) {

@@ -3,6 +3,7 @@ package company;
 /**
  * Created by Grit on 14.03.2015.
  */
+
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -11,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.HeterogeneousExpandableList;
 import android.widget.ImageView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;

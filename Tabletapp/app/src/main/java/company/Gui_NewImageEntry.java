@@ -2,38 +2,28 @@ package company;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import datastructures.AttachmentImage;
-import datastructures.AttachmentTable;
-import datastructures.AttachmentText;
 import datastructures.Entry;
 import datastructures.Experiment;
 import imports.ActivityRegistry;
 import imports.App_Methodes;
-import imports.PhotoHandler;
 
 /**
  * Created by Grit on 21.04.2015.

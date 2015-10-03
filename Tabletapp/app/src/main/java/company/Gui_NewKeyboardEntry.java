@@ -3,7 +3,6 @@ package company;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +15,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 import datastructures.AttachmentText;
-import datastructures.Entry;
 import datastructures.Experiment;
 import imports.ActivityRegistry;
 import imports.App_Methodes;

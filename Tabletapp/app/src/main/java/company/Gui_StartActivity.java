@@ -9,13 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +27,6 @@ import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,21 +35,12 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import database.object_level_db;
-import datastructures.Entry;
-import datastructures.Experiment;
-import datastructures.Project;
-import exceptions.SBSBaseException;
-import imports.DBAdapter;
-import imports.Popup;
 import datastructures.User;
-import scon.Entry_Remote_Identifier;
-import scon.RemoteEntry;
+import exceptions.SBSBaseException;
+import imports.Popup;
 import scon.RemoteExperiment;
 import scon.RemoteProject;
-import scon.ServerDatabaseSession;
-
 
 import static imports.App_Methodes.appendLog;
 

@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TableLayout;
@@ -21,11 +20,10 @@ import android.widget.Toast;
 import com.example.test1.tabletapp.app.R;
 
 import java.io.File;
-import java.util.List;
+
 
 import datastructures.Entry;
-import datastructures.ProjectExperimentEntry;
-import imports.ActivityRegistry;
+
 
 import static imports.App_Methodes.return2DArray;
 
@@ -49,7 +47,7 @@ public class Gui_DisplayEntryDetails extends Activity {
      *
      * @since 1.0
      */
-    private static List<ProjectExperimentEntry> projectExperimentEntries = Gui_DisplayProjectAndExperiment.getProjectExperimentEntries();
+
     /**
      * TextView for Title
      * Title {@value} .
@@ -92,14 +90,14 @@ public class Gui_DisplayEntryDetails extends Activity {
      * @since 1.0
      */
     ImageView imageView;
-    private Integer experiment_Selected = Gui_DisplayProjectAndExperiment.getExperiment_Selected();
+
     /**
      * This is the Project, where the Experiment  belongs to
      * Selected Project {@value} .
      *
      * @since 1.0
      */
-    private Integer project_Selected = Gui_DisplayProjectAndExperiment.getProject_Selected();
+
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -113,7 +111,7 @@ public class Gui_DisplayEntryDetails extends Activity {
 
         switch (entry.getAttachment().getTypeNumber()) {
             case 1: // For Keyboard LocalEntry
-                if (entry.getSync_time() != null)
+                if (entry.getSync_time() != 0)
                     setContentView(R.layout.entry_keyboarddetails_synctrue); // Setting Layout
                 else
                     setContentView(R.layout.entry_keyboarddetails_syncfalse);
@@ -132,7 +130,7 @@ public class Gui_DisplayEntryDetails extends Activity {
                 textView4.setText(entry.getUser().display("  ", false));
                 break;
             case 2: //For Table LocalEntry
-                if (entry.getSync_time() != null)
+                if (entry.getSync_time() != 0)
                     setContentView(R.layout.entry_tabledetails_synctrue);  // Setting Layout
                 else
                     setContentView(R.layout.entry_tabledetails_syncfalse);
@@ -178,10 +176,10 @@ public class Gui_DisplayEntryDetails extends Activity {
 
             case 3:
 
-                if (!entry.isSync())
+                if (entry.getSync_time() != 0)
                     setContentView(R.layout.entry_imagedetails_synctrue); // Setting Layout
                 else
-                    setContentView(R.layout.entry_tabledetails_syncfalse);
+                    setContentView(R.layout.entry_imagedetails_syncfalse);
 
                 Log.e("Entry titel",entry.getTitle());
                textView = (TextView) findViewById(R.id.textView19);

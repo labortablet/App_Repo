@@ -7,32 +7,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.example.test1.tabletapp.app.R;
 
-import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import datastructures.Experiment;
 import datastructures.Project;
+
 import exceptions.SBSBaseException;
 import imports.ActivityRegistry;
 import imports.ExpandableListAdapterProjectsAndExperiments;
-import datastructures.ProjectExperimentEntry;
 
 public class Gui_DisplayProjectAndExperiment extends Activity {
 
-    private static int experiment_Selected;
-    private static int project_Selected;
-    private static List<ProjectExperimentEntry> projectExperimentEntries;
+
     ExpandableListAdapterProjectsAndExperiments listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
@@ -40,20 +34,9 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
     HashMap<String, List<String>> listDataChild;
     LinkedList<Project> projects = new LinkedList<Project>();
 
-    public static int getExperiment_Selected() {
-        return experiment_Selected;
-    }
-    public static int getProject_Selected() {
-        return project_Selected;
-    }
 
-    public static void setProjectExperimentEntries(List<ProjectExperimentEntry> projectExperimentEntries) {
-        Gui_DisplayProjectAndExperiment.projectExperimentEntries = projectExperimentEntries;
-    }
 
-    public static List<ProjectExperimentEntry> getProjectExperimentEntries() {
-        return projectExperimentEntries;
-    }
+
 
     @Override
 
