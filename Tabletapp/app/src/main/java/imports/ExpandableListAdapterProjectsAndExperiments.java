@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import company.Gui_DisplayEntryList;
+import company.Gui_DisplayProjectDetails;
 import company.LocalService;
 import datastructures.Experiment;
 import datastructures.Project;
@@ -60,7 +61,7 @@ public class ExpandableListAdapterProjectsAndExperiments extends BaseExpandableL
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        Log.d("test1","test");
+
 
         try {
             final List<Experiment> list = service.getObjectlevel_db().get_experiments(service.getUser(), _listDataHeader.get(groupPosition));
@@ -119,8 +120,6 @@ if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
 
 
         convertView.setOnClickListener(new View.OnClickListener() {
-
-
             public void onClick(View view) {
                 list.get(childPosition);
                 Intent intent;
@@ -156,7 +155,7 @@ if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
         try {
           //  List<Experiment> list = service.getObjectlevel_db().get_experiments(service.getUser(),_listDataHeader.get(groupPosition)); //_listDataChild.get( _listDataHeader.get(groupPosition).get_id());
     i = service.getObjectlevel_db().getExperimentCountByProjectLocalID(_listDataHeader.get(groupPosition).get_id());
-    Log.d("experiment anzahl", String.valueOf(i));
+  // Log.d("experiment anzahl", String.valueOf(i));
 
         }catch (Exception E){
             E.printStackTrace();
@@ -198,6 +197,16 @@ if (_listDataChild.containsKey((_listDataHeader.get(groupPosition).get_id()))){
                 .findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
+        convertView.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent;
+                intent = new Intent(_context, Gui_DisplayProjectDetails.class);
+                intent.putExtra("Project", project);
+                _context.startActivity(intent);
+                return true;
+            }
+        });
 /*
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

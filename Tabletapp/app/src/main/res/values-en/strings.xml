@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="load_error">Something went wrong by loading the user Information!</string>
     <string name="anzahlentries">Entries shown</string>
     <string name="settings">Settings</string>
     <string name="app_name">Lablet</string>

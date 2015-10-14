@@ -37,9 +37,6 @@ public class ExpandableListAdapterEntries extends BaseExpandableListAdapter {
     private Context _context;
     private LinkedList<Entry> _listData; // header titles
 
-
-
-
     public ExpandableListAdapterEntries(Gui_DisplayEntryList gui_displayEntryList, LinkedList<Entry> entries) {
         _context = gui_displayEntryList;
         _listData = entries;

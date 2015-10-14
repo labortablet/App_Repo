@@ -14,9 +14,9 @@ import com.example.test1.tabletapp.app.R;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
+
 import java.util.LinkedList;
-import java.util.List;
+
 
 import datastructures.Project;
 
@@ -29,9 +29,7 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
 
     ExpandableListAdapterProjectsAndExperiments listAdapter;
     ExpandableListView expListView;
-    List<String> listDataHeader;
     Reference<LocalService> mservice = new WeakReference<LocalService>(Gui_StartActivity.getmService());
-    HashMap<String, List<String>> listDataChild;
     LinkedList<Project> projects = new LinkedList<Project>();
 
 
@@ -42,9 +40,6 @@ public class Gui_DisplayProjectAndExperiment extends Activity {
 
         public void onCreate(Bundle savedInstanceState) {
         LocalService service = mservice.get();
-   //     service.getDB().open();
-//projects.addAll(service.getDB().getAllProjectRowsLinkedList());
-     //   service.getDB().close();
 
         try {
 

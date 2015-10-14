@@ -22,26 +22,18 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.test1.tabletapp.app.R;
-
-import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import database.object_level_db;
 import datastructures.User;
 import exceptions.SBSBaseException;
 import imports.Popup;
-import scon.RemoteExperiment;
-import scon.RemoteProject;
-
 import static imports.App_Methodes.appendLog;
 
 /**
@@ -50,10 +42,11 @@ import static imports.App_Methodes.appendLog;
  */
 
 public class Gui_StartActivity extends Activity {
-    // Variablen Deklaration / Instanzvariable:
-    EditText text ;
+    // Variablen Deklaration
+
+    EditText text;
     EditText text2;
-    EditText text3 ;
+    EditText text3;
     CheckBox checkBox;
     CheckBox checkBox2;
     CheckBox checkBox3;
@@ -63,7 +56,6 @@ public class Gui_StartActivity extends Activity {
     String email;
     String password;
     private static object_level_db objectlevel_db;
-    WeakReference<LocalService> mserviceweak = new WeakReference<LocalService>(mService);
     public static LocalService mService;
     static Context context;
     static boolean mBound = false;
@@ -74,16 +66,25 @@ public class Gui_StartActivity extends Activity {
     boolean mIsBound;
     public static Integer NumberOfEntries = 10;
     public static android.content.res.Configuration config;
-    static Locale myLocale;
-    static Runnable runnable;
+
+    /**
+     * Konstruktor fuer die Klasse Gui_StartActivity
+     */
+
     public Gui_StartActivity() {
         super();
         mIsBound = false;
         pattern = Pattern.compile(EMAIL_PATTERN);
- }
+    }
 
+    /**
+     * onCreate Methode fuer die Klasse Gui_StartActivity
+     *
+     * @param savedInstanceState a Bundle, A mapping from String values to various Parcelable types.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_gui_start_activity);
         loadLocale();
@@ -98,29 +99,46 @@ public class Gui_StartActivity extends Activity {
         context = getApplicationContext();
 
         try {
-
-            SharedPreferences appDetails = context.getSharedPreferences("com.lablet.PREFERENCE_APP_KEY", MODE_PRIVATE);
-            if (appDetails.getInt("NumberOfEntries",10) != 10){
-            NumberOfEntries = appDetails.getInt("NumberOfEntries",10);
-            }
-
-            SharedPreferences userDetails = context.getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
-            if(userDetails.getString("ServerIP", null) != null)
-                text.setText(userDetails.getString("ServerIP", null));
-                if(userDetails.getString("userName",null)!= null) {
-                    text2.setText(userDetails.getString("userName", null));
-                     checkBox2.setChecked(true);}
-                    if(userDetails.getString("Password", null) != null) {
-                        text3.setText(userDetails.getString("Password", null));
-                         checkBox3.setChecked(true);}
-        }catch (Exception e)
-        {
+            set_NumbersOfEntries_saved_inSharedPreferences();
+            set_UserDetailsFromSharedPreferences();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), R.string.load_error, Toast.LENGTH_SHORT).show();
             appendLog(e.getMessage());
             e.printStackTrace();
         }
 
 
-    } // Standart Android Methoden für apps
+    }
+
+    /**
+     * Setzt die Anzahl der Angezeigten Entries bei Änderung vom Standardwert 10 Falls dieser beim
+     * Letzten Lauf der App in den Settings geändert wurde
+     */
+
+    private void set_NumbersOfEntries_saved_inSharedPreferences() {
+        SharedPreferences appDetails = context.getSharedPreferences("com.lablet.PREFERENCE_APP_KEY", MODE_PRIVATE);
+        if (appDetails.getInt("NumberOfEntries", 10) != 10) {
+            NumberOfEntries = appDetails.getInt("NumberOfEntries", 10);
+        }
+    }
+
+    /**
+     * Setzt die User-Infos, Falls diese beim letzter ausführung gespeichert wurden
+     */
+
+    private void set_UserDetailsFromSharedPreferences() {
+        SharedPreferences userDetails = context.getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
+        if (userDetails.getString("ServerIP", null) != null)
+            text.setText(userDetails.getString("ServerIP", null));
+        if (userDetails.getString("userName", null) != null) {
+            text2.setText(userDetails.getString("userName", null));
+            checkBox2.setChecked(true);
+        }
+        if (userDetails.getString("Password", null) != null) {
+            text3.setText(userDetails.getString("Password", null));
+            checkBox3.setChecked(true);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,106 +164,59 @@ public class Gui_StartActivity extends Activity {
         switch (v.getId()) {  // switch ID button
 
             case R.id.button:
-        try {
-            if (!text.getText().toString().isEmpty() && !text2.getText().toString().isEmpty() && !text3.getText().toString().isEmpty()) { //Abfrage ob textfelder des logins leer sind
-
-
-                if (validate(text2.getText().toString())) { // abfrage der korrektheit der email
-                //    text2.setText("fredi@uni-siegen.de");
-              //      text3.setText("test");
-                    server = text.getText().toString();
-
-                                         email = text2.getText().toString();
-
-                                         password = text3.getText().toString();
-
-                                 //      mService.getDB().open();
-
-                                          //      mService.getDB().insertLoginUser(email, User.hashedPW(password),server);
-
-                                                 //      mService.setUserAndURL(mService.getDB().getLocalUser(email), server);
-
-                                                            //    try{
-
-                                                                   //    Log.d("passwdhash2",  new String(mService.getUser().getPw_hash(), "UTF-8"));
-
-                                                                          //     }catch (UnsupportedEncodingException e)
-
-                                                                                  //     {
-
-                                                                                         //          e.printStackTrace();
-
-                                                                                                 //      }
-
-                                                                                                         //          mService.getDB().close();
-
-                                                                                                                     //  int i =  mService.connect(server);
-                   showProgress();
-
-
-               //   switch (i) {
-                    //   case 0:
-
-
-
-SharedPreferences settings = getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
-SharedPreferences.Editor edit = settings.edit();
-
-if(checkBox.isChecked())
- edit.putString("ServerIP",text.getText().toString());
-  else
-   edit.putString("ServerIP", null);
-
-    if(checkBox2.isChecked())
-     edit.putString("userName",text2.getText().toString());
-      else
-       edit.putString("userName",null);
-
-        if(checkBox3.isChecked())
-         edit.putString("Password",text3.getText().toString());
-          else
-           edit.putString("Password",null);
-
-                           edit.apply();
-
-                 /*           break;
-                       case 1:
-                            Popup popup = new Popup();
-                            popup.set_String(R.string.MalformedURLException);
-                            popup.show(getFragmentManager(), "this");
-                            break;
-                       case 2:
-                            Popup popup2 = new Popup();
-                            popup2.set_String(R.string.NoInternet);
+                try {
+                    if (!text.getText().toString().isEmpty() && !text2.getText().toString().isEmpty() && !text3.getText().toString().isEmpty()) { //Abfrage ob textfelder des logins leer sind
+                        if (validate(text2.getText().toString())) { // abfrage der korrektheit der email
+                            server = text.getText().toString();
+                            email = text2.getText().toString();
+                            password = text3.getText().toString();
+                            showProgress();
+                            save_ToSharedPreferences(text.getText().toString(), text2.getText().toString(), text3.getText().toString());
+                        } else {
+                            Popup popup2 = new Popup();            // Popup für email
+                            popup2.set_String(R.string.popup2);
                             popup2.show(getFragmentManager(), "this");
-                            break;
-                       case 3:
-                          Popup popup3 = new Popup();
-                          popup3.set_String(R.string.SBSBaseException);
-                          popup3.show(getFragmentManager(), "this");
-                          break;
-                    }*/
+                        }
+                    } else {
+                        Popup popup = new Popup();
+                        popup.set_String(R.string.popup);     // Popup für leere felder
+                        popup.show(getFragmentManager(), "this");
+                    }
 
-
-                } else {
-                    Popup popup2 = new Popup();            // Popup für email
-                    popup2.set_String(R.string.popup2);
-                    popup2.show(getFragmentManager(), "this");
-
+                } catch (Exception e) {
+                    appendLog(e.getMessage());
+                    e.printStackTrace();
                 }
-            } else {
-                Popup popup = new Popup();
-                popup.set_String(R.string.popup);     // Popup für leere felder
-                popup.show(getFragmentManager(), "this");
-            }
-
-        } catch (Exception e) {
-            appendLog(e.getMessage());
-            e.printStackTrace();
-        }
                 break;
-
         }
+    }
+
+    /**
+     * Schreibt die Eingegebenen Parameter in die SharedPreferences
+     * @param ServerIP Server IP
+     * @param E_Mail   E-Mail
+     * @param Password Passwort
+     */
+    private void save_ToSharedPreferences(String ServerIP, String E_Mail, String Password) {
+        SharedPreferences settings = getSharedPreferences("com.lablet.PREFERENCE_FILE_KEY", MODE_PRIVATE);
+        SharedPreferences.Editor edit = settings.edit();
+
+        if (checkBox.isChecked())
+            edit.putString("ServerIP", ServerIP);
+        else
+            edit.putString("ServerIP", null);
+
+        if (checkBox2.isChecked())
+            edit.putString("userName", E_Mail);
+        else
+            edit.putString("userName", null);
+
+        if (checkBox3.isChecked())
+            edit.putString("Password", Password);
+        else
+            edit.putString("Password", null);
+
+        edit.apply();
     }
 
     @Override
@@ -260,7 +231,7 @@ if(checkBox.isChecked())
     protected void onStop() {
         super.onStop();
         // Unbind from the service
-            if (mBound) {
+        if (mBound) {
             unbindService(mConnection);
             mBound = false;
         }
@@ -268,7 +239,7 @@ if(checkBox.isChecked())
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         this.finish();
         System.exit(0);
@@ -295,11 +266,11 @@ if(checkBox.isChecked())
         }
     };
 
-/**
- *checking for the validation of the E-Mail
- * @param hex  The E-Mail
- *
- */
+    /**
+     * checking for the validation of the E-Mail
+     *
+     * @param hex The E-Mail
+     */
     public boolean validate(final String hex) {
 
         Matcher matcher = pattern.matcher(hex);
@@ -307,8 +278,8 @@ if(checkBox.isChecked())
 
     }
 
-    /** funktion for Closing the app by backpress with popup 2 ask if you want 2 close
-     *
+    /**
+     * funktion for Closing the app by backpress with popup 2 ask if you want 2 close
      */
 
     @Override
@@ -329,14 +300,13 @@ if(checkBox.isChecked())
                 }).setNegativeButton("no", null).show();
     }
 
-    private class ProgressTask extends AsyncTask<Integer,Integer,Void>{
-        LinkedList<RemoteProject> projects;
-        LinkedList<RemoteExperiment> experiments;
+    private class ProgressTask extends AsyncTask<Integer, Integer, Void> {
         ProgressDialog dialog;
 
         // The variable is moved here, we only need it here while displaying the
         // progress dialog.
-        TextView txtView;
+
+
         protected void onPreExecute() {
 
             dialog = new ProgressDialog(Gui_StartActivity.this);
@@ -346,55 +316,47 @@ if(checkBox.isChecked())
             dialog.setTitle("Getting new Data From Server");
 
             dialog.show();
-           // super.onPreExecute(); ///////???????
+            // super.onPreExecute(); ///////???????
             //prgs.setMax(100); // set maximum progress to 100.
 
         }
+
         protected void onCancelled() {
             prgs.setMax(0); // stop the progress
-            Log.v("Progress","Cancelled");
+            Log.v("Progress", "Cancelled");
         }
-        protected Void doInBackground(Integer... params) {
 
-         //   ServerDatabaseSession SDS = mService.SDS;
-        //    LinkedList<Entry> entries = new LinkedList<Entry>() ;
-            // try {
+        protected Void doInBackground(Integer... params) {
             try {
-                objectlevel_db.register_user(email,password,new URL(server));
+                objectlevel_db.register_user(email, password, new URL(server));
                 LinkedList<User> all_users_which_have_login_info = objectlevel_db.get_all_users_with_login();
-                mService.setUserAndURL(getActiveUser(all_users_which_have_login_info),server);
+                mService.setUserAndURL(getActiveUser(all_users_which_have_login_info), server);
                 mService.getProjects();
                 publishProgress(20);
                 mService.getExperiments();
                 publishProgress(20);
                 mService.getEntry();
 
-                }
-
-
-          //      experiments = SDS.get_experiments();
-          //      mService.getDB().insertExperiments(experiments);
-
-
-
+            }
 
             catch (SBSBaseException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-          //  mService.getDB().close();
             publishProgress(20);
             return null;
         }
+
         protected void onProgressUpdate(Integer... values) {
             dialog.incrementProgressBy(values[0]);
             // increment progress bar by progress value
             //////////////////////setProgress(10);
             //////////////////////prgs.setProgress(prgs.getProgress() + 5); // the bar does not fill 100%
-         //   prgs.setProgress(5);
-      //      Log.v("Progress","Once");
+            //   prgs.setProgress(5);
+            //      Log.v("Progress","Once");
         }
+
         protected void onPostExecute(Void result) {
             // async task finished
             Intent intent;
@@ -416,8 +378,6 @@ if(checkBox.isChecked())
         };*/
 
 
-
-
     final static Handler handler = new Handler() {
         @Override
         public void handleMessage(final Message msgs) {
@@ -436,35 +396,38 @@ if(checkBox.isChecked())
     }
 
     public void stopProgress() {
-      // dialog.incrementProgressBy(progress[0]);
+        // dialog.incrementProgressBy(progress[0]);
     }
 
     public static LocalService getmService() {
         return mService;
     }
+
     public static object_level_db getObjectlevel_db() {
 
-       return objectlevel_db;
+        return objectlevel_db;
 
-           }
-    private User getActiveUser(LinkedList<User> users){
+    }
 
-              User user = null;
+    private User getActiveUser(LinkedList<User> users) {
 
-            for(int i=0;i<users.size();i++){
+        User user = null;
 
-                   if (users.get(i).getUser_email().equals(email)){
+        for (int i = 0; i < users.size(); i++) {
 
-               user = users.get(i);
+            if (users.get(i).getUser_email().equals(email)) {
 
-                      break;}}
+                user = users.get(i);
 
-                return user;
-
+                break;
             }
+        }
 
-    public void changeLang(String lang)
-    {
+        return user;
+
+    }
+
+    public void changeLang(String lang) {
         if (lang.equalsIgnoreCase(""))
             return;
         Locale myLocale = new Locale(lang);
@@ -475,8 +438,7 @@ if(checkBox.isChecked())
     }
 
 
-    public void loadLocale()
-    {
+    public void loadLocale() {
         String langPref = "Language";
         SharedPreferences prefs = getSharedPreferences("com.lablet.PREFERENCE_APP_KEY", MODE_PRIVATE);
         String language = prefs.getString(langPref, "");
